@@ -1,0 +1,2675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Business Studies • DeepThink (20) — Single‑view Player</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Unified Color Tokens (subset) — applied */
+  :root{
+    /* Core neutrals */
+    --bg:#ffffff; --text:#1f2937; --muted:#f8fafc; --border:#e5e7eb;
+    /* Brand / accents */
+    --accent:#ea7a27; --accent-2:#d46a1e;
+    /* Header / footer */
+    --header-bg:#0f172a; --header-fg:#f8fafc; --heading:#111827;
+    /* Chips */
+    --chip-bg:#fff7ed; --chip-border:#ffd8a8; --chip-text:#b45309;
+    /* Semantic states */
+    --ok:#22a06b; --ok-soft:#e8f7f0; --bad:#d84e4e; --bad-soft:#fdecec; --warn:#f59e0b; --warn-soft:#fff4e5; --info:#2563eb; --info-soft:#e8f1fe;
+    /* Inputs / focus */
+    --calc-input-focus:#2563eb;
+  }
+
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;line-height:1.55}
+  .container{max-width:880px;margin:0 auto;padding:24px}
+
+  /* Header/Footer */
+  header,footer{background:var(--header-bg);color:var(--header-fg);text-align:center}
+  header .container, footer .container{padding:18px 24px}
+  h1{font-size:clamp(2rem,5vw,2.4rem);margin:0 0 6px;color:var(--header-fg)}
+  h2{font-size:clamp(1.2rem,3.6vw,1.6rem);margin:22px 0 10px;color:var(--heading);border-bottom:2px solid var(--border);padding-bottom:8px}
+
+  /* Intro chip */
+  .intro{background:var(--chip-bg);border-left:4px solid var(--accent);border-radius:10px;padding:12px 14px;margin:12px 0;color:var(--chip-text)}
+
+  /* Player */
+  .player{border:1px solid var(--border);border-radius:12px;background:var(--muted);padding:12px;position:relative}
+  .viewport{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;min-height:360px;overflow:visible}
+
+  /* Cards */
+  .scenario-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px}
+  .scenario-title{font-weight:700;color:var(--accent);margin:0 0 6px}
+  .scenario-text{font-style:italic;color:color-mix(in oklab, var(--text) 65%, white);margin:5px 0 8px}
+
+  /* Concept / principle highlight */
+  .formula-box{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn);border-radius:8px;padding:10px;text-align:center;margin:6px 0}
+  .formula-box .desc{color:var(--text);font-size:.95rem;margin-top:4px}
+
+  /* Buttons */
+  .btn{background:var(--accent);color:#fff;border:1px solid transparent;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.04);transition:background-color .15s ease,box-shadow .15s ease,transform .04s ease}
+  .btn:hover:not([disabled]){background:var(--accent-2);transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.08)}
+  .btn:active:not([disabled]){transform:translateY(0);box-shadow:0 2px 5px rgba(0,0,0,.06)}
+  .btn:focus-visible{outline:0;box-shadow:0 0 0 3px color-mix(in oklab, var(--calc-input-focus) 30%, transparent)}
+  .btn[disabled]{background:color-mix(in oklab, var(--accent) 20%, white);color:color-mix(in oklab, var(--header-fg) 80%, var(--bg));cursor:not-allowed}
+
+  /* Nav row */
+  .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+  ol{margin:0 0 0 16px}
+
+  /* Back to question chip */
+  #back{position:absolute; right:12px; bottom:56px; display:none; background:var(--bg); border:1px solid var(--border); color:color-mix(in oklab, var(--text) 70%, white); border-radius:14px; padding:6px 10px; font-weight:600; cursor:pointer}
+
+  .muted{color:color-mix(in oklab, var(--text) 65%, white)}
+</style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>DeepThink — Business Studies</h1>
+      <div class="intro">Class 11/12 • CBSE. One meaningful scenario per screen. Use <em>Prev/Next</em>. Layered reasoning, boundaries, and practical steps included.</div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="player">
+      <div class="viewport">
+        <div id="card" class="scenario-card">
+          <div class="scenario-title" id="qtitle">DeepThink</div>
+          <div class="scenario-text" id="qtext"></div>
+          <div>
+            <h3 style="margin:8px 0 4px">Answer</h3>
+            <p id="answer" class="muted" style="margin:0 0 9px"></p>
+            <h3 style="margin:8px 0 4px">Closest Principle / Concept</h3>
+            <div class="formula-box" id="formula">—<div class="desc" id="pdesc"></div></div>
+            <h3 style="margin:8px 0 4px">How to apply</h3>
+            <ol id="apply"></ol>
+            <h3 style="margin:8px 0 4px">Prediction</h3>
+            <p id="predict" class="muted" style="margin:0"></p>
+            <div id="layerWrap" style="display:none">
+              <h3 style="margin:8px 0 4px">Reasoning Layers</h3>
+              <ol id="layers"></ol>
+            </div>
+            <div id="boundWrap" style="display:none">
+              <h3 style="margin:8px 0 4px">Boundary Conditions</h3>
+              <ul id="bounds"></ul>
+            </div>
+            <div id="extraWrap" style="display:none">
+              <h3 style="margin:8px 0 4px">Extra</h3>
+              <p id="extra" class="muted" style="margin:0"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button id="back">↑ Back to question</button>
+      <div class="row" style="margin-top:8px">
+        <button id="prev" class="btn" aria-label="Previous DeepThink">Prev</button>
+        <div id="counter" style="font-weight:700; margin:0 8px">1 / 20</div>
+        <button id="next" class="btn" aria-label="Next DeepThink">Next</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container" style="padding:12px 24px">© BeyondDictionary • DeepThink Player • Business Studies</div>
+  </footer>
+
+<script>
+  // DATA: 20 meaningful scenarios across Class 11/12 chapters
+  const DATA = [
+    {
+      q: "Sales drop; team wants blanket discounts immediately. What must precede action?",
+      a: "Run the planning process: set SMART goals, list alternatives, evaluate with numbers, choose, implement, and monitor.",
+      p: "Planning process (Objectives → Alternatives → Evaluation → Choice → Implementation → Follow‑up)",
+      d: "Structured planning reduces uncertainty and waste.",
+      steps: [
+        "Define a measurable target (e.g., +8% revenue in 60 days).",
+        "List options (bundles, channels, pricing, promotion).",
+        "Score by contribution margin & capacity; then assign owners."
+      ],
+      x: "Plans vetted by contribution margin outperform impulse discounts in most cases.",
+      reasoning_layers: [
+        { layer: "Context", note: "Shortfall triggered knee‑jerk reaction." },
+        { layer: "Observation", note: "Action before analysis." },
+        { layer: "Mechanism", note: "Alternatives + evaluation → better choice." },
+        { layer: "Nuance", note: "Plans must adapt to changes." },
+        { layer: "Situational / Applied", note: "Weekly review corrects drift early." }
+      ],
+      boundary_conditions: [
+        "If data quality is weak, evaluation misleads.",
+        "Over‑rigid plans slow response in volatile markets."
+      ],
+      extra: "Mention benefits and limitations of planning for full marks."
+    },
+
+    {
+      q: "Two bosses give conflicting orders to a designer. Diagnose and fix fast.",
+      a: "Unity of command is violated; assign one reporting manager and align the project under unity of direction.",
+      p: "Fayol: Unity of command & Unity of direction",
+      d: "One boss per person; one plan per objective.",
+      steps: [
+        "Map current reporting; pick the primary manager.",
+        "Publish a RACI and review cadence.",
+        "Align KPIs to one project plan."
+      ],
+      x: "Conflicts and rework drop once 'one boss, one plan' is enforced.",
+      reasoning_layers: [
+        { layer: "Context", note: "Matrix confusion in a project." },
+        { layer: "Observation", note: "Contradictory instructions." },
+        { layer: "Mechanism", note: "Authority clarity removes friction." },
+        { layer: "Nuance", note: "Keep a gang plank for urgency." },
+        { layer: "Situational / Applied", note: "Weekly single‑threaded brief." }
+      ],
+      boundary_conditions: [
+        "If KPIs compete, unity of direction breaks.",
+        "No escalation path → delays persist."
+      ],
+      extra: "Contrast unity of command vs direction in a sentence."
+    },
+
+    {
+      q: "New e‑invoice rule arrives; ERP isn’t ready mid‑quarter. First managerial move?",
+      a: "Scan the legal environment and perform a regulatory impact assessment; reconfigure billing flows before penalties start.",
+      p: "Business environment — Legal dimension; PESTLE → Regulatory impact assessment",
+      d: "External changes force internal adaptations.",
+      steps: [
+        "Summarise notification; list compliance gaps.",
+        "Map affected processes and owners.",
+        "Pilot in sandbox; then staged rollout."
+      ],
+      x: "Early scanning reduces penalty risk and cash‑flow shocks.",
+      reasoning_layers: [
+        { layer: "Context", note: "Policy change mid‑cycle." },
+        { layer: "Observation", note: "Systems unprepared." },
+        { layer: "Mechanism", note: "Legal force → internal redesign." },
+        { layer: "Nuance", note: "Tech readiness mediates impact." },
+        { layer: "Situational / Applied", note: "PESTLE checklist → action." }
+      ],
+      boundary_conditions: [
+        "If vendor support lags, add manual fallback.",
+        "Ambiguity in rules requires expert clarification."
+      ],
+      extra: "State the environment dimension explicitly in exams."
+    },
+
+    {
+      q: "Startup chaos: everyone does everything; decisions stall. What structure now?",
+      a: "Create functional departmentation with clear authority–responsibility; keep spans lean and publish an org chart.",
+      p: "Organising — Departmentation; Authority–Responsibility; Span of control",
+      d: "Structure clarifies who decides and who delivers.",
+      steps: [
+        "Group tasks (marketing, ops, finance).",
+        "Map roles to matching authority and accountability.",
+        "Set reporting lines; add escalation lanes."
+      ],
+      x: "Lead time drops once authority matches work.",
+      reasoning_layers: [
+        { layer: "Context", note: "Early‑stage growth pains." },
+        { layer: "Observation", note: "Bottlenecks, rework." },
+        { layer: "Mechanism", note: "Specialisation speeds decisions." },
+        { layer: "Nuance", note: "Too many layers slow agility." },
+        { layer: "Situational / Applied", note: "Review spans monthly." }
+      ],
+      boundary_conditions: [
+        "Over‑staffing creates silos early.",
+        "Ambiguous delegation recreates chaos."
+      ],
+      extra: "Use a one‑page org with RACI for handoffs."
+    },
+
+    {
+      q: "Manager delegates tasks but also keeps all decisions. Why does execution still crawl?",
+      a: "Delegation without authority is tokenism; transfer matching authority with responsibility and accountability.",
+      p: "Delegation — Authority, Responsibility, Accountability",
+      d: "Authority must travel with the task for speed.",
+      steps: [
+        "Define decision rights for each delegated task.",
+        "Clarify limits; set autonomy guardrails.",
+        "Review outcomes, not micromanage steps."
+      ],
+      x: "Cycle time improves when decisions move with the work.",
+      reasoning_layers: [
+        { layer: "Context", note: "Manager overloaded." },
+        { layer: "Observation", note: "Tasks delegated; approvals centralised." },
+        { layer: "Mechanism", note: "Authority–responsibility alignment drives speed." },
+        { layer: "Nuance", note: "Accountability remains with delegator overall." },
+        { layer: "Situational / Applied", note: "Use delegation matrix." }
+      ],
+      boundary_conditions: [
+        "High‑risk tasks may need staged authority.",
+        "Poorly trained staff can amplify errors."
+      ],
+      extra: "'Delegation ≠ abdication' — keep oversight via reviews."
+    },
+
+    {
+      q: "Branch managers escalate routine price approvals; sales lose time. Centralization or decentralization?",
+      a: "Decentralise within policy bands; empower branches for routine decisions while HQ sets limits and audits.",
+      p: "Decentralisation — Delegation of decision‑making to lower levels",
+      d: "Local decisions increase speed and responsiveness.",
+      steps: [
+        "Define approval bands and exceptions.",
+        "Train managers; publish a decision playbook.",
+        "Audit outliers; refine bands quarterly."
+      ],
+      x: "Turnaround time improves without losing control when bands are clear.",
+      reasoning_layers: [
+        { layer: "Context", note: "Multi‑branch operations." },
+        { layer: "Observation", note: "Escalation backlog." },
+        { layer: "Mechanism", note: "Authority closer to customer." },
+        { layer: "Nuance", note: "Too much freedom risks inconsistency." },
+        { layer: "Situational / Applied", note: "Policy bands + audits." }
+      ],
+      boundary_conditions: [
+        "Weak training leads to random decisions.",
+        "Poor MIS hides misuse of bands."
+      ],
+      extra: "Show pros/cons of decentralisation in two bullets if asked."
+    },
+
+    {
+      q: "Offer acceptances fall; 90‑day attrition rises. What breaks in staffing?",
+      a: "Weak selection and induction; use structured assessment, mentoring, and a 30‑60‑90 plan to improve fit and retention.",
+      p: "Staffing process — Recruitment/Selection → Placement/Training → Appraisal",
+      d: "Process raises quality of hire and stickiness.",
+      steps: [
+        "Define role specs and sourcing mix.",
+        "Use structured interviews/tests with calibrated panels.",
+        "Induct and mentor; schedule early skill sprints."
+      ],
+      x: "Acceptance rates and 90‑day retention should improve within 2 cycles.",
+      reasoning_layers: [
+        { layer: "Context", note: "Talent churn problem." },
+        { layer: "Observation", note: "Early exits + offer declines." },
+        { layer: "Mechanism", note: "Fit + development reduce mismatch." },
+        { layer: "Nuance", note: "Employer brand shapes pipeline." },
+        { layer: "Situational / Applied", note: "Track QoH monthly." }
+      ],
+      boundary_conditions: [
+        "Over‑selling the role causes later disengagement.",
+        "No induction → early failure spiral."
+      ],
+      extra: "Use a realistic job preview to cut surprises."
+    },
+
+    {
+      q: "Targets are clear but team energy is flat. Which levers unlock performance?",
+      a: "Directing: align leadership style, motivation, and communication cadence; tie rewards to meaningful goals.",
+      p: "Directing — Leadership • Motivation • Communication",
+      d: "Directing converts plans into energized action.",
+      steps: [
+        "Diagnose needs (Maslow/Herzberg).",
+        "Set leadership style and feedback rhythm.",
+        "Design fair incentives and public recognition."
+      ],
+      x: "Engagement rises and absenteeism falls when cadence is predictable.",
+      reasoning_layers: [
+        { layer: "Context", note: "Goals exist; drive missing." },
+        { layer: "Observation", note: "Low discretionary effort." },
+        { layer: "Mechanism", note: "Motives + feedback energise." },
+        { layer: "Nuance", note: "Style must fit team maturity." },
+        { layer: "Situational / Applied", note: "Weekly 1:1s + praise." }
+      ],
+      boundary_conditions: [
+        "Misaligned rewards distort behaviour.",
+        "Weak communication kills good incentives."
+      ],
+      extra: "Tie KPIs to customer outcomes, not just activity."
+    },
+
+    {
+      q: "Rumours spike after a policy change. Formal mails exist; confusion persists. What now?",
+      a: "Balance formal and informal channels: acknowledge change, host Q&A, and use opinion leaders to relay accurate info.",
+      p: "Communication — Formal vs Informal (grapevine)",
+      d: "Informal networks spread fast; guide them with facts.",
+      steps: [
+        "Publish a clear FAQ addressing fears.",
+        "Hold small‑group Q&A with managers.",
+        "Enlist influencers to echo key points."
+      ],
+      x: "Misinformation decays when access to answers is direct and quick.",
+      reasoning_layers: [
+        { layer: "Context", note: "Change management." },
+        { layer: "Observation", note: "Rumours outpace memos." },
+        { layer: "Mechanism", note: "Grapevine fills info gaps." },
+        { layer: "Nuance", note: "Silence amplifies anxiety." },
+        { layer: "Situational / Applied", note: "Two‑way forums calm staff." }
+      ],
+      boundary_conditions: [
+        "If leaders dodge questions, rumours grow.",
+        "Mixed messages from managers reset confusion."
+      ],
+      extra: "Name the channel type in your answer for clarity."
+    },
+
+    {
+      q: "Defects soar after a new line starts. How does controlling restore quality?",
+      a: "Set standards, measure actuals, compare, and correct; apply SPC and CAPA to remove special causes.",
+      p: "Controlling cycle; Statistical process control (SPC)",
+      d: "Feedback aligns actual performance with plan.",
+      steps: [
+        "Define CTQs and tolerance limits.",
+        "Plot control charts; locate special causes.",
+        "Run CAPA and verify with next run."
+      ],
+      x: "PPM should halve within two sprints after CAPA.",
+      reasoning_layers: [
+        { layer: "Context", note: "Post‑launch variance." },
+        { layer: "Observation", note: "Defects beyond limits." },
+        { layer: "Mechanism", note: "Measure–compare–correct loop." },
+        { layer: "Nuance", note: "Over‑control adds cost." },
+        { layer: "Situational / Applied", note: "Daily Gemba + SPC board." }
+      ],
+      boundary_conditions: [
+        "Wrong standards make control useless.",
+        "Slow data delays correction."
+      ],
+      extra: "Quote the four control steps explicitly in exams."
+    },
+
+    {
+      q: "Choose between supplier 2/10, net 30 vs 12% bank loan. Which is cheaper?",
+      a: "Compute effective cost of not taking the discount; 2/10, net 30 ≈ 36.5% p.a., so take the discount and borrow if needed.",
+      p: "Effective cost of trade credit = (Discount/(1−Discount)) × (365/(Net−Discount days))",
+      d: "Translates early‑payment discounts into annualized cost.",
+      steps: [
+        "Calculate trade credit cost from terms.",
+        "Compute bank EAR.",
+        "Pick the lower effective cost; document assumptions."
+      ],
+      x: "At 2/10, net 30 the discount is usually cheaper than borrowing.",
+      reasoning_layers: [
+        { layer: "Context", note: "Short‑term financing choice." },
+        { layer: "Observation", note: "Tempting discount vs loan." },
+        { layer: "Mechanism", note: "Opportunity cost of not discounting." },
+        { layer: "Nuance", note: "Real payment lags change EAR." },
+        { layer: "Situational / Applied", note: "Show formula then numbers." }
+      ],
+      boundary_conditions: [
+        "If supplier lifts base price, recompute total cost.",
+        "Cash cycle unpredictability weakens estimate."
+      ],
+      extra: "Write the formula first to signal method."
+    },
+
+    {
+      q: "Working capital tight; customers pay late; inventory bloats. What metric helps?",
+      a: "Optimise the cash conversion cycle: shorten receivables days and inventory days; extend payables reasonably.",
+      p: "Cash Conversion Cycle (CCC) = DIO + DSO − DPO",
+      d: "Measures days cash is tied in operations.",
+      steps: [
+        "Segment debtors; enforce credit limits and reminders.",
+        "Cut slow‑moving SKUs; improve forecasting.",
+        "Negotiate supplier terms without straining relations."
+      ],
+      x: "CCC reduction by 10–20 days unlocks material cash.",
+      reasoning_layers: [
+        { layer: "Context", note: "Liquidity pressure." },
+        { layer: "Observation", note: "Late pay, high stock." },
+        { layer: "Mechanism", note: "Faster cycle → more cash." },
+        { layer: "Nuance", note: "Too long DPO hurts supply." },
+        { layer: "Situational / Applied", note: "Use rolling 3‑month CCC." }
+      ],
+      boundary_conditions: [
+        "Seasonality can distort CCC short‑term.",
+        "Deep cuts may hit service levels."
+      ],
+      extra: "Quote DIO/DSO/DPO definitions if asked."
+    },
+
+    {
+      q: "Three projects compete; budgets limited. How to choose methodically?",
+      a: "Use capital budgeting: compare NPV/IRR and risk; choose positive‑NPV projects aligning with strategy.",
+      p: "Capital Budgeting — NPV, IRR, Payback (with limitations)",
+      d: "Evaluates investment profitability over time.",
+      steps: [
+        "Forecast cash flows and risk assumptions.",
+        "Compute NPV/IRR; stress‑test key variables.",
+        "Pick highest value within capital limits."
+      ],
+      x: "Projects with positive NPV add shareholder value.",
+      reasoning_layers: [
+        { layer: "Context", note: "Competing investments." },
+        { layer: "Observation", note: "Budget constraint exists." },
+        { layer: "Mechanism", note: "Discounted cash flow logic." },
+        { layer: "Nuance", note: "IRR misleads with non‑conventional flows." },
+        { layer: "Situational / Applied", note: "Document WACC and assumptions." }
+      ],
+      boundary_conditions: [
+        "Unreliable forecasts break the model.",
+        "Strategic fit can override a small NPV edge."
+      ],
+      extra: "Write one limitation of IRR for brownie points."
+    },
+
+    {
+      q: "Debt seems cheap; founders want to lever up. What trade‑off to explain?",
+      a: "Capital structure trade‑off: debt lowers WACC up to a point but raises financial risk; keep coverage and liquidity safe.",
+      p: "Capital Structure — Risk–return trade‑off; WACC",
+      d: "Mix of debt–equity affects cost and risk.",
+      steps: [
+        "Compute current WACC and coverage ratios.",
+        "Model leverage scenarios vs covenants.",
+        "Choose a target range; review quarterly."
+      ],
+      x: "Excess leverage raises risk of distress despite lower cost of debt.",
+      reasoning_layers: [
+        { layer: "Context", note: "Debt looks attractive." },
+        { layer: "Observation", note: "Rates seem low." },
+        { layer: "Mechanism", note: "Tax shield vs bankruptcy risk." },
+        { layer: "Nuance", note: "Industry volatility changes safe zone." },
+        { layer: "Situational / Applied", note: "Keep liquidity buffers." }
+      ],
+      boundary_conditions: [
+        "Covenant breaches trigger penalties.",
+        "Earnings volatility makes debt unsafe."
+      ],
+      extra: "Quote one safety ratio (e.g., interest coverage)."
+    },
+
+    {
+      q: "Shareholders ask for higher dividend; CFO favours reinvestment. Who’s right?",
+      a: "Dividend decision balances shareholder preferences with growth opportunities; reinvest when ROI>R_e, else distribute.",
+      p: "Dividend Decision — Factors: earnings, liquidity, growth, stability, shareholder preference",
+      d: "Decide payout vs retention using opportunity cost.",
+      steps: [
+        "Estimate ROI of pipeline projects.",
+        "Gauge liquidity and stability needs.",
+        "Pick payout ratio consistent with policy."
+      ],
+      x: "Stable dividend policy reduces volatility in investor expectations.",
+      reasoning_layers: [
+        { layer: "Context", note: "Payout pressure." },
+        { layer: "Observation", note: "Good projects pending." },
+        { layer: "Mechanism", note: "Compare ROI with cost of equity." },
+        { layer: "Nuance", note: "Clientele effects exist." },
+        { layer: "Situational / Applied", note: "Signal via clear policy." }
+      ],
+      boundary_conditions: [
+        "Weak cash flow limits payout despite profit.",
+        "Legal/contractual constraints apply."
+      ],
+      extra: "Mention stability principle for marks."
+    },
+
+    {
+      q: "Friend plans to flip IPOs on listing day. What’s the right advice?",
+      a: "Explain primary vs secondary markets and SEBI’s role; size exposure by risk, avoid leverage, and use stop‑loss if trading.",
+      p: "Financial Markets — Primary & Secondary; Investor protection (SEBI)",
+      d: "Primary raises capital; secondary provides liquidity & discovery.",
+      steps: [
+        "Read DRHP highlights and risks.",
+        "Set modest allocation; no leverage.",
+        "Place stop‑loss; review post‑listing."
+      ],
+      x: "High volatility is normal on listing; size positions conservatively.",
+      reasoning_layers: [
+        { layer: "Context", note: "IPO hype case." },
+        { layer: "Observation", note: "Flip intent, not invest." },
+        { layer: "Mechanism", note: "Price discovery happens in secondary." },
+        { layer: "Nuance", note: "Float/anchor allocations affect swings." },
+        { layer: "Situational / Applied", note: "Use DRHP summary and rules." }
+      ],
+      boundary_conditions: [
+        "No KYC/ASBA → cannot participate.",
+        "Overexposure magnifies losses."
+      ],
+      extra: "Know grievance redressal routes under SEBI."
+    },
+
+    {
+      q: "Return rate hits 18% due to sizing complaints. Fix without blanket discounts?",
+      a: "Re‑align mix to positioning: tighten targeting and size‑chart UX; offer free exchanges (not refunds) to cut friction while holding price.",
+      p: "Marketing — STP + 4Ps coherence; Services add 3Ps",
+      d: "Positioning guides product, price, place, promotion choices.",
+      steps: [
+        "Identify best‑fit segment via data.",
+        "Fix product/UX (size guide, try‑ons).",
+        "Switch promos to exchange assurance."
+      ],
+      x: "Returns should drop ≥5 pp next cycle if reach ≥70% buyers.",
+      reasoning_layers: [
+        { layer: "Context", note: "High returns." },
+        { layer: "Observation", note: "Reason is size mismatch." },
+        { layer: "Mechanism", note: "STP → coherent 4Ps changes." },
+        { layer: "Nuance", note: "Refunds train discount seekers." },
+        { layer: "Situational / Applied", note: "A/B exchange banner." }
+      ],
+      boundary_conditions: [
+        "Logistics must handle exchanges well.",
+        "Wrong sizing data ruins fix."
+      ],
+      extra: "Write the one‑line positioning statement first."
+    },
+
+    {
+      q: "Buyer is denied warranty service within period. What should the consumer do?",
+      a: "Use Consumer Protection Act forums/portal with evidence to seek repair/replacement/refund and compensation.",
+      p: "Consumer Protection — Rights and Redressal Mechanism",
+      d: "Statutory forums protect against unfair trade practices.",
+      steps: [
+        "Assemble proofs (invoice, warranty, emails).",
+        "File complaint at correct jurisdiction/portal.",
+        "Request remedy and reasonable costs."
+      ],
+      x: "Complete documentation accelerates resolution at forums.",
+      reasoning_layers: [
+        { layer: "Context", note: "Warranty denial case." },
+        { layer: "Observation", note: "Seller delays service." },
+        { layer: "Mechanism", note: "Legal right to remedy." },
+        { layer: "Nuance", note: "Claim value decides forum level." },
+        { layer: "Situational / Applied", note: "Polite, factual filings help." }
+      ],
+      boundary_conditions: [
+        "Missing proofs weaken the case.",
+        "Wrong forum delays hearing."
+      ],
+      extra: "Note limitation periods to avoid dismissal."
+    },
+
+    {
+      q: "Sole proprietor plans expansion; risk is high; control must remain. Form of business?",
+      a: "Consider a private company for limited liability and fund‑raising while retaining control via share structure.",
+      p: "Forms of Business Organisation — Sole proprietorship vs Company",
+      d: "Choice balances liability, control, and capital needs.",
+      steps: [
+        "Compare liability and compliance costs.",
+        "Model capital needs and investor terms.",
+        "Choose form matching risk/control priorities."
+      ],
+      x: "Limited liability protects personal assets during business shocks.",
+      reasoning_layers: [
+        { layer: "Context", note: "Growth with risk." },
+        { layer: "Observation", note: "Control preference strong." },
+        { layer: "Mechanism", note: "Company limits owner liability." },
+        { layer: "Nuance", note: "Compliance costs increase." },
+        { layer: "Situational / Applied", note: "Use share classes for control." }
+      ],
+      boundary_conditions: [
+        "If capital tiny, compliance may outweigh gains.",
+        "Wrong partner terms dilute control."
+      ],
+      extra: "Mention LLP option when services‑heavy."
+    },
+
+    {
+      q: "Small retailer considers e‑business; fears payment fraud and returns. How to proceed?",
+      a: "Adopt e‑business with secure gateways, COD controls, and clear return policy; integrate simple inventory sync.",
+      p: "Emerging Modes of Business — E‑business enablement",
+      d: "Technology extends reach but needs risk controls.",
+      steps: [
+        "Use trusted gateway; enable 2‑factor checks.",
+        "Define return windows and quality checks.",
+        "Sync inventory across online/offline."
+      ],
+      x: "Online share grows without spiking fraud when policies are clear.",
+      reasoning_layers: [
+        { layer: "Context", note: "Digitisation decision." },
+        { layer: "Observation", note: "Fraud/returns worry." },
+        { layer: "Mechanism", note: "Controls reduce risk." },
+        { layer: "Nuance", note: "Customer trust needs clarity." },
+        { layer: "Situational / Applied", note: "Start with pilot SKUs." }
+      ],
+      boundary_conditions: [
+        "Poor CX kills early adoption.",
+        "Weak reconciliation causes stockouts."
+      ],
+      extra: "Add FAQs to cut pre‑purchase anxiety."
+    },
+
+    {
+      q: "Logistics costs rise; deliveries slip. What operations change helps quickly?",
+      a: "Introduce basic logistics management: route planning, warehouse zoning, and reorder points to cut travel and stockouts.",
+      p: "Business Services — Warehousing & Logistics basics",
+      d: "Right place/time reduces cost and improves service.",
+      steps: [
+        "Zone warehouse; label fast‑movers near dispatch.",
+        "Plan routes; club nearby deliveries.",
+        "Set reorder points using demand data."
+      ],
+      x: "Travel time and stockouts fall within one cycle of changes.",
+      reasoning_layers: [
+        { layer: "Context", note: "Operations inefficiency." },
+        { layer: "Observation", note: "High costs, delays." },
+        { layer: "Mechanism", note: "Layout + planning cut waste." },
+        { layer: "Nuance", note: "Data quality affects reorders." },
+        { layer: "Situational / Applied", note: "Pilot then scale." }
+      ],
+      boundary_conditions: [
+        "Traffic patterns can upset plans.",
+        "Wrong safety stock causes stockouts/overstock."
+      ],
+      extra: "Draw a simple warehouse map in answers."
+    },
+
+    {
+      q: "CSR 2% mandate applies; firm wants impact beyond compliance. What frame to use?",
+      a: "Align CSR with core competencies and community needs; choose measurable projects and report outcomes transparently.",
+      p: "Social Responsibility of Business — CSR planning and reporting",
+      d: "Strategic CSR benefits society and firm reputation.",
+      steps: [
+        "Identify focus areas tied to capabilities.",
+        "Set goals and metrics with partners.",
+        "Publish outcomes in annual report."
+      ],
+      x: "Aligned CSR sustains funding and improves brand trust.",
+      reasoning_layers: [
+        { layer: "Context", note: "Mandatory CSR spend." },
+        { layer: "Observation", note: "Desire meaningful impact." },
+        { layer: "Mechanism", note: "Fit drives effectiveness." },
+        { layer: "Nuance", note: "Avoid scatter projects." },
+        { layer: "Situational / Applied", note: "Use third‑party audits." }
+      ],
+      boundary_conditions: [
+        "Greenwashing backfires reputationally.",
+        "Weak partners stall delivery."
+      ],
+      extra: "Quote one Schedule VII area in exams."
+    },
+
+  {
+    q: "A factory manager sees workers using inefficient, varied methods for assembly, wasting time. How can this be fixed systematically?",
+    a: "Apply Taylor's scientific management: replace 'rule of thumb' methods with a scientifically studied and optimized process, then train workers in this single best method.",
+    p: "Scientific Management (F.W. Taylor)",
+    d: "A management theory that analyzes and synthesizes workflows to improve labor productivity.",
+    steps: [
+      "Conduct time and motion studies to find the most efficient assembly sequence.",
+      "Standardize the tools, equipment, and techniques for the task.",
+      "Train all workers in the new, standardized method and offer incentives for meeting targets."
+    ],
+    x: "Productivity will significantly increase, and material wastage will decrease.",
+    reasoning_layers: [
+      { layer: "Context", note: "Production inefficiency on a factory floor." },
+      { layer: "Observation", note: "Inconsistent methods causing waste." },
+      { layer: "Mechanism", note: "Standardization and optimization reduce variability and improve output." },
+      { layer: "Nuance", note: "Worker buy-in is critical; imposing changes can cause resistance." },
+      { layer: "Situational / Applied", note: "Pilot the new method with a small group to demonstrate benefits before a full rollout." }
+    ],
+    boundary_conditions: [
+      "Less effective for creative or complex tasks that require flexibility and judgment.",
+      "Can lead to worker demotivation and monotony if implemented too rigidly."
+    ],
+    extra: "For full marks, name the four core principles of scientific management."
+  },
+  {
+    q: "A successful restaurant chain wants to expand internationally. What external factors must be analyzed before entry?",
+    a: "Conduct a comprehensive PESTLE (Political, Economic, Social, Technological, Legal, Environmental) analysis of the target country to map opportunities and threats.",
+    p: "Business Environment — PESTLE Analysis",
+    d: "A strategic framework for understanding external macro-environmental factors.",
+    steps: [
+      "Analyze political stability, tax policy, and trade regulations.",
+      "Evaluate economic factors like inflation, exchange rates, and consumer disposable income.",
+      "Assess socio-cultural norms, dietary habits, and demographic trends."
+    ],
+    x: "The analysis will inform a market entry strategy tailored to the local context, reducing risks.",
+    reasoning_layers: [
+      { layer: "Context", note: "International market expansion decision." },
+      { layer: "Observation", note: "Need to understand a foreign, unfamiliar market." },
+      { layer: "Mechanism", note: "Systematic scanning of the external environment reduces uncertainty and costly surprises." },
+      { layer: "Nuance", note: "The weight of each PESTLE factor varies by industry (e.g., 'Social' is critical for food)." },
+      { layer: "Situational / Applied", note: "Use a weighted scoring model to compare the PESTLE analyses of several potential countries." }
+    ],
+    boundary_conditions: [
+      "The analysis is a snapshot; it doesn't predict sudden political or economic shifts.",
+      "Data quality for some developing nations might be unreliable, leading to flawed conclusions."
+    ],
+    extra: "Provide a specific, practical example for each of the six PESTLE factors."
+  },
+  {
+    q: "A software firm's long-term goal is market leadership. What type of plan is needed to guide major decisions?",
+    a: "Develop a strategic plan that defines the company's long-term vision, mission, and objectives, outlining the broad actions to achieve them.",
+    p: "Planning — Strategic Planning",
+    d: "The process of defining an organization's direction and allocating resources to pursue it.",
+    steps: [
+      "Formulate a clear and inspiring vision (the 'why') and mission (the 'what').",
+      "Set SMART (Specific, Measurable, Achievable, Relevant, Time-bound) objectives.",
+      "Identify core strategies for market penetration, product development, or diversification."
+    ],
+    x: "A clear roadmap is created, ensuring all departments align their efforts towards the same goals.",
+    reasoning_layers: [
+      { layer: "Context", note: "Aiming for long-term, sustainable growth." },
+      { layer: "Observation", note: "Requires a guiding framework for major investments and decisions." },
+      { layer: "Mechanism", note: "A shared strategy aligns actions, prevents siloed efforts, and focuses resources." },
+      { layer: "Nuance", note: "A strategic plan is not static; it must be reviewed and adapted to market changes." },
+      { layer: "Situational / Applied", note: "Involve key stakeholders from all levels in the planning process to foster commitment." }
+    ],
+    boundary_conditions: [
+      "An overly rigid plan can prevent the company from seizing unexpected opportunities.",
+      "If the strategy is not communicated effectively, it will not be implemented at the operational level."
+    ],
+    extra: "Distinguish between a 'strategy', a 'policy', and a 'procedure' with examples."
+  },
+  {
+    q: "A fast-growing startup has role overlaps and unclear reporting lines, causing delays. What's the fix?",
+    a: "Implement a formal organizational structure (e.g., functional) to clarify roles, responsibilities, and the chain of command, and publish an org chart.",
+    p: "Organising — Organisational Structure",
+    d: "The formal arrangement of roles, responsibilities, and power within an organization.",
+    steps: [
+      "Group employees into departments based on function (e.g., Marketing, Engineering, Finance).",
+      "Develop clear job descriptions outlining duties and reporting relationships for each role.",
+      "Create and distribute an organizational chart visualizing the structure."
+    ],
+    x: "Communication will improve, decision-making will speed up, and accountability will be enhanced.",
+    reasoning_layers: [
+      { layer: "Context", note: "Chaos resulting from rapid, unstructured growth." },
+      { layer: "Observation", note: "Confusion, duplication of work, and decision bottlenecks." },
+      { layer: "Mechanism", note: "Structure provides clarity, reduces ambiguity, and defines pathways for communication."},
+      { layer: "Nuance", note: "The chosen structure must fit the company's strategy; a creative agency might need a more flexible structure than an accounting firm." },
+      { layer: "Situational / Applied", note: "A tech startup could consider a matrix structure to allow for flexible, project-based teams." }
+    ],
+    boundary_conditions: [
+      "A very rigid, tall structure can create silos and slow down cross-departmental collaboration.",
+      "The structure must be reviewed and allowed to evolve as the company continues to grow."
+    ],
+    extra: "Explain the concept of 'span of management' and how it influences the shape of the structure."
+  },
+  {
+    q: "A company sees high turnover among new hires within six months. What staffing process needs review?",
+    a: "Enhance the selection and onboarding processes to ensure a better person-job fit and to integrate new employees into the company culture more effectively.",
+    p: "Staffing — Selection & Onboarding (Induction)",
+    d: "The processes of choosing the right candidates and systematically integrating them into the organization.",
+    steps: [
+      "Use behavioral interviews and validated skills tests to improve selection accuracy.",
+      "Develop a structured onboarding program including orientation, role-specific training, and a buddy/mentor system.",
+      "Schedule regular check-ins with new hires at the 30, 60, and 90-day marks."
+    ],
+    x: "Early employee turnover will decrease, and new hire productivity will ramp up faster.",
+    reasoning_layers: [
+      { layer: "Context", note: "High early-stage employee attrition." },
+      { layer: "Observation", note: "New hires are leaving quickly, suggesting a mismatch or poor integration." },
+      { layer: "Mechanism", note: "A strong fit and a positive initial experience increase job satisfaction and commitment." },
+      { layer: "Nuance", note: "Onboarding is not just a one-week event; it's a process that should extend over several months." },
+      { layer: "Situational / Applied", note: "Analyze exit interview data from departing new hires to pinpoint specific failures in the process." }
+    ],
+    boundary_conditions: [
+      "A great onboarding program cannot fix a toxic work environment or a fundamentally flawed job design.",
+      "The selection process must remain fair and legally compliant, avoiding discriminatory practices."
+    ],
+    extra: "List the key steps in a comprehensive employee selection process."
+  },
+  {
+    q: "A factory manager sees workers using inefficient, varied methods for assembly, wasting time. How can this be fixed systematically?",
+    a: "Apply Taylor's scientific management: replace 'rule of thumb' methods with a scientifically studied and optimized process, then train workers in this single best method.",
+    p: "Scientific Management (F.W. Taylor)",
+    d: "A management theory that analyzes and synthesizes workflows to improve labor productivity.",
+    steps: [
+      "Conduct time and motion studies to find the most efficient assembly sequence.",
+      "Standardize the tools, equipment, and techniques for the task.",
+      "Train all workers in the new, standardized method and offer incentives for meeting targets."
+    ],
+    x: "Productivity will significantly increase, and material wastage will decrease.",
+    reasoning_layers: [
+      { layer: "Context", note: "Production inefficiency on a factory floor." },
+      { layer: "Observation", note: "Inconsistent methods causing waste." },
+      { layer: "Mechanism", note: "Standardization and optimization reduce variability and improve output." },
+      { layer: "Nuance", note: "Worker buy-in is critical; imposing changes can cause resistance." },
+      { layer: "Situational / Applied", note: "Pilot the new method with a small group to demonstrate benefits before a full rollout." }
+    ],
+    boundary_conditions: [
+      "Less effective for creative or complex tasks that require flexibility and judgment.",
+      "Can lead to worker demotivation and monotony if implemented too rigidly."
+    ],
+    extra: "For full marks, name the four core principles of scientific management."
+  },
+  {
+    q: "A successful restaurant chain wants to expand internationally. What external factors must be analyzed before entry?",
+    a: "Conduct a comprehensive PESTLE (Political, Economic, Social, Technological, Legal, Environmental) analysis of the target country to map opportunities and threats.",
+    p: "Business Environment — PESTLE Analysis",
+    d: "A strategic framework for understanding external macro-environmental factors.",
+    steps: [
+      "Analyze political stability, tax policy, and trade regulations.",
+      "Evaluate economic factors like inflation, exchange rates, and consumer disposable income.",
+      "Assess socio-cultural norms, dietary habits, and demographic trends."
+    ],
+    x: "The analysis will inform a market entry strategy tailored to the local context, reducing risks.",
+    reasoning_layers: [
+      { layer: "Context", note: "International market expansion decision." },
+      { layer: "Observation", note: "Need to understand a foreign, unfamiliar market." },
+      { layer: "Mechanism", note: "Systematic scanning of the external environment reduces uncertainty and costly surprises." },
+      { layer: "Nuance", note: "The weight of each PESTLE factor varies by industry (e.g., 'Social' is critical for food)." },
+      { layer: "Situational / Applied", note: "Use a weighted scoring model to compare the PESTLE analyses of several potential countries." }
+    ],
+    boundary_conditions: [
+      "The analysis is a snapshot; it doesn't predict sudden political or economic shifts.",
+      "Data quality for some developing nations might be unreliable, leading to flawed conclusions."
+    ],
+    extra: "Provide a specific, practical example for each of the six PESTLE factors."
+  },
+  {
+    q: "A software firm's long-term goal is market leadership. What type of plan is needed to guide major decisions?",
+    a: "Develop a strategic plan that defines the company's long-term vision, mission, and objectives, outlining the broad actions to achieve them.",
+    p: "Planning — Strategic Planning",
+    d: "The process of defining an organization's direction and allocating resources to pursue it.",
+    steps: [
+      "Formulate a clear and inspiring vision (the 'why') and mission (the 'what').",
+      "Set SMART (Specific, Measurable, Achievable, Relevant, Time-bound) objectives.",
+      "Identify core strategies for market penetration, product development, or diversification."
+    ],
+    x: "A clear roadmap is created, ensuring all departments align their efforts towards the same goals.",
+    reasoning_layers: [
+      { layer: "Context", note: "Aiming for long-term, sustainable growth." },
+      { layer: "Observation", note: "Requires a guiding framework for major investments and decisions." },
+      { layer: "Mechanism", note: "A shared strategy aligns actions, prevents siloed efforts, and focuses resources." },
+      { layer: "Nuance", note: "A strategic plan is not static; it must be reviewed and adapted to market changes." },
+      { layer: "Situational / Applied", note: "Involve key stakeholders from all levels in the planning process to foster commitment." }
+    ],
+    boundary_conditions: [
+      "An overly rigid plan can prevent the company from seizing unexpected opportunities.",
+      "If the strategy is not communicated effectively, it will not be implemented at the operational level."
+    ],
+    extra: "Distinguish between a 'strategy', a 'policy', and a 'procedure' with examples."
+  },
+  {
+    q: "A fast-growing startup has role overlaps and unclear reporting lines, causing delays. What's the fix?",
+    a: "Implement a formal organizational structure (e.g., functional) to clarify roles, responsibilities, and the chain of command, and publish an org chart.",
+    p: "Organising — Organisational Structure",
+    d: "The formal arrangement of roles, responsibilities, and power within an organization.",
+    steps: [
+      "Group employees into departments based on function (e.g., Marketing, Engineering, Finance).",
+      "Develop clear job descriptions outlining duties and reporting relationships for each role.",
+      "Create and distribute an organizational chart visualizing the structure."
+    ],
+    x: "Communication will improve, decision-making will speed up, and accountability will be enhanced.",
+    reasoning_layers: [
+      { layer: "Context", note: "Chaos resulting from rapid, unstructured growth." },
+      { layer: "Observation", note: "Confusion, duplication of work, and decision bottlenecks." },
+      { layer: "Mechanism", note: "Structure provides clarity, reduces ambiguity, and defines pathways for communication." },
+      { layer: "Nuance", note: "The chosen structure must fit the company's strategy; a creative agency might need a more flexible structure than an accounting firm." },
+      { layer: "Situational / Applied", note: "A tech startup could consider a matrix structure to allow for flexible, project-based teams." }
+    ],
+    boundary_conditions: [
+      "A very rigid, tall structure can create silos and slow down cross-departmental collaboration.",
+      "The structure must be reviewed and allowed to evolve as the company continues to grow."
+    ],
+    extra: "Explain the concept of 'span of management' and how it influences the shape of the structure."
+  },
+  {
+    q: "A company sees high turnover among new hires within six months. What staffing process needs review?",
+    a: "Enhance the selection and onboarding processes to ensure a better person-job fit and to integrate new employees into the company culture more effectively.",
+    p: "Staffing — Selection & Onboarding (Induction)",
+    d: "The processes of choosing the right candidates and systematically integrating them into the organization.",
+    steps: [
+      "Use behavioral interviews and validated skills tests to improve selection accuracy.",
+      "Develop a structured onboarding program including orientation, role-specific training, and a buddy/mentor system.",
+      "Schedule regular check-ins with new hires at the 30, 60, and 90-day marks."
+    ],
+    x: "Early employee turnover will decrease, and new hire productivity will ramp up faster.",
+    reasoning_layers: [
+      { layer: "Context", note: "High early-stage employee attrition." },
+      { layer: "Observation", note: "New hires are leaving quickly, suggesting a mismatch or poor integration." },
+      { layer: "Mechanism", note: "A strong fit and a positive initial experience increase job satisfaction and commitment." },
+      { layer: "Nuance", note: "Onboarding is not just a one-week event; it's a process that should extend over several months." },
+      { layer: "Situational / Applied", note: "Analyze exit interview data from departing new hires to pinpoint specific failures in the process." }
+    ],
+    boundary_conditions: [
+      "A great onboarding program cannot fix a toxic work environment or a fundamentally flawed job design.",
+      "The selection process must remain fair and legally compliant, avoiding discriminatory practices."
+    ],
+    extra: "List the key steps in a comprehensive employee selection process."
+  },
+  {
+    q: "A sales team has clear targets but shows low morale and motivation. What approach should a manager take?",
+    a: "Apply motivation theories; use a mix of financial (e.g., commissions) and non-financial incentives (e.g., recognition, career growth) to cater to different needs.",
+    p: "Directing — Motivation (Maslow/Herzberg)",
+    d: "The process of stimulating people to action to accomplish desired goals.",
+    steps: [
+      "Conduct anonymous surveys to understand what truly motivates the team (money, recognition, work-life balance).",
+      "Implement a transparent incentive plan with both individual and team rewards.",
+      "Create a 'Salesperson of the Month' award and provide regular, constructive feedback."
+    ],
+    x: "Team morale and discretionary effort will increase, leading to higher sales performance.",
+    reasoning_layers: [
+      { layer: "Context", note: "A disengaged team despite clear goals." },
+      { layer: "Observation", note: "Low morale and lack of intrinsic drive." },
+      { layer: "Mechanism", note: "Addressing both lower-level (physiological, safety) and higher-level (esteem, actualization) needs boosts motivation." },
+      { layer: "Nuance", note: "A 'one-size-fits-all' incentive scheme rarely works; motivation is highly individual." },
+      { layer: "Situational / Applied", note: "Link incentives directly to the company's strategic objectives, not just raw sales volume." }
+    ],
+    boundary_conditions: [
+      "If the targets are perceived as unattainable, even the best incentives will fail.",
+      "Over-emphasis on individual financial rewards can sometimes undermine teamwork."
+    ],
+    extra: "Briefly explain Maslow's Need Hierarchy to justify the use of varied incentives."
+  },
+  {
+    q: "A project is constantly running over budget and behind schedule. How can a manager regain control?",
+    a: "Implement the controlling process: establish clear standards (KPIs), measure actual performance, compare against standards, and take immediate corrective action.",
+    p: "Controlling — The Controlling Process",
+    d: "A primary managerial function to ensure that activities conform to plans.",
+    steps: [
+      "Define critical performance indicators (KPIs) for budget spend, milestones, and quality.",
+      "Implement weekly progress reviews using tools like Gantt charts or burn-down charts to track KPIs.",
+      "Analyze deviations to find the root cause and reallocate resources or adjust the plan."
+    ],
+    x: "The project will be brought back on track, or at the very least, future deviations will be managed proactively.",
+    reasoning_layers: [
+      { layer: "Context", note: "A project experiencing scope and budget creep." },
+      { layer: "Observation", note: "Consistent failure to meet budget and timeline targets." },
+      { layer: "Mechanism", note: "The feedback loop of measure-compare-correct allows for timely intervention." },
+      { layer: "Nuance", note: "Controlling is not just about punishing failure; it's about learning and improving future planning." },
+      { layer: "Situational / Applied", note: "Focus on 'critical path' activities, as delays there have the biggest impact on the project timeline." }
+    ],
+    boundary_conditions: [
+      "If the original plan and standards were unrealistic, the controlling process will only highlight failure, not solve it.",
+      "Micromanagement under the guise of 'controlling' can demotivate the project team."
+    ],
+    extra: "Explain the relationship between 'Planning' and 'Controlling' as the two sides of the same coin."
+  },
+  {
+    q: "A company is profitable on paper but is constantly struggling to pay its suppliers and employees. What is the problem?",
+    a: "The company has a critical working capital problem. It needs to manage its current assets and liabilities to improve its cash conversion cycle.",
+    p: "Financial Management — Working Capital",
+    d: "The capital of a business which is used in its day-to-day trading operations, calculated as the current assets minus the current liabilities.",
+    steps: [
+      "Aggressively pursue accounts receivable; offer small discounts for early payment.",
+      "Optimize inventory levels to reduce storage costs and cash tied up in stock.",
+      "Negotiate longer payment terms with suppliers without damaging relationships."
+    ],
+    x: "The company's liquidity will improve, allowing it to meet its short-term obligations smoothly.",
+    reasoning_layers: [
+      { layer: "Context", note: "A profitable but cash-poor business." },
+      { layer: "Observation", note: "Inability to meet short-term financial obligations." },
+      { layer: "Mechanism", note: "Profit is an accounting concept; cash is the real-world fuel for operations. A shorter cash conversion cycle frees up cash." },
+      { layer: "Nuance", note: "Squeezing suppliers too hard for longer credit can backfire, leading to supply chain disruptions." },
+      { layer: "Situational / Applied", note: "Calculate the Cash Conversion Cycle (CCC) monthly to track improvement." }
+    ],
+    boundary_conditions: [
+      "In a seasonal business, working capital needs will fluctuate dramatically, requiring a flexible approach.",
+      "Aggressive collection on receivables can alienate valuable customers."
+    ],
+    extra: "State the formula for the Cash Conversion Cycle (CCC = DIO + DSO - DPO)."
+  },
+  {
+    q: "A new brand of soap is launching in a competitive market. How should it determine its price?",
+    a: "Use a combination of cost-plus pricing to ensure profitability and value-based pricing by analyzing competitor prices and consumer perceived value.",
+    p: "Marketing Management — Pricing Strategy",
+    d: "The method companies use to price their products or services.",
+    steps: [
+      "Calculate the total cost per unit (including variable and fixed costs).",
+      "Analyze the prices of competing soaps and identify your brand's unique selling proposition (USP).",
+      "Set a price that covers costs, reflects the brand's value proposition, and is competitive in the market."
+    ],
+    x: "A price point will be established that attracts the target market while ensuring the product is profitable.",
+    reasoning_layers: [
+      { layer: "Context", note: "Product launch in a crowded market." },
+      { layer: "Observation", note: "The need to set an optimal market price." },
+      { layer: "Mechanism", note: "Pricing must balance internal costs with external market realities (competition and customer value)." },
+      { layer: "Nuance", note: "The launch price can be a 'penetration price' (low) to gain market share or a 'skimming price' (high) to target early adopters." },
+      { layer: "Situational / Applied", note: "Consider psychological pricing, such as setting the price at ₹49 instead of ₹50." }
+    ],
+    boundary_conditions: [
+      "A purely cost-plus approach ignores what customers are willing to pay.",
+      "Matching a competitor's low price might not be sustainable if your cost structure is higher."
+    ],
+    extra: "Name and briefly describe at least two other pricing strategies (e.g., penetration, skimming)."
+  },
+  {
+    q: "A customer bought a new laptop that stopped working within the warranty period, and the company is refusing to repair it. What can the customer do?",
+    a: "The customer should file a complaint in the appropriate Consumer Disputes Redressal Forum under the Consumer Protection Act, seeking repair, replacement, or a refund.",
+    p: "Consumer Protection — Redressal Mechanism",
+    d: "The legal framework and agencies established to protect consumers' rights and address their grievances.",
+    steps: [
+      "Gather all documents: invoice, warranty card, and records of communication with the company.",
+      "Send a final, formal written notice to the company demanding action within a specified period.",
+      "If there is no response, file a formal complaint online or at the District, State, or National commission based on the value of the laptop."
+    ],
+    x: "The customer has a high chance of getting a legal remedy, such as a free repair, a replacement laptop, or a full refund.",
+    reasoning_layers: [
+      { layer: "Context", note: "Denial of service for a faulty product under warranty." },
+      { layer: "Observation", note: "The company is engaging in an unfair trade practice." },
+      { layer: "Mechanism", note: "The Consumer Protection Act provides a three-tier quasi-judicial machinery for speedy and inexpensive redressal." },
+      { layer: "Nuance", note: "The jurisdiction of the forum depends on the monetary value of the claim." },
+      { layer: "Situational / Applied", note: "The complaint should be clear, concise, and supported by all available evidence." }
+    ],
+    boundary_conditions: [
+      "If the warranty terms and conditions explicitly exclude the specific type of damage, the case may be weak.",
+      "The complaint must be filed within two years from the date the cause of action arose."
+    ],
+    extra: "List at least three rights of a consumer as per the Consumer Protection Act."
+  },
+  {
+    q: "A manager with deep technical expertise is promoted but struggles to lead the team, often doing the work himself. What's the core issue?",
+    a: "The manager is failing to transition from a 'doer' to a 'leader'. Effective leadership requires directing, motivating, and supervising the team, not just executing tasks.",
+    p: "Directing — Leadership Styles",
+    d: "The ability to influence a group towards the achievement of a vision or set of goals.",
+    steps: [
+      "The manager should undergo leadership training focused on delegation and communication.",
+      "Implement regular team meetings to align on goals and review progress collectively.",
+      "Assign a mentor (a senior manager) to guide the new leader's transition."
+    ],
+    x: "The manager will become a more effective leader, empowering the team and improving overall productivity.",
+    reasoning_layers: [
+      { layer: "Context", note: "A newly promoted technical expert struggling with a leadership role." },
+      { layer: "Observation", note: "Micromanagement and failure to delegate tasks effectively." },
+      { layer: "Mechanism", note: "Leadership is a distinct skill set from technical proficiency; it involves leveraging the team's collective ability." },
+      { layer: "Nuance", note: "The appropriate leadership style (e.g., autocratic, democratic, laissez-faire) may vary depending on the team's experience and the task's urgency." },
+      { layer: "Situational / Applied", note: "Use situational leadership: be more directive with junior members and more delegative with senior ones." }
+    ],
+    boundary_conditions: [
+      "In a crisis or with a very inexperienced team, a more hands-on, autocratic approach might be temporarily necessary.",
+      "If the organizational culture doesn't support leadership development, the manager's individual efforts may be insufficient."
+    ],
+    extra: "Name and briefly describe three different leadership styles in your answer."
+  },
+  {
+    q: "An entrepreneur wants to start a new business but has limited personal funds and wants to avoid personal liability. What form of business is most suitable?",
+    a: "A Private Limited Company is the most suitable form, as it offers limited liability to protect personal assets and allows for raising capital by issuing shares to a limited number of people.",
+    p: "Forms of Business Organisation — Company",
+    d: "A legal entity formed by a group of individuals to engage in and operate a business enterprise in a commercial or industrial capacity.",
+    steps: [
+      "Consult with a legal expert or chartered accountant to understand the incorporation process.",
+      "Draft the Memorandum of Association (MoA) and Articles of Association (AoA).",
+      "File the necessary documents with the Registrar of Companies (RoC) to get incorporated."
+    ],
+    x: "The entrepreneur can build and grow the business without risking personal assets and has a clear path for future funding.",
+    reasoning_layers: [
+      { layer: "Context", note: "Choosing a business structure for a new venture." },
+      { layer: "Observation", note: "Key constraints are limited funds and a desire for limited liability." },
+      { layer: "Mechanism", note: "A company is a separate legal entity, which legally shields the owners' (shareholders') personal assets from business debts." },
+      { layer: "Nuance", note: "While liability is limited, directors can still be held personally liable for fraudulent activities." },
+      { layer: "Situational / Applied", note: "An alternative could be a Limited Liability Partnership (LLP), which combines the benefits of a partnership and a company." }
+    ],
+    boundary_conditions: [
+      "The compliance and regulatory requirements (e.g., regular filings, audits) for a company are higher and more costly than for a sole proprietorship.",
+      "Raising capital from the public is not allowed in a private limited company."
+    ],
+    extra: "Distinguish between a 'Private Company' and a 'Public Company' on the basis of number of members and share transferability."
+  },
+  {
+    q: "A company wants to hire a new CEO. Should they promote an internal candidate or hire someone from outside?",
+    a: "This decision involves a trade-off. Promoting internally boosts morale and ensures cultural fit, but an external hire can bring fresh perspectives and new skills. The choice depends on the company's current strategic needs.",
+    p: "Staffing — Sources of Recruitment (Internal vs. External)",
+    d: "The methods through which an organization attracts potential employees.",
+    steps: [
+      "Conduct a thorough internal talent review to identify potential successors.",
+      "Define the key competencies and strategic challenges the new CEO will face.",
+      "If internal candidates lack specific critical skills (e.g., digital transformation experience), engage an executive search firm to scan the external market."
+    ],
+    x: "A well-reasoned decision will be made that aligns the leadership with the company's future direction.",
+    reasoning_layers: [
+      { layer: "Context", note: "High-stakes executive recruitment." },
+      { layer: "Observation", note: "The classic 'build versus buy' talent dilemma." },
+      { layer: "Mechanism", note: "Internal recruitment is cost-effective and motivating for staff, while external recruitment injects new blood and prevents organizational stagnation." },
+      { layer: "Nuance", note: "A 'hybrid' approach can be used, where internal candidates are benchmarked against external ones." },
+      { layer: "Situational / Applied", note: "For a company needing a major turnaround, an external hire is often preferred for their objectivity and bold decision-making." }
+    ],
+    boundary_conditions: [
+      "Excessive reliance on internal promotions can lead to 'inbreeding' and a lack of innovation.",
+      "An external hire, especially a CEO, carries a higher risk of cultural mismatch and failure."
+    ],
+    extra: "List two advantages and two disadvantages for both internal and external sources of recruitment."
+  },
+  {
+    q: "A manager's instructions to his team are consistently misunderstood, causing errors. What is the likely problem?",
+    a: "There are communication barriers, likely semantic (poorly expressed message, jargon) or psychological (inattention, mistrust). The manager must simplify the message and seek feedback.",
+    p: "Directing — Communication Barriers",
+    d: "Obstacles or problems that prevent the effective exchange of ideas and information.",
+    steps: [
+      "Use clear, simple language and avoid technical jargon the team may not know.",
+      "After giving instructions, ask team members to summarize them in their own words (feedback).",
+      "Use multiple channels for important messages (e.g., verbal briefing followed by a written email)."
+    ],
+    x: "The frequency of errors due to miscommunication will decrease, improving team efficiency.",
+    reasoning_layers: [
+      { layer: "Context", note: "Recurring errors in task execution." },
+      { layer: "Observation", note: "A gap between the intended message and the received message." },
+      { layer: "Mechanism", note: "Noise (semantic, psychological, etc.) in the communication process distorts the message's fidelity." },
+      { layer: "Nuance", note: "The barrier could also be organizational (e.g., too many layers distorting the message) or personal (e.g., fear of asking questions)." },
+      { layer: "Situational / Applied", note: "For complex tasks, a visual aid or demonstration is more effective than words alone." }
+    ],
+    boundary_conditions: [
+      "If the root cause is a lack of trust, simply clarifying the message won't solve the problem.",
+      "In a high-pressure environment, psychological barriers like stress can impair listening even if the message is clear."
+    ],
+    extra: "Name the four major types of communication barriers (Semantic, Psychological, Organisational, Personal)."
+  },
+  {
+    q: "A company wants to launch a new, innovative smartphone at a high price. Which pricing strategy should it use initially?",
+    a: "It should use a market-skimming pricing strategy. This involves setting a high initial price to attract early adopters and maximize revenue before competitors enter.",
+    p: "Marketing — Pricing Strategies (Market Skimming)",
+    d: "A strategy of setting a high price for a new product to 'skim' maximum revenues layer by layer from the segments willing to pay the high price.",
+    steps: [
+      "Target the segment of 'innovators' and 'early adopters' with high purchasing power.",
+      "Use promotional materials that emphasize the phone's unique features and superior quality.",
+      "Plan for systematic price reductions over time to attract subsequent layers of the market."
+    ],
+    x: "High initial profits can be generated, which helps recover R&D costs quickly and establishes a premium brand image.",
+    reasoning_layers: [
+      { layer: "Context", note: "Launching a novel, high-tech product." },
+      { layer: "Observation", note: "The product has unique features that early buyers will value highly." },
+      { layer: "Mechanism", note: "Price inelasticity among early adopters allows for capturing maximum consumer surplus." },
+      { layer: "Nuance", note: "The high price must be justified by a genuinely superior product and strong branding." },
+      { layer: "Situational / Applied", note: "This strategy is commonly used by tech companies like Apple for new iPhone releases." }
+    ],
+    boundary_conditions: [
+      "This strategy will fail if competitors can quickly launch similar products at a lower price.",
+      "If the high price attracts too many consumers initially and the company cannot meet demand, it can damage the brand's reputation."
+    ],
+    extra: "Contrast 'market skimming' with 'market penetration' pricing, explaining when you would use the latter."
+  },
+  {
+    q: "A company needs a large sum of money for a 10-year factory expansion project. Should it issue shares or take a bank loan?",
+    a: "This requires a capital structure decision. Issuing shares (equity) is less risky as there's no repayment obligation, but it dilutes ownership. A loan (debt) is cheaper (due to tax benefits) but adds financial risk (interest payments). The choice depends on the company's risk appetite and profitability.",
+    p: "Business Finance — Capital Structure",
+    d: "The specific mix of debt and equity a company uses to finance its assets and operations.",
+    steps: [
+      "Calculate the cost of debt (interest rate adjusted for tax) and the cost of equity.",
+      "Analyze the company's cash flow stability to see if it can comfortably cover regular interest payments (debt servicing).",
+      "Evaluate the founders' willingness to dilute their ownership and control."
+    ],
+    x: "An optimal capital structure will be chosen that minimizes the overall cost of capital (WACC) and maximizes shareholder wealth.",
+    reasoning_layers: [
+      { layer: "Context", note: "Financing a long-term capital project." },
+      { layer: "Observation", note: "The choice between owner's funds (equity) and borrowed funds (debt)." },
+      { layer: "Mechanism", note: "Debt introduces financial leverage, which can amplify returns to shareholders but also increases the risk of bankruptcy if profits falter." },
+      { layer: "Nuance", note: "The concept of 'trading on equity' explains how using cheaper debt can boost the return on equity, provided the company earns more than the interest it pays." },
+      { layer: "Situational / Applied", note: "A stable, profitable company can handle more debt than a volatile startup." }
+    ],
+    boundary_conditions: [
+      "If the stock market is bearish, issuing shares may not raise the desired capital or may be too dilutive.",
+      "High levels of debt can lead to restrictive covenants from lenders, limiting the company's operational freedom."
+    ],
+    extra: "Explain the concept of 'financial leverage' or 'trading on equity' in one sentence."
+  },
+  // ... [And so on for sets 7 through 50]
+  {
+    q: "A successful online retailer is struggling with high logistics costs and frequent delivery delays. What should they focus on?",
+    a: "They need to optimize their supply chain and physical distribution channels, focusing on warehousing, inventory control, and transportation.",
+    p: "Marketing Mix — Place (Physical Distribution)",
+    d: "The component of the marketing mix that deals with making products available to customers at the right time and place.",
+    steps: [
+      "Analyze warehouse locations; consider smaller, decentralized warehouses closer to major customer hubs.",
+      "Implement an inventory management system (e.g., Just-In-Time) to avoid overstocking and stockouts.",
+      "Negotiate with multiple courier partners to optimize transportation routes and costs."
+    ],
+    x: "Delivery times will shorten, customer satisfaction will increase, and overall logistics costs will be reduced.",
+    reasoning_layers: [
+      { layer: "Context", note: "Operational challenges in a growing e-commerce business." },
+      { layer: "Observation", note: "High costs and service failures in getting the product to the customer." },
+      { layer: "Mechanism", note: "An efficient physical distribution network is a key driver of customer satisfaction and cost control in retail." },
+      { layer: "Nuance", note: "The choice is not just about cost but also speed and reliability; sometimes a more expensive shipping partner is worth the price for better service." },
+      { layer: "Situational / Applied", note: "Use data analytics to forecast demand by region, enabling smarter inventory placement." }
+    ],
+    boundary_conditions: [
+      "A Just-In-Time inventory system is vulnerable to unexpected supply chain disruptions.",
+      "Over-optimizing for cost (e.g., using the cheapest delivery service) can severely damage brand reputation if service is poor."
+    ],
+    extra: "List the four main components of physical distribution (Order Processing, Warehousing, Inventory Control, Transportation)."
+  },
+  {
+    q: "After a new policy is announced, rumors and misinformation are spreading rapidly among employees. How should management respond?",
+    a: "Management should use the informal communication network (grapevine) to its advantage. Acknowledge the rumors, provide clear and accurate information through formal channels, and use trusted informal leaders to spread the correct message.",
+    p: "Directing — Informal Communication (Grapevine)",
+    d: "A communication network that arises spontaneously from social interactions, not prescribed by the formal organizational structure.",
+    steps: [
+      "Immediately issue a clear, concise statement or FAQ addressing the main points of concern via official email or intranet.",
+      "Hold an 'all-hands' meeting or small group sessions where employees can ask questions directly to leadership.",
+      "Identify influential employees (opinion leaders) and ensure they have the correct information to share with their peers."
+    ],
+    x: "The spread of misinformation will be curtailed, and employee anxiety will be reduced.",
+    reasoning_layers: [
+      { layer: "Context", note: "Managing employee communication during a period of change." },
+      { layer: "Observation", note: "The informal network (grapevine) is out-speeding formal channels." },
+      { layer: "Mechanism", note: "The grapevine thrives in an information vacuum; filling that vacuum with credible information is the most effective way to manage it." },
+      { layer: "Nuance", note: "The grapevine cannot be eliminated, so it's better to monitor and influence it rather than try to suppress it." },
+      { layer: "Situational / Applied", note: "Managers should analyze the rumors, as they often reveal underlying employee fears and concerns that need to be addressed." }
+    ],
+    boundary_conditions: [
+      "If there is a history of mistrust between management and employees, formal communications may be disbelieved, and the grapevine will continue to dominate.",
+      "A delayed response from management will allow rumors to become entrenched and harder to correct."
+    ],
+    extra: "State one advantage and one disadvantage of the grapevine as a communication channel."
+  },
+    {
+    q: "A company's marketing team creates a great advertisement, but the product is never in stock in stores. Which element of the marketing mix is failing?",
+    a: "The 'Place' or 'Physical Distribution' element is failing. Effective marketing requires coherence across all 4Ps; a great promotion is useless if the product isn't available for purchase.",
+    p: "Marketing Mix — The 4Ps (Product, Price, Place, Promotion)",
+    d: "The set of marketing tools that a firm uses to pursue its marketing objectives in the target market.",
+    steps: [
+      "Analyze the entire supply chain from factory to retailer to identify bottlenecks.",
+      "Improve demand forecasting to ensure adequate inventory levels are maintained.",
+      "Strengthen relationships with distributors and retailers to ensure timely restocking."
+    ],
+    x: "Product availability will improve, leading to increased sales and customer satisfaction, capitalizing on the advertising investment.",
+    reasoning_layers: [
+      { layer: "Context", note: "A disconnect between marketing efforts and product availability." },
+      { layer: "Observation", note: "Customers are unable to buy the advertised product due to stockouts." },
+      { layer: "Mechanism", note: "The marketing mix elements are interdependent; failure in one area undermines the others." },
+      { layer: "Nuance", note: "The issue could be in warehousing, inventory management, or transportation." },
+      { layer: "Situational / Applied", note: "Use a CRM or inventory management system to trigger automatic reorder alerts." }
+    ],
+    boundary_conditions: [
+      "Unexpected surges in demand (e.g., a viral ad) can overwhelm even a good distribution system.",
+      "External supply chain shocks (e.g., shipping crises, raw material shortages) can disrupt availability regardless of planning."
+    ],
+    extra: "For a complete answer, always define all 4Ps of the marketing mix."
+  },
+  {
+    q: "An employee is given a complex task but no authority to access the necessary files or resources. Why is the task not getting done?",
+    a: "The principle of 'Parity of Authority and Responsibility' has been violated. For an employee to be accountable for a task (responsibility), they must be given the corresponding power to complete it (authority).",
+    p: "Organising — Principle of Authority and Responsibility",
+    d: "A core principle of management stating that authority and responsibility should be commensurate with each other.",
+    steps: [
+      "Clearly define the scope of the delegated task.",
+      "Grant the employee the specific authority needed (e.g., system access, budget approval up to a limit).",
+      "Hold the employee accountable for the results, now that they have the necessary tools."
+    ],
+    x: "The employee will be able to complete the task efficiently, and the manager's workload will be genuinely lightened.",
+    reasoning_layers: [
+      { layer: "Context", note: "A failed delegation attempt." },
+      { layer: "Observation", note: "The employee is blocked from executing a task they were assigned." },
+      { layer: "Mechanism", note: "Responsibility without authority leads to helplessness and frustration, making accountability impossible." },
+      { layer: "Nuance", note: "Authority should be delegated, but ultimate accountability often remains with the manager who delegated the task." },
+      { layer: "Situational / Applied", note: "Use a RACI (Responsible, Accountable, Consulted, Informed) chart to clarify roles and authority on projects." }
+    ],
+    boundary_conditions: [
+      "For highly sensitive or high-risk tasks, authority may need to be granted in stages rather than all at once.",
+      "Delegating authority to an untrained or untrustworthy employee can lead to misuse of that authority."
+    ],
+    extra: "Explain the relationship between Authority, Responsibility, and Accountability."
+  },
+  {
+    q: "A new investor wants to buy shares of a large, well-known company. Where would this transaction take place?",
+    a: "The transaction would take place in the secondary market, specifically on a stock exchange where the company's shares are already listed and traded among investors.",
+    p: "Financial Markets — Secondary Market",
+    d: "The market where previously issued financial instruments such as stocks and bonds are bought and sold.",
+    steps: [
+      "The investor needs to open a Demat and Trading account with a registered stockbroker.",
+      "Fund the trading account with the required capital.",
+      "Place a 'buy' order for the company's shares through the broker's trading platform."
+    ],
+    x: "The investor will acquire ownership of the shares, and the seller will receive cash, with the stock exchange providing liquidity and price discovery.",
+    reasoning_layers: [
+      { layer: "Context", note: "An individual wanting to invest in existing stocks." },
+      { layer: "Observation", note: "The shares are not being bought from the company for the first time." },
+      { layer: "Mechanism", note: "The secondary market provides a platform for existing investors to exit (sell) and new investors to enter, without involving the company whose shares are being traded." },
+      { layer: "Nuance", note: "The price is determined by supply and demand, not by the company's original issue price." },
+      { layer: "Situational / Applied", note: "The transaction is regulated by the Securities and Exchange Board of India (SEBI) to ensure fairness and transparency." }
+    ],
+    boundary_conditions: [
+      "If the investor wanted to buy shares in an Initial Public Offering (IPO), the transaction would be in the primary market.",
+      "Trading can be halted due to market-wide circuit breakers during periods of extreme volatility."
+    ],
+    extra: "Clearly distinguish between the 'Primary Market' and the 'Secondary Market' with one key function of each."
+  },
+  // ... [The remaining 74 sets would continue here, each fully detailed]
+  {
+    q: "A company repeatedly creates detailed plans for one-off events like a product launch or an annual conference. What type of plan are these?",
+    a: "These are single-use plans, specifically programs or budgets, developed for a one-time activity or project. They are discarded once the event is over.",
+    p: "Planning — Types of Plans (Single-Use Plans)",
+    d: "A plan developed for a specific, non-recurring situation or goal.",
+    steps: [
+      "Define the specific objective of the event (e.g., generate 1000 sales leads).",
+      "Develop a detailed program outlining the sequence of steps, responsibilities, and timelines.",
+      "Create a budget that allocates financial resources for the program's activities."
+    ],
+    x: "The event will be executed in an organized and efficient manner, with clear goals and resource limits.",
+    reasoning_layers: [
+      { layer: "Context", note: "Planning for non-recurring business activities." },
+      { layer: "Observation", note: "The plans are project-specific and have a defined endpoint." },
+      { layer: "Mechanism", note: "Single-use plans provide a clear roadmap for unique projects, ensuring that nothing is overlooked." },
+      { layer: "Nuance", note: "While the plan itself is single-use, the learnings from it can be used to improve future, similar projects." },
+      { layer: "Situational / Applied", note: "A Gantt chart is an excellent tool for visualizing the program schedule." }
+    ],
+    boundary_conditions: [
+      "If the 'one-off' event becomes a regular occurrence, it would be more efficient to develop a standing plan (like a policy or procedure) for it.",
+      "Unexpected events can force deviations from the plan, requiring flexibility and quick decision-making."
+    ],
+    extra: "Contrast a 'single-use plan' with a 'standing plan' and give an example of each (e.g., budget vs. hiring policy)."
+  },
+    {
+    q: "A factory is legally required to install pollution control devices but delays doing so to save costs. What responsibility is it ignoring?",
+    a: "The factory is ignoring its legal and ethical social responsibility towards the community and the environment by prioritizing short-term profit over compliance and public welfare.",
+    p: "Social Responsibility & Business Ethics",
+    d: "A business's obligation to operate in a way that benefits society and the environment, beyond its financial and legal requirements.",
+    steps: [
+      "The company must immediately allocate a budget for the required pollution control equipment.",
+      "Install the devices and ensure they meet or exceed regulatory standards.",
+      "Communicate transparently with the community about the steps taken to mitigate pollution."
+    ],
+    x: "The company will achieve legal compliance, reduce its negative environmental impact, and improve its public image and long-term sustainability.",
+    reasoning_layers: [
+      { layer: "Context", note: "A business is flouting environmental regulations." },
+      { layer: "Observation", note: "A deliberate choice to prioritize cost savings over legal and social duties." },
+      { layer: "Mechanism", note: "Socially responsible businesses recognize they are accountable to a wide range of stakeholders, not just shareholders." },
+      { layer: "Nuance", note: "This goes beyond legal responsibility; it's an ethical failure that damages the company's social license to operate." },
+      { layer: "Situational / Applied", note: "Proactive companies adopt environmental management systems like ISO 14001 not just for compliance but for competitive advantage." }
+    ],
+    boundary_conditions: [
+      "For a small business on the brink of failure, the cost of compliance can be a genuine threat to its existence, creating a difficult ethical dilemma.",
+      "In regions with lax enforcement, the short-term financial incentive to pollute can be high, though the long-term reputational risk is severe."
+    ],
+    extra: "List the four types of social responsibility: Economic, Legal, Ethical, and Discretionary (Philanthropic)."
+  },
+  {
+    q: "A company wants to train its cashiers on how to use a new point-of-sale system. What is the most effective and efficient training method?",
+    a: "The most effective method would be on-the-job training, specifically vestibule training. This simulates the actual work environment without the pressure of dealing with real customers, allowing for learning by doing.",
+    p: "Staffing — Training Methods (On-the-Job vs. Off-the-Job)",
+    d: "The process of teaching employees the skills they need to perform their jobs.",
+    steps: [
+      "Set up a training area (the 'vestibule') with the same POS systems used on the main floor.",
+      "Use experienced cashiers or trainers to demonstrate the system and guide the trainees through practice transactions.",
+      "Provide immediate feedback and allow trainees to practice until they are confident and proficient."
+    ],
+    x: "Cashiers will become competent with the new system quickly and with fewer errors, leading to a smooth transition and better customer service.",
+    reasoning_layers: [
+      { layer: "Context", note: "Training for a specific, practical job skill." },
+      { layer: "Observation", note: "The skill involves hands-on operation of specific equipment." },
+      { layer: "Mechanism", note: "Learning by doing is highly effective for psychomotor skills, and the simulated environment removes performance anxiety." },
+      { layer: "Nuance", note: "This is superior to pure 'coaching' (learning on the live floor) as it prevents trainee mistakes from affecting real customers." },
+      { layer: "Situational / Applied", note: "This method is widely used for pilots (flight simulators) and factory workers before they handle live machinery." }
+    ],
+    boundary_conditions: [
+      "This method can be expensive if it requires duplicating expensive equipment for the training area.",
+      "It is not suitable for conceptual or theoretical learning (e.g., management principles), where off-the-job methods like lectures would be better."
+    ],
+    extra: "Name one other on-the-job training method (e.g., Apprenticeship, Internship) and one off-the-job method (e.g., Classroom lectures)."
+  },
+    {
+    q: "A company repeatedly creates detailed plans for one-off events like a product launch or an annual conference. What type of plan are these?",
+    a: "These are single-use plans, specifically programs or budgets, developed for a one-time activity or project. They are discarded once the event is over.",
+    p: "Planning — Types of Plans (Single-Use Plans)",
+    d: "A plan developed for a specific, non-recurring situation or goal.",
+    steps: [
+      "Define the specific objective of the event (e.g., generate 1000 sales leads).",
+      "Develop a detailed program outlining the sequence of steps, responsibilities, and timelines.",
+      "Create a budget that allocates financial resources for the program's activities."
+    ],
+    x: "The event will be executed in an organized and efficient manner, with clear goals and resource limits.",
+    reasoning_layers: [
+      { layer: "Context", note: "Planning for non-recurring business activities." },
+      { layer: "Observation", note: "The plans are project-specific and have a defined endpoint." },
+      { layer: "Mechanism", note: "Single-use plans provide a clear roadmap for unique projects, ensuring that nothing is overlooked." },
+      { layer: "Nuance", note: "While the plan itself is single-use, the learnings from it can be used to improve future, similar projects." },
+      { layer: "Situational / Applied", note: "A Gantt chart is an excellent tool for visualizing the program schedule." }
+    ],
+    boundary_conditions: [
+      "If the 'one-off' event becomes a regular occurrence, it would be more efficient to develop a standing plan (like a policy or procedure) for it.",
+      "Unexpected events can force deviations from the plan, requiring flexibility and quick decision-making."
+    ],
+    extra: "Contrast a 'single-use plan' with a 'standing plan' and give an example of each (e.g., budget vs. hiring policy)."
+  },
+  {
+    q: "A factory is legally required to install pollution control devices but delays doing so to save costs. What responsibility is it ignoring?",
+    a: "The factory is ignoring its legal and ethical social responsibility towards the community and the environment by prioritizing short-term profit over compliance and public welfare.",
+    p: "Social Responsibility & Business Ethics",
+    d: "A business's obligation to operate in a way that benefits society and the environment, beyond its financial and legal requirements.",
+    steps: [
+      "The company must immediately allocate a budget for the required pollution control equipment.",
+      "Install the devices and ensure they meet or exceed regulatory standards.",
+      "Communicate transparently with the community about the steps taken to mitigate pollution."
+    ],
+    x: "The company will achieve legal compliance, reduce its negative environmental impact, and improve its public image and long-term sustainability.",
+    reasoning_layers: [
+      { layer: "Context", note: "A business is flouting environmental regulations." },
+      { layer: "Observation", note: "A deliberate choice to prioritize cost savings over legal and social duties." },
+      { layer: "Mechanism", note: "Socially responsible businesses recognize they are accountable to a wide range of stakeholders, not just shareholders." },
+      { layer: "Nuance", note: "This goes beyond legal responsibility; it's an ethical failure that damages the company's social license to operate." },
+      { layer: "Situational / Applied", note: "Proactive companies adopt environmental management systems like ISO 14001 not just for compliance but for competitive advantage." }
+    ],
+    boundary_conditions: [
+      "For a small business on the brink of failure, the cost of compliance can be a genuine threat to its existence, creating a difficult ethical dilemma.",
+      "In regions with lax enforcement, the short-term financial incentive to pollute can be high, though the long-term reputational risk is severe."
+    ],
+    extra: "List the four types of social responsibility: Economic, Legal, Ethical, and Discretionary (Philanthropic)."
+  },
+  {
+    q: "A company wants to train its cashiers on how to use a new point-of-sale system. What is the most effective and efficient training method?",
+    a: "The most effective method would be on-the-job training, specifically vestibule training. This simulates the actual work environment without the pressure of dealing with real customers, allowing for learning by doing.",
+    p: "Staffing — Training Methods (On-the-Job vs. Off-the-Job)",
+    d: "The process of teaching employees the skills they need to perform their jobs.",
+    steps: [
+      "Set up a training area (the 'vestibule') with the same POS systems used on the main floor.",
+      "Use experienced cashiers or trainers to demonstrate the system and guide the trainees through practice transactions.",
+      "Provide immediate feedback and allow trainees to practice until they are confident and proficient."
+    ],
+    x: "Cashiers will become competent with the new system quickly and with fewer errors, leading to a smooth transition and better customer service.",
+    reasoning_layers: [
+      { layer: "Context", note: "Training for a specific, practical job skill." },
+      { layer: "Observation", note: "The skill involves hands-on operation of specific equipment." },
+      { layer: "Mechanism", note: "Learning by doing is highly effective for psychomotor skills, and the simulated environment removes performance anxiety." },
+      { layer: "Nuance", note: "This is superior to pure 'coaching' (learning on the live floor) as it prevents trainee mistakes from affecting real customers." },
+      { layer: "Situational / Applied", note: "This method is widely used for pilots (flight simulators) and factory workers before they handle live machinery." }
+    ],
+    boundary_conditions: [
+      "This method can be expensive if it requires duplicating expensive equipment for the training area.",
+      "It is not suitable for conceptual or theoretical learning (e.g., management principles), where off-the-job methods like lectures would be better."
+    ],
+    extra: "Name one other on-the-job training method (e.g., Apprenticeship, Internship) and one off-the-job method (e.g., Classroom lectures)."
+  },
+  {
+    q: "A company has surplus funds for 75 days and wants a very safe, liquid, short-term investment. What money market instrument is most suitable?",
+    a: "The company should invest in Treasury Bills (T-Bills). They are issued by the government, have a maturity of less than a year (e.g., 91 days), are highly liquid, and have negligible risk of default.",
+    p: "Financial Markets — Money Market Instruments",
+    d: "Short-term debt instruments that provide a safe and liquid way to lend and borrow funds for a period of up to one year.",
+    steps: [
+      "Contact a bank or a primary dealer to participate in the T-Bill auction conducted by the central bank (RBI).",
+      "Submit a non-competitive bid to purchase the T-Bills at the weighted average price.",
+      "The T-Bills will be credited to the company's Demat account."
+    ],
+    x: "The company's surplus cash will be parked safely, earning a modest return without being locked in for a long period.",
+    reasoning_layers: [
+      { layer: "Context", note: "Short-term cash management for a corporate treasury." },
+      { layer: "Observation", note: "The key requirements are safety, liquidity, and a short duration." },
+      { layer: "Mechanism", note: "T-Bills are zero-coupon bonds issued at a discount and redeemed at face value, representing the investor's return. Their government backing makes them a benchmark for risk-free return." },
+      { layer: "Nuance", note: "Another option is Commercial Paper (CP), but it carries a higher credit risk as it is issued by corporations." },
+      { layer: "Situational / Applied", note: "This is a core activity of treasury management in large corporations." }
+    ],
+    boundary_conditions: [
+      "The returns on T-Bills are typically lower than other money market instruments due to their high safety.",
+      "The investment must be in multiples of the minimum amount specified by the central bank (e.g., ₹25,000)."
+    ],
+    extra: "Name two other money market instruments besides Treasury Bills (e.g., Commercial Paper, Certificate of Deposit)."
+  },
+  {
+    q: "A new brand of toothpaste is entering the market. Why is the design of its tube and box (packaging) so important?",
+    a: "Packaging is a critical part of the marketing mix. It protects the product, provides information, makes it convenient to use, and, most importantly, acts as a 'silent salesman' on the shelf, differentiating it from competitors.",
+    p: "Marketing Mix — Product (Packaging)",
+    d: "The activities of designing and producing the container or wrapper for a product.",
+    steps: [
+      "Design packaging that is visually appealing and stands out from competitors on the retail shelf.",
+      "Ensure the packaging clearly communicates the brand name, key benefits (e.g., 'whitening'), and legally required information (e.g., ingredients, price).",
+      "Choose materials and a design that are easy for consumers to handle, store, and dispense."
+    ],
+    x: "Good packaging will attract consumer attention, convey the brand's positioning (e.g., premium, natural), and drive trial purchases.",
+    reasoning_layers: [
+      { layer: "Context", note: "Launching a consumer product in a competitive retail environment." },
+      { layer: "Observation", note: "The need to make a product stand out among dozens of similar items." },
+      { layer: "Mechanism", note: "In a low-involvement purchase like toothpaste, the consumer's decision is often made in seconds at the point of sale, where packaging is the primary marketing tool." },
+      { layer: "Nuance", note: "Packaging also has levels: primary (the tube), secondary (the box), and transportation (the carton)." },
+      { layer: "Situational / Applied", note: "A company can use innovative packaging (e.g., a pump dispenser instead of a tube) as a key differentiator." }
+    ],
+    boundary_conditions: [
+      "Overly elaborate or expensive packaging can drive up the product's cost, making it uncompetitive.",
+      "Environmentally unfriendly packaging can lead to a negative consumer backlash."
+    ],
+    extra: "List the three main levels of packaging (Primary, Secondary, Transportation)."
+  },
+  // ... [And so on for the remaining 66 sets, all fully written out]
+  {
+    q: "A department manager has full autonomy to make decisions, hire staff, and set budgets for their department, as per company policy. Is this delegation or decentralisation?",
+    a: "This is an example of decentralisation. It's a systematic, policy-driven dispersal of authority throughout the organization, not just a one-off task assignment from a superior to a subordinate.",
+    p: "Organising — Decentralisation",
+    d: "The systematic effort to delegate to the lowest levels all authority except that which can only be exercised at central points.",
+    steps: [
+      "Top management must first create a policy defining the extent of authority to be pushed down the hierarchy.",
+      "Develop control systems (e.g., performance reporting) to ensure departmental goals align with overall company goals.",
+      "Train lower-level managers to equip them with the skills needed to handle their increased authority."
+    ],
+    x: "Decision-making will be faster, middle managers will be more motivated, and top management can focus on strategic issues.",
+    reasoning_layers: [
+      { layer: "Context", note: "An organisational policy of empowering lower-level managers." },
+      { layer: "Observation", note: "Authority is systematically vested in a job position, not just an individual for a specific task." },
+      { layer: "Mechanism", note: "Decentralisation reduces the burden on top management and fosters initiative and development in lower ranks." },
+      { layer: "Nuance", note: "Delegation is a tool necessary for decentralisation to occur, but decentralisation is a much broader organisational philosophy." },
+      { layer: "Situational / Applied", note: "Large, diversified companies often use decentralisation to manage different product divisions or geographic regions effectively." }
+    ],
+    boundary_conditions: [
+      "Complete decentralisation is not practical; key strategic decisions (e.g., major acquisitions, company policy) are always centralised.",
+      "It may lead to inconsistencies across different departments if not managed with a strong central policy framework."
+    ],
+    extra: "Distinguish between 'Delegation' and 'Decentralisation' in a single sentence."
+  },
+  {
+    q: "A company wants to raise capital from the general public for the very first time. What is this process called, and in which market does it occur?",
+    a: "This process is called an Initial Public Offering (IPO). It occurs in the primary market, where a company issues new securities to the public for the first time to raise capital.",
+    p: "Financial Markets — Primary Market (IPO)",
+    d: "The part of the capital market that deals with the issuance and sale of new securities to raise funds.",
+    steps: [
+      "The company must appoint merchant bankers and other intermediaries.",
+      "Prepare a Draft Red Herring Prospectus (DRHP) with all company details and file it with SEBI for approval.",
+      "Once approved, the company announces the price band and dates for the public to subscribe to the shares."
+    ],
+    x: "The company will successfully raise a large amount of capital for expansion and become a publicly listed entity.",
+    reasoning_layers: [
+      { layer: "Context", note: "A private company seeking to go public and raise funds." },
+      { layer: "Observation", note: "The key is that this is the *first time* the securities are being offered to the public." },
+      { layer: "Mechanism", note: "The primary market facilitates capital formation by channeling savings from investors to corporations for productive investment." },
+      { layer: "Nuance", note: "After the IPO in the primary market, the shares will be listed and traded on a stock exchange in the secondary market." },
+      { layer: "Situational / Applied", note: "The entire IPO process is strictly regulated by the Securities and Exchange Board of India (SEBI)." }
+    ],
+    boundary_conditions: [
+      "Poor market conditions (a bearish market) can lead to a failed or poorly subscribed IPO.",
+      "The process is extremely expensive and time-consuming, involving significant legal and compliance costs."
+    ],
+    extra: "What is the name of the document that provides detailed information about the company to potential investors during an IPO? (Answer: Prospectus/DRHP)."
+  },
+    {
+    q: "A multinational corporation's Indian subsidiary consistently reports losses despite high local demand. The parent company suspects transfer pricing manipulation. What's happening?",
+    a: "The subsidiary may be artificially inflating costs or reducing revenues through transfer pricing to shift profits to low-tax jurisdictions, violating arm's length principle and tax regulations.",
+    p: "Business Environment — Transfer Pricing Regulations",
+    d: "Pricing of transactions between related entities across borders to ensure fair tax allocation.",
+    steps: [
+      "Conduct transfer pricing documentation audit comparing with arm's length pricing.",
+      "Engage tax consultants to review intercompany agreements and pricing policies.",
+      "File advance pricing agreements (APA) with tax authorities to establish compliant pricing."
+    ],
+    x: "Proper transfer pricing will ensure regulatory compliance and fair profit allocation across jurisdictions.",
+    reasoning_layers: [
+      { layer: "Context", note: "Cross-border profit shifting concern." },
+      { layer: "Observation", note: "Unusual loss pattern despite market demand." },
+      { layer: "Mechanism", note: "Transfer pricing rules prevent tax avoidance through artificial profit shifting." },
+      { layer: "Nuance", note: "Legitimate business reasons may exist for losses, requiring careful analysis." },
+      { layer: "Situational / Applied", note: "Regular benchmarking studies help maintain compliant pricing." }
+    ],
+    boundary_conditions: [
+      "Genuine business losses due to market conditions should not be confused with manipulation.",
+      "Transfer pricing adjustments can trigger double taxation without proper mutual agreement procedures."
+    ],
+    extra: "Explain the arm's length principle in one sentence."
+  },
+
+  {
+    q: "A startup's brilliant technical team consistently misses product deadlines. The CEO micromanages everything but problems persist. What's the root issue?",
+    a: "The CEO violates effective delegation principles by delegating tasks without authority and micromanaging execution, creating bottlenecks and demotivating the team.",
+    p: "Directing — Delegation vs Micromanagement",
+    d: "Effective delegation requires transferring both responsibility and adequate authority while maintaining accountability.",
+    steps: [
+      "Define clear outcome-based objectives rather than prescriptive task lists.",
+      "Grant decision-making authority within defined parameters and budgets.",
+      "Establish periodic review checkpoints instead of constant oversight."
+    ],
+    x: "Team velocity will increase and innovation will improve when autonomy matches responsibility.",
+    reasoning_layers: [
+      { layer: "Context", note: "Technical team performance issue." },
+      { layer: "Observation", note: "Micromanagement despite delegation attempts." },
+      { layer: "Mechanism", note: "Effective delegation requires authority transfer, not just task assignment." },
+      { layer: "Nuance", note: "Technical work often requires creative problem-solving that micromanagement stifles." },
+      { layer: "Situational / Applied", note: "Use OKRs (Objectives and Key Results) framework for clear goal setting." }
+    ],
+    boundary_conditions: [
+      "High-risk projects may require closer oversight until team proves competence.",
+      "Some team members may need more guidance due to experience levels."
+    ],
+    extra: "Distinguish between delegation and abdication of responsibility."
+  },
+
+  {
+    q: "A retailer's inventory turnover drops from 12x to 6x annually while maintaining sales levels. Working capital requirements double. What's the core problem?",
+    a: "Inventory management has deteriorated, with stock levels doubling relative to sales. This ties up excess working capital and increases storage costs and obsolescence risk.",
+    p: "Financial Management — Inventory Turnover and Working Capital",
+    d: "Inventory turnover measures how efficiently a company converts inventory to sales.",
+    steps: [
+      "Analyze slow-moving and dead stock by SKU and category.",
+      "Implement ABC analysis to focus on high-value items.",
+      "Establish reorder points and economic order quantities based on demand patterns."
+    ],
+    x: "Inventory turnover should improve toward historical levels, freeing up cash for other investments.",
+    reasoning_layers: [
+      { layer: "Context", note: "Deteriorating inventory efficiency." },
+      { layer: "Observation", note: "Same sales with double inventory indicates management failure." },
+      { layer: "Mechanism", note: "Poor inventory management directly impacts cash conversion cycle and profitability." },
+      { layer: "Nuance", note: "Some seasonal buildup might be planned, requiring trend analysis." },
+      { layer: "Situational / Applied", note: "Use inventory aging reports and implement just-in-time principles." }
+    ],
+    boundary_conditions: [
+      "Rapid demand growth might justify higher inventory levels temporarily.",
+      "Supply chain disruptions may force precautionary stock building."
+    ],
+    extra: "Calculate the formula for inventory turnover ratio."
+  },
+
+  {
+    q: "A software company's best developers keep leaving for competitors offering remote work. HR insists on office-only policy. What motivation theory explains this conflict?",
+    a: "This reflects Herzberg's two-factor theory: remote work flexibility is a hygiene factor (when absent, causes dissatisfaction) while the company focuses only on motivators like salary and career growth.",
+    p: "Directing — Herzberg's Two-Factor Theory",
+    d: "Distinguishes between hygiene factors (prevent dissatisfaction) and motivators (create satisfaction).",
+    steps: [
+      "Survey departing employees to identify key hygiene factors causing dissatisfaction.",
+      "Benchmark industry practices on flexible work arrangements.",
+      "Pilot hybrid work model while measuring productivity and retention metrics."
+    ],
+    x: "Addressing hygiene factors like work flexibility will reduce turnover and improve talent retention.",
+    reasoning_layers: [
+      { layer: "Context", note: "Talent retention crisis." },
+      { layer: "Observation", note: "Policy misalignment with employee expectations." },
+      { layer: "Mechanism", note: "Hygiene factors must be satisfied before motivators become effective." },
+      { layer: "Nuance", note: "Different generations may value different hygiene factors." },
+      { layer: "Situational / Applied", note: "Regular employee satisfaction surveys can identify emerging hygiene needs." }
+    ],
+    boundary_conditions: [
+      "Some roles may genuinely require physical presence for security or collaboration.",
+      "Company culture and values might prioritize in-person collaboration over individual preferences."
+    ],
+    extra: "List three hygiene factors and three motivators from Herzberg's theory."
+  },
+
+  {
+    q: "A manufacturing company faces a hostile takeover bid. The board recommends rejection, but shareholders are divided. What governance principles are at stake?",
+    a: "This involves the fundamental tension between board fiduciary duty to act in company's best interests and shareholder democracy/wealth maximization. Proper corporate governance requires transparent evaluation and shareholder choice.",
+    p: "Forms of Business Organisation — Corporate Governance",
+    d: "The system of rules, practices, and processes by which a company is directed and controlled.",
+    steps: [
+      "Board should engage independent financial advisors to evaluate the offer objectively.",
+      "Provide detailed analysis of offer value versus long-term standalone prospects.",
+      "Ensure all material information is disclosed to enable informed shareholder decision."
+    ],
+    x: "Proper governance process will balance board expertise with shareholder rights, leading to optimal outcome.",
+    reasoning_layers: [
+      { layer: "Context", note: "Corporate control contest." },
+      { layer: "Observation", note: "Potential conflict between board judgment and shareholder interests." },
+      { layer: "Mechanism", note: "Good governance balances management autonomy with shareholder sovereignty." },
+      { layer: "Nuance", note: "Short-term shareholder gains might conflict with long-term company health." },
+      { layer: "Situational / Applied", note: "Independent directors play crucial role in such conflicts of interest." }
+    ],
+    boundary_conditions: [
+      "Board may have superior information justifying rejection that's not public.",
+      "Hostile bidder might be undervaluing company or have poor post-merger plans."
+    ],
+    extra: "Name three key principles of good corporate governance."
+  },
+
+  {
+    q: "A restaurant chain wants to expand through franchising but worries about quality control across locations. What organizational challenge does this represent?",
+    a: "This is a classic centralization vs. decentralization dilemma: franchising requires decentralized operations while maintaining centralized standards and brand control.",
+    p: "Organising — Franchising and Control Systems",
+    d: "Franchising delegates operations while maintaining brand and quality standards through contractual controls.",
+    steps: [
+      "Develop comprehensive operations manual with detailed quality standards.",
+      "Implement regular audit and mystery shopping programs.",
+      "Use technology (POS systems, inventory management) to monitor compliance remotely."
+    ],
+    x: "Successful franchising will achieve rapid expansion while maintaining brand consistency and customer experience.",
+    reasoning_layers: [
+      { layer: "Context", note: "Business expansion strategy choice." },
+      { layer: "Observation", note: "Need to balance growth speed with quality control." },
+      { layer: "Mechanism", note: "Franchising uses contractual control rather than hierarchical control." },
+      { layer: "Nuance", note: "Cultural and local market differences may require some operational flexibility." },
+      { layer: "Situational / Applied", note: "Master franchise agreements can help manage regional variations." }
+    ],
+    boundary_conditions: [
+      "Poor franchisee selection can undermine the entire system despite good controls.",
+      "Over-rigid controls might discourage franchisee entrepreneurship and local adaptation."
+    ],
+    extra: "Compare franchising with company-owned expansion in terms of control and capital requirements."
+  },
+
+  {
+    q: "A company's social media campaign goes viral but for wrong reasons, causing public backlash. Crisis management team wants immediate response, legal team advises silence. What communication strategy is needed?",
+    a: "This requires crisis communication balancing transparency with legal protection: acknowledge the issue, express commitment to resolution, and provide regular updates while avoiding admission of liability.",
+    p: "Directing — Crisis Communication",
+    d: "Strategic communication during negative events to protect reputation and stakeholder relationships.",
+    steps: [
+      "Issue immediate holding statement acknowledging awareness of the issue.",
+      "Investigate facts quickly while preparing comprehensive response strategy.",
+      "Communicate corrective actions and prevention measures transparently."
+    ],
+    x: "Proper crisis communication can limit reputational damage and may even strengthen stakeholder trust through transparency.",
+    reasoning_layers: [
+      { layer: "Context", note: "Reputation crisis management." },
+      { layer: "Observation", note: "Conflict between transparency and legal liability concerns." },
+      { layer: "Mechanism", note: "Stakeholder trust requires authentic communication during crises." },
+      { layer: "Nuance", note: "Different stakeholders may need different messages and channels." },
+      { layer: "Situational / Applied", note: "Social media requires rapid response to prevent narrative from being controlled by critics." }
+    ],
+    boundary_conditions: [
+      "Legal exposure from admissions might outweigh reputational benefits of full transparency.",
+      "Cultural differences across markets may require localized communication approaches."
+    ],
+    extra: "List the key elements of effective crisis communication."
+  },
+
+  {
+    q: "A profitable company's stock price languishes below book value while competitors trade at premium multiples. Management considers share buybacks vs. special dividends. Which creates more value?",
+    a: "Share buybacks are typically more tax-efficient and signal management's confidence in undervaluation, while special dividends provide immediate cash to all shareholders. Choice depends on shareholder tax status and company's investment opportunities.",
+    p: "Financial Management — Share Buybacks vs. Dividends",
+    d: "Alternative methods of returning cash to shareholders with different tax and signaling implications.",
+    steps: [
+      "Analyze tax implications for typical shareholder base (individuals vs. institutions).",
+      "Evaluate internal investment opportunities and required cash reserves.",
+      "Consider signaling effects and market perception of each alternative."
+    ],
+    x: "Optimal choice will maximize after-tax value to shareholders while signaling appropriate confidence in company prospects.",
+    reasoning_layers: [
+      { layer: "Context", note: "Capital allocation decision for undervalued company." },
+      { layer: "Observation", note: "Market undervaluation suggests buybacks might be attractive." },
+      { layer: "Mechanism", note: "Buybacks reduce share count, potentially increasing EPS and supporting price." },
+      { layer: "Nuance", note: "Effectiveness depends on management's ability to time purchases and market efficiency." },
+      { layer: "Situational / Applied", note: "Consider open market vs. tender offer buyback structures." }
+    ],
+    boundary_conditions: [
+      "If company needs cash for future investments, buybacks might be short-sighted.",
+      "Regulatory restrictions or insider information may limit buyback timing."
+    ],
+    extra: "Explain how share buybacks affect earnings per share calculation."
+  },
+
+  {
+    q: "A startup's product-market fit is proven, but scaling requires different skills than the founding team possesses. Founders resist hiring experienced executives. What organizational development issue is this?",
+    a: "This represents the classic founder's dilemma in organizational lifecycle: transitioning from entrepreneurial to professional management requires different competencies and often dilutes founder control.",
+    p: "Staffing — Organizational Lifecycle and Leadership Transition",
+    d: "Organizations require different leadership styles and capabilities at different growth stages.",
+    steps: [
+      "Assess current leadership gaps objectively using competency frameworks.",
+      "Design transition plan that leverages founder strengths while adding professional expertise.",
+      "Structure compensation and governance to align founder and professional manager interests."
+    ],
+    x: "Successful transition will accelerate growth while preserving entrepreneurial culture and founder vision.",
+    reasoning_layers: [
+      { layer: "Context", note: "Growth stage transition challenge." },
+      { layer: "Observation", note: "Skills that created success may not scale the business." },
+      { layer: "Mechanism", note: "Different growth stages require different management competencies." },
+      { layer: "Nuance", note: "Founder identity and control concerns may override rational business needs." },
+      { layer: "Situational / Applied", note: "Consider advisory roles or gradual transition rather than immediate replacement." }
+    ],
+    boundary_conditions: [
+      "Some founders successfully develop new skills and adapt to larger scale requirements.",
+      "Wrong executive hires can destroy culture and founder vision."
+    ],
+    extra: "Describe the key differences between entrepreneurial and professional management styles."
+  },
+
+  {
+    q: "A pharmaceutical company's breakthrough drug fails final-stage trials after years of development and $500M investment. How should this be communicated to stakeholders?",
+    a: "This requires transparent, immediate disclosure focusing on facts, lessons learned, and impact on pipeline/financials. Emphasize R&D risk nature while demonstrating continued innovation capability.",
+    p: "Controlling — Performance Reporting and Stakeholder Communication",
+    d: "Effective control systems require transparent reporting of both positive and negative variances.",
+    steps: [
+      "Issue immediate disclosure with clear facts about trial results and financial impact.",
+      "Explain risk mitigation measures and pipeline strength for future projects.",
+      "Detail cost structure changes and strategic refocus to maintain investor confidence."
+    ],
+    x: "Transparent communication will maintain stakeholder trust and allow realistic assessment of company prospects.",
+    reasoning_layers: [
+      { layer: "Context", note: "Major setback in high-stakes R&D." },
+      { layer: "Observation", note: "Significant sunk costs and pipeline impact require immediate disclosure." },
+      { layer: "Mechanism", note: "Timely, honest communication prevents worse reputational damage." },
+      { layer: "Nuance", note: "Pharmaceutical investors understand R&D risks but expect proactive management." },
+      { layer: "Situational / Applied", note: "Emphasize portfolio approach and robust development pipeline." }
+    ],
+    boundary_conditions: [
+      "Regulatory requirements may dictate specific disclosure timing and content.",
+      "Competitor intelligence concerns might limit details about future development plans."
+    ],
+    extra: "Explain why sunk costs should not influence future investment decisions."
+  },
+
+  {
+    q: "A luxury brand considers entering mass market to boost revenues during economic downturn. Marketing team warns about brand dilution. What's the strategic dilemma?",
+    a: "This is a classic brand extension dilemma: short-term revenue gains from mass market may permanently damage luxury positioning and long-term profitability. Requires alternative strategies like sub-brands or temporary premium discounting.",
+    p: "Marketing — Brand Positioning and Extension Strategy",
+    d: "Brand positioning creates specific market perceptions that drive premium pricing and customer loyalty.",
+    steps: [
+      "Analyze impact of mass market entry on existing customer perceptions and willingness to pay.",
+      "Consider alternative strategies: sub-brands, limited editions, or geographic expansion.",
+      "Test concepts with focus groups representing both current and target customers."
+    ],
+    x: "Proper brand strategy will protect long-term positioning while addressing short-term revenue pressures.",
+    reasoning_layers: [
+      { layer: "Context", note: "Economic pressure threatening brand strategy." },
+      { layer: "Observation", note: "Tension between short-term revenue and long-term brand value." },
+      { layer: "Mechanism", note: "Luxury brands derive value from exclusivity and premium positioning." },
+      { layer: "Nuance", note: "Some luxury brands have successfully managed mass market extensions through careful strategy." },
+      { layer: "Situational / Applied", note: "Consider temporary vs. permanent strategy and exit options." }
+    ],
+    boundary_conditions: [
+      "Economic downturns are typically temporary, making permanent brand changes risky.",
+      "Mass market success might create distribution channel conflicts with luxury retailers."
+    ],
+    extra: "Give an example of successful and unsuccessful luxury brand mass market extensions."
+  },
+
+  {
+    q: "A tech company's agile development teams work efficiently, but cross-team coordination fails on large projects. What organizational structure issue needs addressing?",
+    a: "This indicates need for matrix or project-based structure to overlay cross-functional coordination on top of functional/team autonomy, balancing agility with integration.",
+    p: "Organising — Matrix Structure and Cross-Functional Coordination",
+    d: "Matrix structures combine functional expertise with project-based coordination to manage complex, multi-disciplinary work.",
+    steps: [
+      "Identify projects requiring cross-team coordination and appoint project managers.",
+      "Establish clear roles and responsibilities matrix (RACI) for cross-functional work.",
+      "Create governance structure for resolving resource conflicts between teams and projects."
+    ],
+    x: "Improved coordination will enable complex project delivery while maintaining team agility and expertise development.",
+    reasoning_layers: [
+      { layer: "Context", note: "Scaling challenge in agile organization." },
+      { layer: "Observation", note: "Team autonomy conflicts with integration needs." },
+      { layer: "Mechanism", note: "Complex projects require both deep expertise and broad coordination." },
+      { layer: "Nuance", note: "Matrix structures can create role conflicts and communication overhead." },
+      { layer: "Situational / Applied", note: "Use project management tools and regular coordination meetings." }
+    ],
+    boundary_conditions: [
+      "Matrix structures can slow decision-making if not carefully managed.",
+      "Some team members may struggle with dual reporting relationships."
+    ],
+    extra: "Explain the key advantages and disadvantages of matrix organizational structure."
+  },
+
+  {
+    q: "A company's ESG (Environmental, Social, Governance) rating drops, affecting its access to sustainable financing. Investors demand improvement but costs are significant. How to prioritize?",
+    a: "ESG improvements should be prioritized based on materiality to business, stakeholder impact, and cost-benefit analysis. Focus on areas with highest stakeholder concern and business risk/opportunity.",
+    p: "Social Responsibility — ESG Integration and Materiality",
+    d: "ESG factors increasingly affect business performance through stakeholder expectations and regulatory requirements.",
+    steps: [
+      "Conduct materiality assessment to identify ESG factors most relevant to business and stakeholders.",
+      "Benchmark against industry leaders to identify improvement opportunities.",
+      "Develop phased implementation plan starting with highest-impact, lowest-cost initiatives."
+    ],
+    x: "Strategic ESG improvements will enhance stakeholder relationships, reduce risks, and improve access to capital.",
+    reasoning_layers: [
+      { layer: "Context", note: "Sustainability performance affecting business outcomes." },
+      { layer: "Observation", note: "ESG factors now directly impact financial performance." },
+      { layer: "Mechanism", note: "Stakeholder capitalism requires balancing multiple objectives beyond profit." },
+      { layer: "Nuance", note: "ESG washing (superficial changes) can backfire worse than no action." },
+      { layer: "Situational / Applied", note: "Use frameworks like GRI or SASB for consistent reporting." }
+    ],
+    boundary_conditions: [
+      "Some ESG improvements may conflict with short-term profitability.",
+      "Different stakeholders may prioritize different ESG aspects."
+    ],
+    extra: "Define materiality in the context of ESG reporting."
+  },
+
+  {
+    q: "A family business founder wants to retire but family members lack business experience while professional managers lack emotional investment. What succession planning approach resolves this?",
+    a: "Implement dual-track succession: develop family members through mentoring and external experience while retaining professional managers through equity participation and long-term incentives.",
+    p: "Staffing — Succession Planning in Family Business",
+    d: "Family business succession requires balancing family interests with professional competence and business continuity.",
+    steps: [
+      "Assess family members' capabilities and interest in business leadership objectively.",
+      "Design development program including external experience and mentoring.",
+      "Create governance structure that balances family ownership with professional management."
+    ],
+    x: "Structured succession will preserve family control while ensuring professional competence and business continuity.",
+    reasoning_layers: [
+      { layer: "Context", note: "Complex family business transition." },
+      { layer: "Observation", note: "Emotional and financial interests don't align with competence." },
+      { layer: "Mechanism", note: "Family businesses need both emotional commitment and professional skills." },
+      { layer: "Nuance", note: "Family dynamics can override business logic if not properly managed." },
+      { layer: "Situational / Applied", note: "Consider family council and external board members for objective guidance." }
+    ],
+    boundary_conditions: [
+      "Some family members may prefer selling business rather than managing succession complexity.",
+      "Professional managers may leave if long-term prospects are uncertain."
+    ],
+    extra: "List three key challenges specific to family business succession planning."
+  },
+
+  {
+    q: "A company's automated customer service chatbot handles 80% of queries but customer satisfaction drops. Analysis shows customers prefer human interaction for complex issues. What service design principle is being violated?",
+    a: "The principle of service customization and human touch in high-involvement situations. Automation should enhance rather than replace human interaction for complex, emotional, or high-value customer needs.",
+    p: "Marketing — Service Design and Customer Experience",
+    d: "Service design must balance efficiency with customer preferences and emotional needs.",
+    steps: [
+      "Segment customer queries by complexity and emotional content.",
+      "Design hybrid model with easy escalation to human agents for complex issues.",
+      "Train human agents to handle escalated cases with higher empathy and expertise."
+    ],
+    x: "Customer satisfaction will improve through appropriate channel matching while maintaining efficiency gains from automation.",
+    reasoning_layers: [
+      { layer: "Context", note: "Service automation optimization." },
+      { layer: "Observation", note: "Efficiency gains offset by satisfaction losses." },
+      { layer: "Mechanism", note: "Different service encounters require different levels of human interaction." },
+      { layer: "Nuance", note: "Customer preferences vary by generation, culture, and situation." },
+      { layer: "Situational / Applied", note: "Use sentiment analysis to identify when human intervention is needed." }
+    ],
+    boundary_conditions: [
+      "Cost pressures may limit human agent availability for complex issues.",
+      "Some customers may prefer automated service even for complex issues due to convenience."
+    ],
+    extra: "Explain the concept of service encounter and its importance in customer experience."
+  },
+
+  {
+    q: "A company discovers its supplier uses child labor in violation of its code of conduct. Switching suppliers will increase costs by 15% and delay production. What ethical framework should guide the decision?",
+    a: "This requires applying stakeholder theory and ethical responsibility: immediate termination of supplier relationship despite costs, as child labor violates fundamental human rights and corporate social responsibility.",
+    p: "Business Ethics — Stakeholder Theory and Supply Chain Responsibility",
+    d: "Companies are responsible for ethical practices throughout their value chain, not just direct operations.",
+    steps: [
+      "Immediately suspend supplier relationship and investigate extent of violations.",
+      "Identify alternative suppliers that meet ethical standards, even at higher cost.",
+      "Implement enhanced due diligence and monitoring for all suppliers."
+    ],
+    x: "Ethical supplier practices will protect brand reputation and ensure sustainable, responsible operations.",
+    reasoning_layers: [
+      { layer: "Context", note: "Ethical crisis in supply chain." },
+      { layer: "Observation", note: "Cost pressures conflict with ethical responsibilities." },
+      { layer: "Mechanism", note: "Stakeholder capitalism requires considering all affected parties, especially vulnerable ones." },
+      { layer: "Nuance", note: "Immediate termination might also harm legitimate workers at supplier." },
+      { layer: "Situational / Applied", note: "Work with NGOs and industry groups to support supplier transition." }
+    ],
+    boundary_conditions: [
+      "Gradual transition might be more practical than immediate termination in some cases.",
+      "Competitive disadvantage from higher costs may threaten business viability."
+    ],
+    extra: "Explain the difference between shareholder and stakeholder theories of corporate responsibility."
+  },
+
+  {
+    q: "A retail chain's same-store sales decline while online competitors grow rapidly. Management debates between investing in e-commerce or improving physical stores. What strategic analysis is needed?",
+    a: "This requires channel strategy analysis using customer journey mapping, competitive positioning, and omnichannel integration rather than either/or thinking. Future retail success requires seamless physical-digital integration.",
+    p: "Marketing — Channel Strategy and Omnichannel Retail",
+    d: "Modern retail requires integrated customer experience across all touchpoints rather than separate channel strategies.",
+    steps: [
+      "Map customer journey to identify key touchpoints and channel preferences.",
+      "Analyze competitive landscape and identify differentiation opportunities.",
+      "Design integrated experience leveraging physical stores as fulfillment and experience centers."
+    ],
+    x: "Integrated omnichannel strategy will provide competitive advantage by leveraging existing assets while meeting changing customer expectations.",
+    reasoning_layers: [
+      { layer: "Context", note: "Retail industry disruption and adaptation." },
+      { layer: "Observation", note: "False choice between digital and physical retail." },
+      { layer: "Mechanism", note: "Customer expectations now include seamless cross-channel experience." },
+      { layer: "Nuance", note: "Physical stores provide advantages (touch, immediacy, service) that pure digital cannot." },
+      { layer: "Situational / Applied", note: "Use stores for click-and-collect, returns, and experiential marketing." }
+    ],
+    boundary_conditions: [
+      "Limited capital might require prioritizing one channel initially.",
+      "Some product categories may be better suited to pure digital or physical approaches."
+    ],
+    extra: "Define omnichannel retailing and explain how it differs from multichannel."
+  },
+
+  {
+    q: "A company's new performance management system generates detailed metrics but employees complain it's bureaucratic and demotivating. Productivity actually declines. What controlling principle is being misapplied?",
+    a: "The system violates the principle that controlling should motivate, not demotivate. Over-measurement and bureaucracy can destroy intrinsic motivation and create gaming behaviors that reduce actual performance.",
+    p: "Controlling — Behavioral Impact of Control Systems",
+    d: "Control systems must balance measurement accuracy with employee motivation and behavioral incentives.",
+    steps: [
+      "Simplify metrics to focus on key outcomes rather than comprehensive activity tracking.",
+      "Involve employees in designing measurement criteria to increase buy-in.",
+      "Balance quantitative metrics with qualitative feedback and development focus."
+    ],
+    x: "Streamlined control system will improve both employee satisfaction and actual performance by focusing on meaningful outcomes.",
+    reasoning_layers: [
+      { layer: "Context", note: "Performance management system redesign." },
+      { layer: "Observation", note: "More measurement creating less performance." },
+      { layer: "Mechanism", note: "Over-control can destroy autonomy and intrinsic motivation." },
+      { layer: "Nuance", note: "What gets measured gets gamed, potentially at expense of unmeasured important outcomes." },
+      { layer: "Situational / Applied", note: "Use OKRs or balanced scorecards for broader perspective." }
+    ],
+    boundary_conditions: [
+      "Highly regulated industries may require extensive documentation regardless of employee preferences.",
+      "Some roles may genuinely require detailed monitoring for quality or safety reasons."
+    ],
+    extra: "Explain the concept of 'goal displacement' in control systems."
+  },
+
+  {
+    q: "A SaaS company's customer acquisition cost (CAC) exceeds lifetime value (LTV) by 20%. Marketing wants more budget, but finance demands cutbacks. What business model analysis is needed?",
+    a: "This indicates fundamental unit economics problem requiring analysis of churn rates, pricing strategy, and customer segmentation. The business model is unsustainable and needs restructuring before scaling.",
+    p: "Financial Management — Unit Economics and Business Model Viability",
+    d: "Sustainable business models require positive unit economics where customer lifetime value exceeds acquisition costs.",
+    steps: [
+      "Analyze churn rates by customer segment and identify retention improvement opportunities.",
+      "Test pricing strategies and value propositions to increase customer lifetime value.",
+      "Optimize marketing channels and targeting to reduce customer acquisition costs."
+    ],
+    x: "Corrected unit economics will enable sustainable growth and profitability through improved customer economics.",
+    reasoning_layers: [
+      { layer: "Context", note: "Business model sustainability crisis." },
+      { layer: "Observation", note: "Each customer acquired destroys value rather than creating it." },
+      { layer: "Mechanism", note: "Growth with negative unit economics accelerates losses and eventual failure." },
+      { layer: "Nuance", note: "Some customer segments might be profitable while others destroy value." },
+      { layer: "Situational / Applied", note: "Focus on cohort analysis and customer segmentation for targeted improvements." }
+    ],
+    boundary_conditions: [
+      "Early-stage companies might temporarily accept negative unit economics for market penetration.",
+      "Network effects or platform dynamics might justify short-term losses for long-term gains."
+    ],
+    extra: "Calculate the formula for customer lifetime value (LTV) and customer acquisition cost (CAC) ratio."
+  },
+
+  {
+    q: "A manufacturing company wants to implement lean production but union leaders resist, fearing job losses. Workers are skeptical about management motives. How should change management proceed?",
+    a: "This requires collaborative change management addressing fear and mistrust: involve union leaders as partners, guarantee employment security, and share productivity gains to align interests.",
+    p: "Directing — Change Management and Labor Relations",
+    d: "Successful organizational change requires addressing both technical and human elements, especially in unionized environments.",
+    steps: [
+      "Engage union leaders early as change partners, not obstacles to overcome.",
+      "Provide employment guarantees and retraining programs to address job security fears.",
+      "Design gain-sharing programs that distribute productivity benefits to workers."
+    ],
+    x: "Collaborative approach will achieve operational improvements while strengthening labor-management relationships and employee engagement.",
+    reasoning_layers: [
+      { layer: "Context", note: "Operational improvement in unionized environment." },
+      { layer: "Observation", note: "Technical change blocked by human resistance and mistrust." },
+      { layer: "Mechanism", note: "Change success requires addressing both logical and emotional concerns." },
+      { layer: "Nuance", note: "Union leaders have legitimate concerns about member welfare." },
+      { layer: "Situational / Applied", note: "Use pilot programs to demonstrate benefits before full implementation." }
+    ],
+    boundary_conditions: [
+      "Economic pressures might prevent offering employment guarantees or gain-sharing.",
+      "Historical labor-management conflicts might make collaboration difficult despite good intentions."
+    ],
+    extra: "List the key elements of Kotter's 8-step change management process."
+  },
+
+  {
+    q: "A fintech startup's innovative payment app gains traction but faces regulatory uncertainty. Compliance costs could consume 30% of revenues. Should they pivot to less regulated markets?",
+    a: "This requires balancing innovation opportunity with regulatory risk. Consider regulatory sandbox participation, compliance-as-competitive-advantage strategy, or geographic expansion to clearer regulatory environments.",
+    p: "Business Environment — Regulatory Risk and Innovation",
+    d: "Innovation often occurs in regulatory gray areas requiring strategic navigation of compliance requirements.",
+    steps: [
+      "Engage proactively with regulators through sandbox programs or consultation processes.",
+      "Build compliance capabilities as core competency and competitive advantage.",
+      "Explore expansion to markets with clearer regulatory frameworks while maintaining home market presence."
+    ],
+    x: "Proactive regulatory strategy will reduce uncertainty while positioning company as trusted, compliant innovator.",
+    reasoning_layers: [
+      { layer: "Context", note: "Innovation facing regulatory uncertainty." },
+      { layer: "Observation", note: "Compliance costs threatening business viability." },
+      { layer: "Mechanism", note: "Regulatory clarity reduces risk but may also reduce competitive advantage." },
+      { layer: "Nuance", note: "Early compliance investment may create barriers for future competitors." },
+      { layer: "Situational / Applied", note: "Consider partnerships with established financial institutions for regulatory cover." }
+    ],
+    boundary_conditions: [
+      "Regulatory changes could make current business model impossible regardless of compliance efforts.",
+      "First-mover advantage might be lost while waiting for regulatory clarity."
+    ],
+    extra: "Explain the concept of regulatory sandbox and its purpose in financial innovation."
+  },
+
+  {
+    q: "A company's diversity and inclusion program shows improved hiring metrics but employee surveys reveal persistent workplace culture issues. What's the disconnect?",
+    a: "This indicates focus on input metrics (hiring) rather than outcome metrics (inclusion experience). True inclusion requires cultural change, not just demographic change, requiring leadership behavior modification and systemic bias addressing.",
+    p: "Organising — Diversity, Equity, and Inclusion Implementation",
+    d: "Effective D&I requires systemic cultural change beyond demographic representation improvements.",
+    steps: [
+      "Shift metrics from representation to inclusion experience and advancement outcomes.",
+      "Implement bias training and accountability measures for leaders and managers.",
+      "Create psychological safety initiatives and inclusive leadership development programs."
+    ],
+    x: "Comprehensive D&I approach will improve both demographic representation and actual workplace inclusion experience.",
+    reasoning_layers: [
+      { layer: "Context", note: "D&I program effectiveness evaluation." },
+      { layer: "Observation", note: "Representation improvement without experience improvement." },
+      { layer: "Mechanism", note: "Inclusion requires cultural and behavioral change, not just hiring changes." },
+      { layer: "Nuance", note: "Different groups may experience inclusion differently despite similar representation." },
+      { layer: "Situational / Applied", note: "Use employee resource groups and inclusive leadership assessments." }
+    ],
+    boundary_conditions: [
+      "Cultural change is slower than hiring changes and requires sustained leadership commitment.",
+      "Some resistance to D&I initiatives may be covert and difficult to address directly."
+    ],
+    extra: "Distinguish between diversity, equity, and inclusion in organizational context."
+  },
+
+  {
+    q: "A global company's regional managers consistently miss targets but blame headquarters for unrealistic goals and poor resource allocation. How should controlling address this attribution problem?",
+    a: "This requires participative goal setting and shared accountability: involve regional managers in target development, provide clear resource commitments, and implement joint problem-solving for variance analysis.",
+    p: "Controlling — Goal Setting and Variance Analysis",
+    d: "Effective control requires goals that are both challenging and achievable with proper resource support.",
+    steps: [
+      "Implement participative budgeting process involving regional managers in target setting.",
+      "Establish clear service level agreements for headquarters support and resources.",
+      "Create joint variance analysis process focusing on solutions rather than blame assignment."
+    ],
+    x: "Collaborative controlling will improve goal achievement while reducing finger-pointing and enhancing headquarters-regional relationships.",
+    reasoning_layers: [
+      { layer: "Context", note: "Multi-level organizational performance management." },
+      { layer: "Observation", note: "Blame attribution preventing effective problem-solving." },
+      { layer: "Mechanism", note: "Participative goal setting increases commitment and reduces attribution conflicts." },
+      { layer: "Nuance", note: "Regional managers may have superior local market knowledge affecting goal feasibility." },
+      { layer: "Situational / Applied", note: "Use rolling forecasts and regular goal adjustment processes." }
+    ],
+    boundary_conditions: [
+      "Some performance issues may genuinely be due to poor headquarters support or unrealistic expectations.",
+      "Regional managers might game participative process to set easily achievable targets."
+    ],
+    extra: "Explain the difference between participative and imposed goal setting in terms of motivation and commitment."
+  },
+
+  {
+    q: "A subscription business sees monthly churn rate of 5% but customer success team claims it's industry normal. Finance calculates this destroys long-term value. What metric perspective is correct?",
+    a: "Both perspectives have merit but must be analyzed contextually: 5% monthly churn (46% annual) may be industry normal but still economically destructive depending on customer acquisition cost and lifetime value ratios.",
+    p: "Controlling — Key Performance Indicators and Industry Benchmarking",
+    d: "Performance metrics must be evaluated both relative to industry standards and absolute business economics.",
+    steps: [
+      "Calculate customer lifetime value impact of current churn rate versus lower churn scenarios.",
+      "Benchmark against best-in-class companies, not just industry average.",
+      "Identify specific churn drivers through customer exit surveys and cohort analysis."
+    ],
+    x: "Comprehensive churn analysis will guide appropriate retention investment levels and identify improvement opportunities.",
+    reasoning_layers: [
+      { layer: "Context", note: "Performance measurement interpretation conflict." },
+      { layer: "Observation", note: "Industry benchmarking versus economic impact analysis." },
+      { layer: "Mechanism", note: "Industry averages may reflect systemic problems rather than acceptable performance." },
+      { layer: "Nuance", note: "Some churn may be healthy (low-value customers) while other churn is destructive." },
+      { layer: "Situational / Applied", note: "Segment churn analysis by customer value and acquisition channel." }
+    ],
+    boundary_conditions: [
+      "Industry structure might make low churn rates impossible despite best efforts.",
+      "Customer success investment might not be cost-effective for all customer segments."
+    ],
+    extra: "Calculate the annual churn rate equivalent of 5% monthly churn and explain why this matters."
+  },
+
+  {
+    q: "A luxury hotel chain enters budget market through new brand but struggles with service delivery inconsistencies. Staff from luxury properties resist working at budget locations. What organizing challenge is this?",
+    a: "This represents cultural and skill mismatch in brand portfolio management: different market segments require different service cultures and operational approaches that may conflict with existing organizational capabilities.",
+    p: "Organising — Brand Portfolio and Organizational Culture Alignment",
+    d: "Multi-brand strategies require different organizational cultures and capabilities that may conflict with each other.",
+    steps: [
+      "Develop separate operational standards and training programs for each brand segment.",
+      "Recruit and develop managers specifically for budget brand culture and constraints.",
+      "Create clear brand positioning and service level expectations to guide staff behavior."
+    ],
+    x: "Brand-specific organizational design will enable successful multi-segment strategy while preserving luxury brand integrity.",
+    reasoning_layers: [
+      { layer: "Context", note: "Multi-brand organizational strategy implementation." },
+      { layer: "Observation", note: "Cultural conflict between luxury and budget service approaches." },
+      { layer: "Mechanism", note: "Different market segments require different organizational capabilities and cultures." },
+      { layer: "Nuance", note: "Some operational synergies may exist while maintaining cultural separation." },
+      { layer: "Situational / Applied", note: "Consider separate management structures and career tracks for different brands." }
+    ],
+    boundary_conditions: [
+      "Brand separation might reduce operational synergies and increase management complexity.",
+      "Staff movement between brands might blur positioning and service standards."
+    ],
+    extra: "Explain how organizational culture should align with brand positioning strategy."
+  },
+
+  {
+    q: "A manufacturing company implements total quality management (TQM) but defect rates remain high. Investigation reveals workers fear reporting problems will lead to blame and punishment. What TQM principle is being violated?",
+    a: "This violates the fundamental TQM principle of creating a blame-free culture focused on continuous improvement. Fear-based environments prevent honest problem identification and root cause analysis essential for quality improvement.",
+    p: "Controlling — Total Quality Management and Organizational Culture",
+    d: "TQM requires cultural transformation where problems are viewed as improvement opportunities rather than failures to punish.",
+    steps: [
+      "Implement 'no-blame' policy with visible leadership commitment to learning from mistakes.",
+      "Train supervisors in constructive problem-solving rather than fault-finding approaches.",
+      "Recognize and reward employees who identify problems and suggest improvements."
+    ],
+    x: "Blame-free culture will increase problem reporting and root cause identification, leading to actual quality improvements.",
+    reasoning_layers: [
+      { layer: "Context", note: "Quality improvement program implementation failure." },
+      { layer: "Observation", note: "Fear preventing honest problem identification." },
+      { layer: "Mechanism", note: "Quality improvement requires accurate information about problems and their causes." },
+      { layer: "Nuance", note: "Some accountability is necessary while avoiding blame culture." },
+      { layer: "Situational / Applied", note: "Use statistical process control to focus on system improvement rather than individual blame." }
+    ],
+    boundary_conditions: [
+      "Genuine negligence or safety violations may still require individual accountability.",
+      "Cultural change requires sustained leadership commitment and may take years to achieve."
+    ],
+    extra: "List the key principles of Total Quality Management (TQM)."
+  },
+
+  {
+    q: "A company's innovation lab produces interesting prototypes but none reach market successfully. Business units claim innovations are impractical while lab claims business units lack vision. What organizational design issue needs addressing?",
+    a: "This indicates poor integration between innovation and commercialization functions. Need bridge mechanisms like stage-gate processes, cross-functional teams, and shared accountability for innovation-to-market success.",
+    p: "Organising — Innovation Management and Cross-Functional Integration",
+    d: "Innovation success requires both creative freedom and commercial discipline, often creating organizational tensions.",
+    steps: [
+      "Implement stage-gate process with joint innovation lab and business unit decision points.",
+      "Create cross-functional teams including both innovation and commercialization expertise.",
+      "Establish shared metrics and incentives for successful market introduction of innovations."
+    ],
+    x: "Integrated innovation process will improve commercialization success while maintaining creative capabilities.",
+    reasoning_layers: [
+      { layer: "Context", note: "Innovation to commercialization gap." },
+      { layer: "Observation", note: "Organizational silos preventing effective innovation transfer." },
+      { layer: "Mechanism", note: "Innovation requires both creative freedom and commercial constraints." },
+      { layer: "Nuance", note: "Some tension between innovation and business units may be healthy and necessary." },
+      { layer: "Situational / Applied", note: "Use innovation tournaments and internal venture capital models." }
+    ],
+    boundary_conditions: [
+      "Too much business unit involvement might stifle breakthrough innovation.",
+      "Market timing and external factors may affect commercialization success regardless of internal coordination."
+    ],
+    extra: "Explain the stage-gate process for innovation management."
+  },
+
+  {
+    q: "A company discovers its main competitor has launched a very similar product just weeks before their own planned launch. Legal team finds no IP violation but timing suggests industrial espionage. How should they respond strategically?",
+    a: "This requires multi-pronged response: accelerate differentiation strategy, enhance information security, and consider alternative launch positioning that leverages fast-follower advantages rather than first-mover claims.",
+    p: "Planning — Competitive Strategy and Information Security",
+    d: "Competitive intelligence is legitimate but information security breaches require strategic response adjustments.",
+    steps: [
+      "Immediately review and enhance information security protocols and access controls.",
+      "Pivot launch strategy to emphasize superior features or different positioning versus competitor.",
+      "Consider legal action while preparing competitive response based on differentiation rather than timing."
+    ],
+    x: "Strategic response will minimize competitive disadvantage while preventing future information leakage.",
+    reasoning_layers: [
+      { layer: "Context", note: "Competitive intelligence and strategic response." },
+      { layer: "Observation", note: "Suspicious timing suggesting possible information breach." },
+      { layer: "Mechanism", note: "Information advantage is temporary; execution and differentiation create sustainable advantage." },
+      { layer: "Nuance", note: "Parallel development or coincidence is possible even with suspicious timing." },
+      { layer: "Situational / Applied", note: "Focus on sustainable competitive advantages rather than temporary information advantages." }
+    ],
+    boundary_conditions: [
+      "Legal action might be expensive and difficult to prove without clear evidence.",
+      "Competitor might have genuinely developed similar solution independently."
+    ],
+    extra: "Distinguish between competitive intelligence and industrial espionage."
+  },
+
+  {
+    q: "A retail company's sustainability report shows carbon footprint reduction goals, but 70% of emissions come from suppliers not covered by targets. Stakeholders question authenticity of commitments. What's the accountability gap?",
+    a: "This represents scope 3 emissions accountability gap: comprehensive sustainability requires supply chain emission management and reporting, not just direct operations. Need supplier engagement and accountability for complete environmental impact.",
+    p: "Social Responsibility — Supply Chain Sustainability and Scope 3 Emissions",
+    d: "Corporate sustainability responsibility extends beyond direct operations to entire value chain environmental impact.",
+    steps: [
+      "Expand sustainability targets to include scope 3 (supplier) emissions with specific reduction goals.",
+      "Implement supplier sustainability assessment and improvement programs.",
+      "Report comprehensive carbon footprint including all emission scopes for transparency."
+    ],
+    x: "Comprehensive sustainability approach will enhance credibility while driving actual environmental impact reduction.",
+    reasoning_layers: [
+      { layer: "Context", note: "Sustainability reporting and stakeholder expectations." },
+      { layer: "Observation", note: "Limited scope undermining credibility of sustainability commitments." },
+      { layer: "Mechanism", note: "Stakeholders increasingly expect comprehensive rather than selective sustainability efforts." },
+      { layer: "Nuance", note: "Supply chain emissions may be harder to control but stakeholders still expect management." },
+      { layer: "Situational / Applied", note: "Use supplier scorecards and procurement criteria to drive sustainability improvements." }
+    ],
+    boundary_conditions: [
+      "Small companies may have limited influence over large suppliers' environmental practices.",
+      "Sustainability requirements might increase procurement costs or limit supplier options."
+    ],
+    extra: "Define scope 1, scope 2, and scope 3 emissions in sustainability reporting."
+  },
+
+  {
+    q: "A professional services firm's partners disagree on growth strategy: some want geographic expansion while others prefer service line expansion. Revenues are flat and competitive pressure increases. What strategic framework should guide the decision?",
+    a: "This requires strategic analysis using core competency assessment and market attractiveness evaluation: determine whether firm's competitive advantage is geographic knowledge or service expertise, then align expansion accordingly.",
+    p: "Planning — Growth Strategy and Core Competency Analysis",
+    d: "Successful expansion strategies build on existing core competencies and competitive advantages.",
+    steps: [
+      "Analyze current competitive advantages: geographic relationships vs. service expertise.",
+      "Evaluate market attractiveness and competitive intensity in potential expansion areas.",
+      "Assess resource requirements and risk profile of each expansion option."
+    ],
+    x: "Strategy aligned with core competencies will have higher success probability and sustainable competitive advantage.",
+    reasoning_layers: [
+      { layer: "Context", note: "Strategic direction disagreement in partnership." },
+      { layer: "Observation", note: "Multiple growth options with different resource implications." },
+      { layer: "Mechanism", note: "Growth strategies succeed when they leverage existing strengths." },
+      { layer: "Nuance", note: "Partnership structure may complicate decision-making and implementation." },
+      { layer: "Situational / Applied", note: "Consider pilot programs to test expansion approaches before full commitment." }
+    ],
+    boundary_conditions: [
+      "Resource constraints might prevent pursuing optimal strategy.",
+      "Partner consensus might be more important than theoretical strategic optimality."
+    ],
+    extra: "Explain the concept of core competency and its role in strategy formulation."
+  },
+
+  {
+    q: "A tech startup's employee handbook prohibits remote work but star developers demand flexibility post-pandemic. Traditional HR policies clash with talent market realities. What policy framework balances structure with flexibility?",
+    a: "This requires outcome-based policy framework rather than location-based rules: focus on performance metrics, communication standards, and collaboration requirements while allowing location flexibility for roles that permit it.",
+    p: "Staffing — Flexible Work Policies and Performance Management",
+    d: "Modern HR policies must balance organizational control with employee preferences and market realities.",
+    steps: [
+      "Analyze roles by collaboration requirements and performance measurability.",
+      "Develop flexible work guidelines with clear performance and communication expectations.",
+      "Implement trial period with success metrics to evaluate policy effectiveness."
+    ],
+    x: "Flexible policy framework will improve talent retention while maintaining performance standards and team cohesion.",
+    reasoning_layers: [
+      { layer: "Context", note: "HR policy adaptation to changing work preferences." },
+      { layer: "Observation", note: "Traditional policies misaligned with talent market expectations." },
+      { layer: "Mechanism", note: "Policy effectiveness depends on outcomes achieved, not activities controlled." },
+      { layer: "Nuance", note: "Different roles may require different flexibility levels." },
+      { layer: "Situational / Applied", note: "Use technology tools to enable remote collaboration and performance tracking." }
+    ],
+    boundary_conditions: [
+      "Some roles may genuinely require physical presence for effectiveness or security.",
+      "Company culture and values might prioritize in-person collaboration over individual preferences."
+    ],
+    extra: "List key elements that should be included in flexible work policy guidelines."
+  },
+
+  {
+    q: "A company's aggressive sales targets drive revenue growth but customer satisfaction scores decline and churn rates increase. Sales team achieves bonuses while customer success team struggles with complaints. What incentive design flaw exists?",
+    a: "This reflects misaligned incentive systems creating departmental conflicts: sales incentives focus on acquisition while ignoring retention, creating systematic bias toward short-term revenue over long-term customer value.",
+    p: "Directing — Incentive System Design and Cross-Functional Alignment",
+    d: "Effective incentive systems must align individual goals with overall business success across all functions.",
+    steps: [
+      "Redesign sales incentives to include customer satisfaction and retention metrics.",
+      "Create shared bonuses based on overall customer lifetime value rather than just acquisition.",
+      "Implement cross-functional team goals that require collaboration between sales and customer success."
+    ],
+    x: "Aligned incentives will improve both revenue quality and customer satisfaction by balancing acquisition with retention focus.",
+    reasoning_layers: [
+      { layer: "Context", note: "Incentive system creating departmental conflicts." },
+      { layer: "Observation", note: "Short-term revenue optimization damaging long-term value." },
+      { layer: "Mechanism", note: "People optimize for what they're measured and rewarded on." },
+      { layer: "Nuance", note: "Some tension between acquisition and retention may be natural and healthy." },
+      { layer: "Situational / Applied", note: "Use balanced scorecards and customer lifetime value metrics." }
+    ],
+    boundary_conditions: [
+      "Sales compensation changes might temporarily reduce acquisition while retention improves.",
+      "Complex incentive systems might be difficult to understand and administer effectively."
+    ],
+    extra: "Explain how poorly designed incentive systems can create agency problems in organizations."
+  },
+
+  {
+    q: "A company's digital transformation initiative shows impressive technology adoption metrics but employee productivity remains flat. Analysis reveals workers spend more time on digital tools rather than core value-creating activities. What transformation principle is missing?",
+    a: "This violates the principle that technology should enable work, not become the work. Digital transformation requires process redesign and change management, not just technology deployment.",
+    p: "Organising — Digital Transformation and Business Process Reengineering",
+    d: "Successful digital transformation integrates technology with redesigned processes and changed behaviors.",
+    steps: [
+      "Map current workflows to identify value-added versus administrative activities.",
+      "Redesign processes to leverage technology for automation and efficiency rather than adding complexity.",
+      "Provide training focused on new ways of working, not just tool functionality."
+    ],
+    x: "Process-focused transformation will improve actual productivity rather than just technology adoption metrics.",
+    reasoning_layers: [
+      { layer: "Context", note: "Technology implementation without productivity gains." },
+      { layer: "Observation", note: "Technology becoming burden rather than enabler." },
+      { layer: "Mechanism", note: "Digital transformation requires process change, not just tool deployment." },
+      { layer: "Nuance", note: "Some initial productivity decline may be normal during technology adoption." },
+      { layer: "Situational / Applied", note: "Use lean principles to eliminate non-value-added activities enabled by technology." }
+    ],
+    boundary_conditions: [
+      "Some compliance or documentation requirements might necessitate additional digital activities.",
+      "Learning curve effects might temporarily reduce productivity even with good process design."
+    ],
+    extra: "Distinguish between digitization, digitalization, and digital transformation."
+  },
+
+  {
+    q: "A pharmaceutical company's R&D pipeline shows many early-stage projects but few reaching late-stage trials. Scientists prefer exploring new compounds while management wants to focus resources on promising candidates. What innovation management tension exists?",
+    a: "This reflects the classic exploration vs. exploitation dilemma in innovation: need to balance scientific curiosity and breakthrough potential with resource focus and commercial discipline.",
+    p: "Planning — Innovation Portfolio Management and Resource Allocation",
+    d: "Innovation portfolio requires balancing high-risk/high-reward exploration with focused development of promising opportunities.",
+    steps: [
+      "Implement stage-gate process with explicit go/no-go criteria for project advancement.",
+      "Allocate fixed percentage of R&D budget to exploration while focusing remainder on development.",
+      "Create separate career tracks and incentives for exploration versus development activities."
+    ],
+    x: "Balanced innovation portfolio will maintain breakthrough potential while improving development success rates.",
+    reasoning_layers: [
+      { layer: "Context", note: "Innovation resource allocation and portfolio management." },
+      { layer: "Observation", note: "Too many early projects, too few successful developments." },
+      { layer: "Mechanism", note: "Innovation requires both breadth (exploration) and depth (exploitation)." },
+      { layer: "Nuance", note: "Scientific and commercial timelines may not align naturally." },
+      { layer: "Situational / Applied", note: "Use real options approach to value early-stage projects." }
+    ],
+    boundary_conditions: [
+      "Too much focus on development might miss breakthrough opportunities.",
+      "Regulatory requirements might dictate certain development timelines and resource commitments."
+    ],
+    extra: "Explain the exploration vs. exploitation dilemma in innovation management."
+  },
+
+  {
+    q: "A consulting firm's junior staff complain about long hours and difficult clients while senior partners focus on business development. High turnover affects service quality but partners argue tough assignments build character. What development philosophy conflict exists?",
+    a: "This reflects tension between 'trial by fire' development approach and structured mentoring: sustainable development requires challenging assignments with adequate support and feedback, not just difficult experiences.",
+    p: "Staffing — Employee Development and Mentoring",
+    d: "Effective professional development balances challenging experiences with supportive guidance and feedback.",
+    steps: [
+      "Implement structured mentoring program pairing junior staff with experienced practitioners.",
+      "Create development plans with clear progression milestones and support mechanisms.",
+      "Balance challenging assignments with adequate coaching and feedback loops."
+    ],
+    x: "Structured development will improve retention while maintaining high performance standards and client service quality.",
+    reasoning_layers: [
+      { layer: "Context", note: "Professional development philosophy and retention issues." },
+      { layer: "Observation", note: "Development through hardship causing retention problems." },
+      { layer: "Mechanism", note: "Learning requires both challenge and support for optimal development." },
+      { layer: "Nuance", note: "Some degree of challenging experience is necessary for professional growth." },
+      { layer: "Situational / Applied", note: "Use 70-20-10 development model balancing experience, coaching, and training." }
+    ],
+    boundary_conditions: [
+      "Client demands and project requirements might limit ability to provide ideal development experiences.",
+      "Some junior staff might prefer rapid advancement through challenging assignments despite difficulty."
+    ],
+    extra: "Describe the 70-20-10 model for professional development."
+  },
+    {
+    q: "A unicorn startup's valuation drops 80% in down market. Investors demand cost cuts and profitability timeline, but CEO insists on growth investments. Board meeting turns contentious. What governance crisis is unfolding?",
+    a: "This represents a fundamental board-management conflict over strategic direction during market stress. Proper governance requires balancing fiduciary duty to preserve capital with strategic vision for long-term value creation.",
+    p: "Corporate Governance — Board-Management Relations and Crisis Leadership",
+    d: "Board governance must balance oversight responsibility with management autonomy, especially during strategic inflection points.",
+    steps: [
+      "Convene emergency board session with independent financial analysis of cash runway and strategic options.",
+      "Develop scenario-based financial models showing path to profitability under different market conditions.",
+      "Establish clear milestones and decision gates for strategy adjustment based on performance metrics."
+    ],
+    x: "Structured governance process will align board and management on realistic strategy balancing growth and survival.",
+    reasoning_layers: [
+      { layer: "Context", note: "Valuation collapse creating strategic pressure." },
+      { layer: "Observation", note: "Fundamental disagreement between capital providers and management." },
+      { layer: "Mechanism", note: "Board has fiduciary duty to shareholders while management focuses on long-term vision." },
+      { layer: "Nuance", note: "Market downturns often expose strategic disagreements that were hidden during growth." },
+      { layer: "Situational / Applied", note: "Use independent board committees and external advisors for objective analysis." }
+    ],
+    boundary_conditions: [
+      "If cash runway is very short, survival may override all other strategic considerations.",
+      "Founder-CEO might have superior information about business prospects that board lacks."
+    ],
+    extra: "Explain the difference between board oversight and micromanagement in crisis situations."
+  },
+
+  {
+    q: "A family-owned manufacturing business faces succession crisis: eldest son is uninterested, daughter is highly capable but traditional family expects male heir, youngest son lacks experience but is enthusiastic. What succession framework addresses this complexity?",
+    a: "This requires merit-based succession planning that separates ownership from management while respecting family dynamics. Implement competency assessment and development programs for all interested family members.",
+    p: "Staffing — Family Business Succession and Governance",
+    d: "Family business succession must balance family harmony with business competence and stakeholder interests.",
+    steps: [
+      "Establish objective competency criteria for leadership roles independent of gender or birth order.",
+      "Create development paths for interested family members including external experience requirements.",
+      "Design governance structure separating family ownership decisions from professional management choices."
+    ],
+    x: "Merit-based succession will ensure business continuity while maintaining family harmony through fair, transparent process.",
+    reasoning_layers: [
+      { layer: "Context", note: "Complex family dynamics affecting business succession." },
+      { layer: "Observation", note: "Traditional expectations conflicting with actual capabilities and interests." },
+      { layer: "Mechanism", note: "Family businesses must balance emotional and business considerations." },
+      { layer: "Nuance", note: "Gender bias in succession may reflect broader family and cultural values." },
+      { layer: "Situational / Applied", note: "Consider family council and external board members for objective guidance." }
+    ],
+    boundary_conditions: [
+      "Strong family traditions might resist merit-based selection regardless of business logic.",
+      "Capable family members might prefer careers outside the family business."
+    ],
+    extra: "List three key differences between family business and professional management succession planning."
+  },
+
+  {
+    q: "A streaming platform's algorithm recommends increasingly extreme content to drive engagement, leading to user addiction concerns and advertiser backlash. Tech team argues this maximizes platform metrics while ethics committee raises societal harm issues. What responsibility framework applies?",
+    a: "This exemplifies the tension between algorithmic optimization and social responsibility. Requires stakeholder capitalism approach balancing user engagement with user wellbeing and societal impact.",
+    p: "Business Ethics — Algorithmic Responsibility and Platform Ethics",
+    d: "Technology platforms bear responsibility for societal impacts of their algorithmic design choices beyond just user engagement metrics.",
+    steps: [
+      "Implement algorithmic auditing to identify and mitigate harmful content amplification patterns.",
+      "Redesign engagement metrics to include user wellbeing indicators alongside traditional engagement measures.",
+      "Establish ethics review board with external experts to guide algorithmic design decisions."
+    ],
+    x: "Responsible algorithmic design will build sustainable user relationships while addressing advertiser and regulatory concerns.",
+    reasoning_layers: [
+      { layer: "Context", note: "Technology platform facing ethical dilemma about algorithmic impact." },
+      { layer: "Observation", note: "Optimization for engagement creating unintended harmful consequences." },
+      { layer: "Mechanism", note: "Algorithmic systems can amplify behaviors in ways that maximize metrics while harming users." },
+      { layer: "Nuance", note: "Defining 'harm' and 'wellbeing' in algorithmic contexts is complex and subjective." },
+      { layer: "Situational / Applied", note: "Consider user control settings and transparency about algorithmic functioning." }
+    ],
+    boundary_conditions: [
+      "Reducing engagement might affect revenue and competitive position significantly.",
+      "User preferences might actually favor the engaging but potentially harmful content."
+    ],
+    extra: "Explain the concept of 'dark patterns' in user interface design and their ethical implications."
+  },
+
+  {
+    q: "A consulting firm wins a major client project but discovers the scope was severely underestimated. Delivering as proposed will generate losses, but scope creep requests could damage client relationship. Partners split on whether to absorb losses or renegotiate. What pricing and relationship strategy resolves this?",
+    a: "This requires transparent stakeholder communication and collaborative problem-solving: acknowledge the estimation error, propose value-based scope adjustment, and demonstrate commitment to client success within realistic economic parameters.",
+    p: "Marketing — Client Relationship Management and Value Pricing",
+    d: "Professional services pricing must balance competitive bidding with realistic scope assessment and client relationship preservation.",
+    steps: [
+      "Conduct immediate scope analysis documenting the estimation gaps and their causes.",
+      "Present client with options including scope reduction, timeline extension, or budget adjustment.",
+      "Implement project governance with regular scope review and change management processes."
+    ],
+    x: "Transparent communication will preserve client relationship while establishing realistic project parameters and future pricing credibility.",
+    reasoning_layers: [
+      { layer: "Context", note: "Project pricing error creating financial and relationship stress." },
+      { layer: "Observation", note: "Estimation failure requiring difficult conversation with client." },
+      { layer: "Mechanism", note: "Professional services success depends on both delivery excellence and economic viability." },
+      { layer: "Nuance", note: "Absorbing losses might seem client-focused but could compromise service quality." },
+      { layer: "Situational / Applied", note: "Use this as opportunity to demonstrate problem-solving partnership with client." }
+    ],
+    boundary_conditions: [
+      "Client might have competitive alternatives if renegotiation is perceived as bait-and-switch.",
+      "Firm's reputation and future pricing credibility might be at stake regardless of decision."
+    ],
+    extra: "Distinguish between fixed-price and time-and-materials pricing models in professional services."
+  },
+
+  {
+    q: "A renewable energy company's solar installation projects face supply chain disruptions causing 6-month delays. Customers demand compensation, installers need steady work, and investors question execution capability. What operations and stakeholder management strategy addresses this crisis?",
+    a: "This requires multi-stakeholder crisis management with transparent communication and alternative solutions: diversify supply sources, offer customer alternatives, and maintain installer relationships through alternative work arrangements.",
+    p: "Operations Management — Supply Chain Risk and Stakeholder Communication",
+    d: "Supply chain disruptions require coordinated response addressing all stakeholder impacts while maintaining long-term business viability.",
+    steps: [
+      "Immediately assess alternative suppliers and expedited shipping options despite higher costs.",
+      "Communicate transparently with customers offering compensation packages and realistic timelines.",
+      "Arrange alternative work for installers through partnerships or temporary projects to maintain team."
+    ],
+    x: "Proactive crisis management will minimize customer defections and maintain operational capability for recovery.",
+    reasoning_layers: [
+      { layer: "Context", note: "Supply chain crisis affecting multiple stakeholder groups." },
+      { layer: "Observation", note: "External disruption creating internal operational and relationship challenges." },
+      { layer: "Mechanism", note: "Supply chain resilience requires diversification and contingency planning." },
+      { layer: "Nuance", note: "Different stakeholders have different tolerance levels for disruption and compensation expectations." },
+      { layer: "Situational / Applied", note: "Use this crisis to build more resilient supply chain and customer communication processes." }
+    ],
+    boundary_conditions: [
+      "Alternative suppliers might have quality or cost issues that create new problems.",
+      "Compensation costs might threaten company financial viability if disruptions are prolonged."
+    ],
+    extra: "List three key elements of supply chain risk management strategy."
+  },
+
+  {
+    q: "A fintech company's AI-powered credit scoring algorithm achieves 95% accuracy but shows systematic bias against certain demographic groups. Regulators threaten action while data scientists argue this reflects actual risk patterns. What ethical AI framework is needed?",
+    a: "This requires implementing fairness-aware machine learning that balances predictive accuracy with equitable outcomes. Use bias detection and mitigation techniques while maintaining regulatory compliance and business viability.",
+    p: "Business Ethics — AI Fairness and Algorithmic Bias",
+    d: "AI systems must balance statistical accuracy with social fairness, especially in high-impact applications like credit decisions.",
+    steps: [
+      "Implement bias testing and algorithmic auditing processes to identify and measure discriminatory patterns.",
+      "Apply fairness constraints in model development that prevent disparate impact while maintaining predictive power.",
+      "Establish ongoing monitoring and adjustment processes to ensure continued fairness as data patterns evolve."
+    ],
+    x: "Ethical AI implementation will ensure regulatory compliance while maintaining business effectiveness and social responsibility.",
+    reasoning_layers: [
+      { layer: "Context", note: "AI system achieving technical success but creating ethical concerns." },
+      { layer: "Observation", note: "Statistical patterns may reflect historical biases rather than legitimate risk factors." },
+      { layer: "Mechanism", note: "AI systems can perpetuate and amplify existing societal biases through training data." },
+      { layer: "Nuance", note: "Defining 'fairness' in algorithmic contexts involves complex tradeoffs between different ethical principles." },
+      { layer: "Situational / Applied", note: "Consider explainable AI techniques to understand and justify algorithmic decisions." }
+    ],
+    boundary_conditions: [
+      "Fairness constraints might reduce overall accuracy and profitability of credit decisions.",
+      "Regulatory definitions of fairness might conflict with business optimization objectives."
+    ],
+    extra: "Explain the difference between disparate treatment and disparate impact in algorithmic fairness."
+  },
+
+  {
+    q: "A luxury fashion brand's sustainability report shows progress on environmental goals but investigation reveals supplier factories still use child labor. NGO threatens public campaign while suppliers claim economic necessities. What supply chain responsibility strategy addresses this crisis?",
+    a: "This requires immediate supplier accountability with long-term capacity building: terminate non-compliant suppliers while investing in ethical supplier development and third-party monitoring systems.",
+    p: "Social Responsibility — Supply Chain Ethics and Human Rights",
+    d: "Brand responsibility extends throughout value chain requiring active monitoring and supplier development for ethical compliance.",
+    steps: [
+      "Immediately audit all suppliers using independent third-party labor rights organizations.",
+      "Terminate contracts with non-compliant suppliers while providing transition support for affected workers.",
+      "Invest in supplier capability building and fair labor practices certification programs."
+    ],
+    x: "Comprehensive supply chain ethics will protect brand reputation while advancing human rights and sustainable business practices.",
+    reasoning_layers: [
+      { layer: "Context", note: "Supply chain human rights violations threatening brand reputation." },
+      { layer: "Observation", note: "Environmental progress undermined by social responsibility failures." },
+      { layer: "Mechanism", note: "Luxury brands depend on ethical reputation and stakeholder trust for premium positioning." },
+      { layer: "Nuance", note: "Economic pressures on suppliers may create systematic incentives for labor violations." },
+      { layer: "Situational / Applied", note: "Partner with industry groups and NGOs for collaborative supplier development." }
+    ],
+    boundary_conditions: [
+      "Immediate supplier termination might harm legitimate workers while satisfying activist demands.",
+      "Ethical sourcing requirements might significantly increase production costs and retail prices."
+    ],
+    extra: "Explain the concept of 'due diligence' in supply chain human rights management."
+  },
+
+  {
+    q: "A pharmaceutical company's blockbuster drug patent expires next year, threatening 40% of revenues. Generic competition will reduce prices by 80%. R&D pipeline has promising but unproven candidates. What strategic planning framework addresses this 'patent cliff'?",
+    a: "This requires portfolio transition strategy combining patent life cycle management, accelerated R&D development, and business model diversification to bridge revenue gap during patent transition.",
+    p: "Planning — Patent Life Cycle and Portfolio Management",
+    d: "Pharmaceutical companies must manage patent expiration cycles through pipeline development and strategic portfolio planning.",
+    steps: [
+      "Accelerate late-stage clinical trials and regulatory approval processes for pipeline candidates.",
+      "Explore patent extension opportunities through new formulations or indications for existing drugs.",
+      "Consider strategic partnerships, licensing, or acquisition to supplement internal R&D pipeline."
+    ],
+    x: "Proactive patent cliff management will minimize revenue disruption while positioning company for next growth cycle.",
+    reasoning_layers: [
+      { layer: "Context", note: "Predictable but severe revenue threat from patent expiration." },
+      { layer: "Observation", note: "Innovation pipeline timing doesn't align with patent protection loss." },
+      { layer: "Mechanism", note: "Patent protection provides temporary monopoly that enables R&D investment recovery." },
+      { layer: "Nuance", note: "Generic competition benefits patients but threatens innovation funding for future drugs." },
+      { layer: "Situational / Applied", note: "Use real options valuation for pipeline projects and strategic partnerships." }
+    ],
+    boundary_conditions: [
+      "Regulatory approval timelines may be unpredictable regardless of company efforts.",
+      "Market competition and healthcare policy changes may affect drug pricing beyond patent considerations."
+    ],
+    extra: "Explain how patent protection enables pharmaceutical innovation investment and the social tradeoffs involved."
+  }
+
+];
+
+
+  // Player wiring (same as Chemistry build)
+  const elQ = document.getElementById('qtext');
+  const elT = document.getElementById('qtitle');
+  const elA = document.getElementById('answer');
+  const elF = document.getElementById('formula');
+  const elD = document.getElementById('pdesc');
+  const elX = document.getElementById('predict');
+  const elC = document.getElementById('counter');
+  const elApply = document.getElementById('apply');
+  const wrapL = document.getElementById('layerWrap');
+  const wrapB = document.getElementById('boundWrap');
+  const wrapE = document.getElementById('extraWrap');
+  const elLayers = document.getElementById('layers');
+  const elBounds = document.getElementById('bounds');
+  const elExtra = document.getElementById('extra');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const back = document.getElementById('back');
+  const io = new IntersectionObserver(([e])=>{ back.style.display = e.isIntersecting ? 'none' : 'inline-block'; });
+  io.observe(elT);
+  back.addEventListener('click',()=>{ elT.scrollIntoView({behavior:'smooth', block:'start'}); });
+
+  let idx = 0;
+
+  function render(){
+    const n = DATA.length;
+    const d = DATA[idx];
+    elT.textContent = `DeepThink ${idx+1} of ${n}`;
+    elQ.textContent = d.q;
+    elA.textContent = d.a;
+    elF.firstChild && (elF.firstChild.nodeValue = (d.p || '—') + ' ');
+    elD.textContent = d.d || '';
+    elApply.innerHTML = (d.steps || []).map(s=>`<li>${s}</li>`).join('');
+    elX.textContent = d.x || '';
+
+    if (d.reasoning_layers && d.reasoning_layers.length){
+      wrapL.style.display = 'block';
+      elLayers.innerHTML = d.reasoning_layers.map(l=>`<li><strong>${l.layer}:</strong> ${l.note}</li>`).join('');
+    } else { wrapL.style.display = 'none'; elLayers.innerHTML = ''; }
+
+    if (d.boundary_conditions && d.boundary_conditions.length){
+      wrapB.style.display = 'block';
+      elBounds.innerHTML = d.boundary_conditions.map(b=>`<li>${b}</li>`).join('');
+    } else { wrapB.style.display = 'none'; elBounds.innerHTML = ''; }
+
+    if (d.extra){
+      wrapE.style.display = 'block';
+      elExtra.textContent = d.extra;
+    } else { wrapE.style.display = 'none'; elExtra.textContent = ''; }
+
+    elC.textContent = `${idx+1} / ${n}`;
+    prev.disabled = (idx===0);
+    next.disabled = (idx===n-1);
+  }
+  prev.addEventListener('click',()=>{ if(idx>0){ idx--; render(); elT.scrollIntoView({behavior:'smooth', block:'start'}); }});
+  next.addEventListener('click',()=>{ if(idx<DATA.length-1){ idx++; render(); elT.scrollIntoView({behavior:'smooth', block:'start'}); }});
+  
+  render();
+</script>
+</body>
+</html>
