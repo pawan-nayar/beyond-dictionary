@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Introduction to Problem Solving: The Complete Guide</title>
+  <meta name="description" content="A world-class guide to Problem Solving for CBSE Class 11 students. Explore algorithms, flowcharts, pseudocode, decomposition, and verification with interactive animators and simulators.">
+  <meta name="keywords" content="Problem Solving, Algorithm, Flowchart, Pseudocode, Class 11 Computer Science, CBSE, Decomposition, Dry Run, Algorithm Verification">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================= Base / Theme (Compact Redesign) ================= */
+    :root {
+      --text:#212529; --bg:#fff; --muted:#f8f9fa; --border:#e9ecef;
+      --accent:#fd7e14; --accent-2:#e87312; --header-bg:#212529; --header-fg:#f8f9fa;
+      --ok:#16a34a; --ok-soft:#dcfce7; --bad:#dc2626; --bad-soft:#fee2e2;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6; font-size: 15px;}
+    .container{max-width:800px;margin:auto;padding:16px;background:#fff}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* ================= Header / Footer / Breadcrumbs ================= */
+    .site-header,.site-footer{background:var(--header-bg);color:var(--header-fg);padding:12px 16px}
+    .site-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:60}
+    .logo{font-weight:700;font-size:1.1rem;color:#fff}
+    .site-header nav{display:flex;gap:12px; font-size: 0.9rem;}
+    .site-header nav a{color:#ced4da}
+    .site-header nav a:hover{color:#fff}
+    .site-footer{text-align:center;margin-top:40px;padding:30px}
+    .breadcrumbs{margin-bottom:16px;font-size:0.85rem;color:#6c757d}
+    .breadcrumbs a{color:var(--accent)}
+
+    /* ================= Typography & Layout (Compact) ================= */
+    h1{font-size:clamp(1.8rem,5vw,2.2rem);text-align:left;margin-bottom:6px;color:var(--text);line-height:1.2}
+    .byline{font-size:clamp(1rem,3vw,1.1rem);font-style:italic;color:#4a5568;margin-bottom:16px}
+    h2{font-size:clamp(1.4rem,4vw,1.7rem);color:var(--text);margin:40px 0 12px;border-bottom:2px solid var(--border);padding-bottom:6px}
+    h3{font-size:clamp(1.1rem,3vw,1.3rem);color:var(--text);margin-top:24px;margin-bottom:10px}
+    h4{font-size:clamp(1rem,2.5vw,1.1rem);font-weight:bold;color:var(--accent-2);margin-bottom:8px}
+    p{margin-bottom:12px;word-wrap:break-word}
+    ul{margin-left:20px;margin-bottom:16px;list-style-type:'🧩';padding-left:1em}
+    li{margin-bottom:10px;padding-left:0.5em}
+    .intro{font-size:1rem;line-height:1.7;background:var(--muted);padding:16px;border-radius:8px;border-left:4px solid var(--accent);margin:16px 0}
+    .img-frame{position:relative;width:100%;padding-top:50%;overflow:hidden;border-radius:8px;margin:16px 0;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+    .img-frame img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+     .img-tooltip{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.8);color:#fff;padding:6px 10px;border-radius:4px;font-size:0.8rem;opacity:0;visibility:hidden;transition:all 0.3s ease;pointer-events:none;z-index:10}
+     .img-frame:hover .img-tooltip{opacity:1;visibility:visible}
+    .btn{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:6px;font-weight:600;cursor:pointer; transition: background-color 0.2s ease; font-size:0.9rem;}
+    .btn:hover { background-color: var(--accent-2); }
+    .btn:disabled { background-color: #ced4da; cursor: not-allowed; }
+    
+    /* ================= Interactive & Structural Elements (Compact) ================= */
+    .interactive-box{background:#f8f9fa;border:1px solid var(--border);border-radius:8px;padding:16px;margin:16px 0}
+    .table-wrap{position:relative;border:1px solid var(--border);border-radius:12px;background:#fff;margin:24px 0}
+    .table-scroll{position:relative;overflow:auto}
+    .table-scroll::before,.table-scroll::after{content:"";position:sticky;top:0;bottom:0;width:18px;pointer-events:none;z-index:2}
+    .table-scroll::before{left:0;background:linear-gradient(90deg,#fff,rgba(255,255,255,0))}
+    .table-scroll::after{right:0;background:linear-gradient(-90deg,#fff,rgba(255,255,255,0))}
+    table.data-table{width:max(800px,100%);border-collapse:separate;border-spacing:0; font-size:0.95rem;}
+    table.data-table th, table.data-table td{padding:12px;border-bottom:1px solid var(--border);vertical-align:top;background:#fff}
+    table.data-table thead th{position:sticky;top:0;z-index:3;background:var(--header-bg);color:#fff;text-align:left}
+    table.data-table td:first-child, table.data-table th:first-child{position:sticky;left:0;min-width:180px;background:#fff;z-index:2;border-right:1px solid var(--border)}
+    table.data-table tbody tr:nth-child(even){background:#f8f9fa;}
+    
+    /* --- NEW Flowchart Animator --- */
+    #flowchart-animator { display: flex; flex-direction: column; gap: 16px; }
+    #flowchart-stage { display: flex; justify-content: center; align-items: center; min-height: 150px; background: #fff; border-radius: 8px; border: 1px solid var(--border); padding: 20px; position: relative; }
+    #flowchart-stage .flow-node { display: none; text-align: center; }
+    #flowchart-stage .flow-node.active { display: block; }
+    .flow-shape { padding: 15px 25px; border: 2px solid #333; background: #fff7ed; min-width: 200px; }
+    .terminator { border-radius: 50px; }
+    .process { border-radius: 4px; }
+    .io { transform: skew(-20deg); }
+    .io span { display: inline-block; transform: skew(20deg); }
+    .decision { transform: rotate(45deg); width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; }
+    .decision span { transform: rotate(-45deg); }
+    #flowchart-pointer { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 1.5rem; color: var(--accent); display: none; }
+    #flowchart-explanation { background: var(--muted); padding: 12px; border-radius: 8px; border-left: 4px solid var(--accent); }
+    #flowchart-explanation h5 { margin: 0 0 5px 0; color: var(--accent-2); }
+    #flowchart-controls { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+
+    /* --- Dry Run Simulator (Compact) --- */
+    #dry-run-simulator { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 768px) { #dry-run-simulator { grid-template-columns: 1fr 1fr; } }
+    #dry-run-pseudocode { background: #212529; color: #f8f9fa; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.9rem; }
+    #dry-run-pseudocode .code-line { display: block; padding: 2px 5px; border-radius: 3px; }
+    #dry-run-pseudocode .highlight-code { background-color: #e87312; }
+    #dry-run-trace-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    #dry-run-trace-table th, #dry-run-trace-table td { border: 1px solid var(--border); padding: 6px; text-align: center; }
+    #dry-run-trace-table thead { background-color: var(--muted); }
+    #dry-run-controls { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+    #dry-run-inputs { display: flex; flex-direction: column; gap: 8px; }
+    #dry-run-inputs label { font-weight: bold; color: var(--text); }
+    #dry-run-inputs input { 
+        padding: 10px 12px; 
+        border-radius: 6px; 
+        border: 1px solid var(--border); 
+        width: 100%; 
+        font-size: 0.95rem;
+        color: var(--text);
+        background: #fff;
+    }
+    #dry-run-inputs input::placeholder { 
+        color: #9ca3af; 
+        font-style: italic;
+    }
+    #dry-run-inputs input:focus { 
+        outline: none; 
+        border-color: var(--accent); 
+        box-shadow: 0 0 0 2px rgba(253, 126, 20, 0.1);
+    }
+    #dry-run-buttons { display: flex; gap: 10px; }
+    .error-message { 
+        color: var(--bad); 
+        font-size: 0.85rem; 
+        margin-top: 5px; 
+        display: none;
+        padding: 8px;
+        background: var(--bad-soft);
+        border-radius: 4px;
+        border-left: 3px solid var(--bad);
+    }
+
+    /* --- Decomposition Tree (Compact) --- */
+    .decomp-tree { list-style-type: none; padding-left: 15px; }
+    .decomp-tree li { position: relative; }
+    .decomp-tree li::before { content: ''; position: absolute; top: 0; left: -15px; border-left: 1px solid #ccc; height: 100%; }
+    .decomp-tree li:last-child::before { height: 0.9em; }
+    .decomp-tree li::after { content: ''; position: absolute; top: 0.9em; left: -15px; border-top: 1px solid #ccc; width: 10px; }
+    .decomp-tree .tree-node { background: var(--muted); border: 1px solid var(--border); padding: 4px 8px; border-radius: 5px; display: inline-block; font-size:0.9rem; }
+    .decomp-tree .tree-node.expandable { cursor: pointer; }
+    .decomp-tree .tree-node.expandable:hover { background: #e9ecef; }
+    .decomp-tree ul { display: none; padding-left: 0; margin-left: 15px;}
+    .decomp-tree ul.expanded { display: block; }
+
+    /* === Myth/Reality Cards === */
+    .myth-reality-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 25px 0; }
+    .myth-card { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border: 3px solid var(--accent); border-radius: 15px; padding: 20px; transition: all .3s ease; box-shadow: 0 4px 15px rgba(253,126,20,0.1); }
+    .myth-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(253,126,20,0.2); }
+    .myth-header { display: flex; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e9ecef; }
+    .myth-icon { font-size: 2.5rem; margin-right: 15px; }
+    .myth-title { margin: 0; color: #212529; font-size: 1.2rem; font-weight: bold; }
+    .myth-content { display: flex; flex-direction: column; gap: 12px; }
+    .myth-section, .reality-section { background: #fff; padding: 12px; border-radius: 8px; border-left: 4px solid var(--accent); }
+    .myth-section { border-left-color: #dc2626; }
+    .reality-section { border-left-color: #16a34a; }
+    .myth-label, .reality-label { font-weight: bold; margin-bottom: 8px; }
+    .myth-label { color: #dc2626; }
+    .reality-label { color: #16a34a; }
+
+    /* === Rapid Revision Sheet (Card Style) === */
+    .exam-tips-card { background: #2c3e50; border-radius: 20px; padding: 30px; margin: 30px 0; position: relative; overflow: hidden; }
+    .exam-tips-card::before { content: "💡"; position: absolute; top: 20px; right: 20px; font-size: 3rem; opacity: 0.3; }
+    .exam-tips-card h3 { color: #fff; text-align: center; margin-bottom: 25px; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .exam-tips-card h3::before { content: "💡"; font-size: 1.8rem; }
+    .tips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+    .tip-item { background: #34495e; border-radius: 12px; padding: 20px; border-left: 4px solid var(--accent); color: #fff; transition: all 0.3s ease; }
+    .tip-item:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+    .tip-item strong { color: var(--accent); }
+
+    /* === FAQ Styles === */
+    .accordion{display:grid;gap:8px}
+    .accordion-header{width:100%;text-align:left;background:var(--muted);border:1px solid var(--border);padding:16px 20px;border-radius:8px;cursor:pointer;font-size:1.1rem;font-weight:bold;display:flex;align-items:center}
+    .accordion-header .accordion-title { margin-right: auto; padding-right: 1rem; }
+    .accordion-header::after{content:'+';color:#6c757d}
+    .accordion-header[aria-expanded="true"]{background:#e9ecef;border-bottom-left-radius:0;border-bottom-right-radius:0}
+    .accordion-header[aria-expanded="true"]::after{content:'−'}
+    .accordion-content{padding:20px;display:none;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px}
+
+    /* === Quiz Styles === */
+    .quiz-container{padding:20px;border:2px solid var(--border);border-radius:12px;background:#fff}
+    .quiz-navigation{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+    .quiz-body{display:none;}
+    .quiz-body.active{display:block}
+    .quiz-options{display:grid; gap:12px;}
+    .quiz-option label{display:flex; align-items:center; gap:12px; padding:14px;border:2px solid var(--border);border-radius:8px;cursor:pointer;background:#f8f9fa}
+    .quiz-option input[type="radio"]{flex-shrink:0;}
+    .quiz-option .explanation{display:none;margin-top:10px;padding:15px;border-radius:6px;border-left:4px solid #a0aec0}
+    .quiz-option.selected.correct label{background:var(--ok-soft);border-color:var(--ok)}
+    .quiz-option.selected.wrong label{background:var(--bad-soft);border-color:var(--bad)}
+    .quiz-option.correct .explanation{border-left-color:var(--ok);background:#f0fff4}
+    .quiz-option.wrong .explanation{border-left-color:var(--bad);background:#fff5f5}
+
+         /* === Glossary Styles === */
+     .glossary-cloud{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;justify-content:center}
+     .glossary-chip{position:relative;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:#fff7ed;border:1px solid #ffd8a8;color:#d9480f;font-weight:600;cursor:help;box-shadow:0 2px 6px rgba(253,126,20,.12);transition:all 0.2s ease}
+     .glossary-chip:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(253,126,20,.2)}
+     .glossary-chip:focus{outline:3px solid rgba(253,126,20,.35)}
+     .chip-tip{position:fixed;z-index:80;min-width:240px;max-width:min(92vw,420px);background:var(--accent);color:#fff;padding:12px 14px;border-radius:12px;box-shadow:0 12px 28px rgba(253,126,20,.35);opacity:0;visibility:hidden;transition:.15s;line-height:1.45}
+     .chip-tip.show{opacity:1;visibility:visible}
+     .chip-tip .arrow{position:absolute;width:12px;height:12px;background:var(--accent);transform:rotate(45deg)}
+     .glossary-hint{text-align:center;margin-top:12px;padding:8px;background:var(--muted);border-radius:6px;font-size:0.9rem;color:#6c757d;border-top:2px solid var(--accent)}
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+      <a href="#" class="logo">Beyond Dictionary</a>
+      <nav><a href="#">What's New</a><a href="#">Learning</a><a href="#">Games & Quizzes</a><a href="#">Blog</a></nav>
+  </header>
+
+  <div class="container">
+    
+    <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="#">CBSE</a> &gt; <a href="#">Class 11</a> &gt; <a href="#">Computer Science</a> &gt; Chapter 4: Introduction to Problem Solving</nav>
+
+    <h1>Introduction to Problem Solving</h1>
+    <p class="byline">From Idea to Algorithm: The Art and Science of Thinking Like a Programmer</p>
+    <div class="article-meta"><span class="author-emoji">🧠</span><span>Tech Expert &nbsp; | &nbsp; Updated for CBSE 2025-26 Curriculum</span></div>
+    <p class="intro">At its heart, computer science is not about coding—it's about problem-solving. Writing code is just the final step in a much more critical process of analysis, design, and planning. This chapter introduces you to the structured, methodical approach that programmers use to transform a vague problem into a precise, step-by-step solution called an algorithm. We will explore how to analyze problems, represent solutions using flowcharts and pseudocode, and verify their correctness. Mastering this process is the single most important skill for any aspiring programmer.</p>
+         <div class="img-frame">
+         <img src="https://images.unsplash.com/photo-1605712916066-e143c317df72?q=80&w=874&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Problem solving concept with interconnected nodes and pathways" onerror="this.onerror=null;this.src='https://placehold.co/1470x735/000000/FFFFFF?text=Problem+Solving';">
+         <div class="img-tooltip">Source = Unsplash</div>
+     </div>
+    
+    <section id="steps">
+        <h2>4.2 Steps for Problem Solving</h2>
+        <p>A disciplined approach is key to solving problems effectively. The standard lifecycle involves several distinct stages, from understanding the problem to creating a working solution. Rushing to code is the most common mistake a beginner makes.</p>
+        <h4>The Problem-Solving Lifecycle</h4>
+        <ul>
+            <li><strong>1. Analyse the Problem:</strong> The most crucial step. You must understand exactly what is being asked. Identify the inputs (data you have), the outputs (result you need), and any constraints (rules or limitations). A failure here guarantees a failed solution.</li>
+            <li><strong>2. Develop an Algorithm:</strong> Create a clear, step-by-step plan to solve the problem. This is your logical blueprint, independent of any programming language. This is where the core "thinking" happens.</li>
+            <li><strong>3. Represent the Algorithm:</strong> Document your plan using tools like flowcharts or pseudocode to visualize and refine the logic. This makes it easier to spot flaws and communicate your plan to others.</li>
+            <li><strong>4. Verify and Test the Algorithm:</strong> Perform a dry run with sample data to check for logical errors before writing any code. This step saves hours of debugging later.</li>
+            <li><strong>5. Code the Solution:</strong> Translate your verified algorithm into a programming language like Python. This should be a straightforward mechanical step if your algorithm is solid.</li>
+            <li><strong>6. Test and Debug the Program:</strong> Run the program with various inputs (including edge cases like zero, negative numbers, or empty lists) to find and fix bugs.</li>
+        </ul>
+    </section>
+
+    <section id="representation">
+        <h2>4.4 Representation of Algorithms</h2>
+        <p>Before coding, we need to represent our algorithm in a human-readable format. The two most common methods are pseudocode and flowcharts.</p>
+        <h3>Interactive Flowchart Animator</h3>
+        <p>A flowchart is a graphical representation of an algorithm. Use the buttons below to "animate" the flowchart and see how the logic flows for an algorithm that finds the larger of two numbers.</p>
+        <div class="interactive-box" id="flowchart-animator">
+            <div id="flowchart-stage">
+                <span id="flowchart-pointer">➡️</span>
+                <div class="flow-node active" data-step="0">
+                    <div class="flow-shape terminator">Start</div>
+                </div>
+                <div class="flow-node" data-step="1">
+                    <div class="flow-shape io"><span>Input Num1, Num2</span></div>
+                </div>
+                <div class="flow-node" data-step="2">
+                    <div class="flow-shape decision"><span>Is Num1 > Num2?</span></div>
+                </div>
+                <div class="flow-node" data-step="3">
+                    <div class="flow-shape process">Set Max = Num1</div>
+                </div>
+                <div class="flow-node" data-step="4">
+                    <div class="flow-shape process">Set Max = Num2</div>
+                </div>
+                 <div class="flow-node" data-step="5">
+                    <div class="flow-shape io"><span>Print Max</span></div>
+                </div>
+                <div class="flow-node" data-step="6">
+                    <div class="flow-shape terminator">End</div>
+                </div>
+            </div>
+            <div id="flowchart-explanation">
+                <h5>Step 0: Start</h5>
+                <p><strong>Symbol:</strong> Terminator (Oval).<br><strong>Purpose:</strong> This shape always marks the beginning and end of a flowchart. The algorithm execution begins here.</p>
+            </div>
+            <div id="flowchart-controls">
+                <button id="fc-next" class="btn">Next Step</button>
+                <button id="fc-reset" class="btn">Reset</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="verification">
+        <h2>4.6 Verifying Algorithms: Live Dry Run</h2>
+        <p>How do we know if our algorithm is correct before we code it? We perform a <strong>dry run</strong>. This means we manually trace the execution of the algorithm with sample inputs, step by step, tracking the values of all variables in a trace table.</p>
+        <h3>Dry Run Simulator: Find Highest Score</h3>
+        <p>Let's dry run an algorithm to find the highest score from a list. Enter a comma-separated list of scores (e.g., 60, 85, 72, 95, 88) and step through the logic.</p>
+        <div class="interactive-box" id="dry-run-simulator">
+            <div>
+                <h4>Pseudocode</h4>
+                <div id="dry-run-pseudocode">
+                    <span class="code-line" id="line1">1. INPUT scores_list</span>
+                    <span class="code-line" id="line2">2. SET max_score = scores_list[0]</span>
+                    <span class="code-line" id="line3">3. FOR EACH score IN scores_list</span>
+                    <span class="code-line" id="line4">4.   IF score > max_score THEN</span>
+                    <span class="code-line" id="line5">5.     max_score = score</span>
+                    <span class="code-line" id="line6">6.   END IF</span>
+                    <span class="code-line" id="line7">7. END FOR</span>
+                    <span class="code-line" id="line8">8. PRINT max_score</span>
+                </div>
+                <div id="dry-run-controls">
+                    <div id="dry-run-inputs">
+                        <label for="n-input">Scores:</label>
+                        <input type="text" id="n-input" placeholder="e.g., 13, 72, 45, 98, 12" value="60, 85, 72, 95, 88">
+                        <div class="error-message" id="input-error"></div>
+                    </div>
+                    <div id="dry-run-buttons">
+                    <button id="dr-start" class="btn">Start</button>
+                    <button id="dr-next" class="btn" disabled>Next Step</button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4>Trace Table</h4>
+                <div class="table-scroll">
+                    <table id="dry-run-trace-table">
+                        <thead><tr><th>Step</th><th>score</th><th>max_score</th><th>Condition</th><th>Notes</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="decomposition">
+        <h2>4.9 Decomposition</h2>
+        <p><strong>Decomposition</strong> is the process of breaking down a large, complex problem into smaller, more manageable sub-problems. This is the core idea behind modular design. Each sub-problem can be solved independently, and their solutions can be combined to solve the original problem.</p>
+        <h3>Interactive Decomposition Tree</h3>
+        <p>Click on the nodes below to expand the problem of "Calculating a Student's Final Grade" into its sub-problems.</p>
+        <div class="interactive-box">
+            <ul class="decomp-tree">
+                <li>
+                    <span class="tree-node expandable">Calculate Final Grade</span>
+                    <ul class="expanded">
+                        <li>
+                            <span class="tree-node expandable">Get Input Scores</span>
+                            <ul>
+                                <li><span class="tree-node">Input Term 1 Marks</span></li>
+                                <li><span class="tree-node">Input Term 2 Marks</span></li>
+                                <li><span class="tree-node">Input Final Exam Marks</span></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="tree-node expandable">Calculate Weighted Average</span>
+                            <ul>
+                                <li><span class="tree-node">Calculate Term 1 Weight (25%)</span></li>
+                                <li><span class="tree-node">Calculate Term 2 Weight (25%)</span></li>
+                                <li><span class="tree-node">Calculate Final Exam Weight (50%)</span></li>
+                                <li><span class="tree-node">Sum Weighted Scores</span></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="tree-node expandable">Determine Final Result</span>
+                             <ul>
+                                <li><span class="tree-node">Assign Letter Grade (A, B, C...)</span></li>
+                                <li><span class="tree-node">Check Pass/Fail Status</span></li>
+                            </ul>
+                        </li>
+                        <li><span class="tree-node">Display Result</span></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="digital-ethics">
+        <h2>4.10 Digital Ethics and Cyber Safety</h2>
+        <p>In today's interconnected digital world, understanding how to navigate online spaces safely and ethically is crucial. This section covers essential topics that every digital citizen should master.</p>
+
+        <h3>Digital Footprint: Your Online Trail</h3>
+        <p>Every action you take online leaves a trace—this is your <strong>digital footprint</strong>. Understanding the difference between active and passive footprints is crucial for maintaining your online privacy and reputation.</p>
+        
+        <div class="table-wrap">
+            <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Type</th><th>Definition</th><th>Examples</th><th>Control Level</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Active Footprint</strong></td>
+                            <td>Information you knowingly share online</td>
+                            <td>Social media posts, comments, emails, uploaded photos</td>
+                            <td>High - You control what you post</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Passive Footprint</strong></td>
+                            <td>Data collected about you without your direct input</td>
+                            <td>IP address, browsing history, location data, device information</td>
+                            <td>Low - Often collected automatically</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+                 <h4>Common Misconceptions About Digital Footprints</h4>
+         <div class="myth-reality-grid">
+             <div class="myth-card">
+                 <div class="myth-header">
+                     <div class="myth-icon">🗑️</div>
+                     <div class="myth-title">Deleted Posts</div>
+                 </div>
+                 <div class="myth-content">
+                     <div class="myth-section">
+                         <div class="myth-label">Myth:</div>
+                         <div>"Deleting posts makes them disappear forever"</div>
+                     </div>
+                     <div class="reality-section">
+                         <div class="reality-label">Reality:</div>
+                         <div>Content often persists on servers, backups, or other users' devices</div>
+                     </div>
+                 </div>
+             </div>
+             <div class="myth-card">
+                 <div class="myth-header">
+                     <div class="myth-icon">🕵️</div>
+                     <div class="myth-title">Private Browsing</div>
+                 </div>
+                 <div class="myth-content">
+                     <div class="myth-section">
+                         <div class="myth-label">Myth:</div>
+                         <div>"Private browsing makes me completely anonymous"</div>
+                     </div>
+                     <div class="reality-section">
+                         <div class="reality-label">Reality:</div>
+                         <div>Incognito mode only prevents local history; websites and ISPs can still track you</div>
+                     </div>
+                 </div>
+             </div>
+             <div class="myth-card">
+                 <div class="myth-header">
+                     <div class="myth-icon">📱</div>
+                     <div class="myth-title">Social Media Only</div>
+                 </div>
+                 <div class="myth-content">
+                     <div class="myth-section">
+                         <div class="myth-label">Myth:</div>
+                         <div>"Only social media creates footprints"</div>
+                     </div>
+                     <div class="reality-section">
+                         <div class="reality-label">Reality:</div>
+                         <div>Every website visit, search query, and app usage contributes to your digital trail</div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+        <h3>Netiquette: Online Behavior Rules</h3>
+        <p><strong>Netiquette</strong> (network + etiquette) refers to the rules of acceptable behavior when communicating online. Good netiquette promotes respectful, productive digital interactions.</p>
+
+        <h4>Core Netiquette Principles</h4>
+        <ul>
+            <li><strong>Respect Others:</strong> Treat online interactions as you would face-to-face conversations</li>
+            <li><strong>Think Before You Post:</strong> Consider how your words might affect others</li>
+            <li><strong>Use Appropriate Language:</strong> Avoid all caps (shouting), excessive punctuation, or offensive language</li>
+            <li><strong>Respect Privacy:</strong> Don't share others' personal information without permission</li>
+            <li><strong>Be Patient:</strong> Not everyone responds immediately; avoid spamming or repeated messages</li>
+        </ul>
+
+        <h4>Cyberbullying vs. Rude Behavior</h4>
+        <div class="table-wrap">
+            <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Aspect</th><th>Rude Behavior</th><th>Cyberbullying</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Frequency</strong></td>
+                            <td>Occasional, isolated incidents</td>
+                            <td>Repeated, persistent harassment</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Intent</strong></td>
+                            <td>Usually unintentional or careless</td>
+                            <td>Deliberate harm or intimidation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Impact</strong></td>
+                            <td>Minor annoyance or offense</td>
+                            <td>Serious emotional distress, fear</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Examples</strong></td>
+                            <td>One mean comment, using all caps</td>
+                            <td>Repeated threats, impersonation, exclusion campaigns</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h3>Data Protection and Privacy</h3>
+        <p>Your personal data is valuable and needs protection. Understanding how data is collected, used, and shared helps you make informed decisions about your online activities.</p>
+
+        <h4>What Data is Collected About You</h4>
+        <ul>
+            <li><strong>Personal Information:</strong> Name, email, phone number, address</li>
+            <li><strong>Behavioral Data:</strong> Browsing history, search queries, click patterns</li>
+            <li><strong>Device Information:</strong> IP address, device type, operating system</li>
+            <li><strong>Location Data:</strong> GPS coordinates, nearby WiFi networks</li>
+            <li><strong>Social Connections:</strong> Friends, followers, group memberships</li>
+        </ul>
+
+        <h4>Safe Online Practices</h4>
+        <ul>
+            <li><strong>Strong Passwords:</strong> Use unique, complex passwords for each account (minimum 12 characters, mix of letters, numbers, symbols)</li>
+            <li><strong>Two-Factor Authentication:</strong> Enable 2FA wherever possible for extra security</li>
+            <li><strong>Regular Updates:</strong> Keep software, apps, and operating systems updated</li>
+            <li><strong>Secure Networks:</strong> Avoid public WiFi for sensitive activities; use VPN when necessary</li>
+            <li><strong>Privacy Settings:</strong> Regularly review and adjust privacy settings on social media and apps</li>
+        </ul>
+
+        <h3>Cyber Safety Issues</h3>
+        <p>Understanding different types of cyber threats helps you recognize and avoid them. Each type has distinct characteristics and prevention strategies.</p>
+
+        <h4>Types of Cyber Threats</h4>
+        <div class="table-wrap">
+            <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Threat Type</th><th>Definition</th><th>Examples</th><th>Prevention</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Hacking</strong></td>
+                            <td>Unauthorized access to computer systems or networks</td>
+                            <td>Breaking into email accounts, accessing school databases</td>
+                            <td>Strong passwords, regular updates, firewall protection</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Identity Theft</strong></td>
+                            <td>Using someone's personal information to impersonate them</td>
+                            <td>Opening credit cards in someone's name, creating fake social media profiles</td>
+                            <td>Secure personal documents, monitor credit reports, shred sensitive papers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Credit Card Fraud</strong></td>
+                            <td>Unauthorized use of payment information for financial gain</td>
+                            <td>Online purchases with stolen card details, skimming devices</td>
+                            <td>Secure online shopping, monitor bank statements, use virtual cards</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Plagiarism</strong></td>
+                            <td>Using someone else's work or ideas without proper attribution</td>
+                            <td>Copying essays from the internet, using images without permission</td>
+                            <td>Proper citations, original work, understanding copyright laws</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h3>Open Source and Licensing</h3>
+        <p>Open source software and creative works are freely available for use, modification, and distribution. However, different licenses have different requirements and restrictions.</p>
+
+        <h4>Understanding Copyright vs. Licensing</h4>
+        <ul>
+            <li><strong>Copyright:</strong> Automatic legal protection that gives creators control over their work</li>
+            <li><strong>Licensing:</strong> Permission granted by copyright holders for others to use their work</li>
+            <li><strong>Public Domain:</strong> Works with no copyright protection (expired or voluntarily released)</li>
+        </ul>
+
+        <h4>Open Source License Comparison</h4>
+        <div class="table-wrap">
+            <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>License</th><th>Main Features</th><th>Requirements</th><th>Example</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>GPL (GNU General Public License)</strong></td>
+                            <td>Copyleft - modifications must remain open source</td>
+                            <td>Share source code, maintain same license</td>
+                            <td>Linux operating system</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Apache License</strong></td>
+                            <td>Permissive - allows commercial use and modifications</td>
+                            <td>Include license text, state changes</td>
+                            <td>Apache HTTP Server</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Creative Commons</strong></td>
+                            <td>Range from very permissive to restrictive</td>
+                            <td>Varies by type (BY, SA, NC, ND)</td>
+                            <td>Wikipedia content, educational materials</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MIT License</strong></td>
+                            <td>Very permissive - almost no restrictions</td>
+                            <td>Include license text</td>
+                            <td>Many JavaScript libraries</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h4>Common Licensing Mistakes</h4>
+        <ul>
+            <li><strong>Ignoring Attribution:</strong> Failing to credit original creators when required</li>
+            <li><strong>License Incompatibility:</strong> Mixing incompatible licenses in the same project</li>
+            <li><strong>Assuming "Free" Means "Unrestricted":</strong> Not reading license terms carefully</li>
+            <li><strong>Forgetting License Text:</strong> Not including required license information in projects</li>
+        </ul>
+
+        <h3>E-Waste Management</h3>
+        <p>Electronic waste (e-waste) contains hazardous materials that can harm human health and the environment if not disposed of properly. Responsible e-waste management is crucial for environmental sustainability.</p>
+
+        <h4>What is E-Waste?</h4>
+        <ul>
+            <li><strong>Definition:</strong> Discarded electronic devices and components</li>
+            <li><strong>Examples:</strong> Old computers, phones, batteries, printers, televisions</li>
+            <li><strong>Hazardous Components:</strong> Lead, mercury, cadmium, brominated flame retardants</li>
+        </ul>
+
+        <h4>Environmental and Health Impacts</h4>
+        <ul>
+            <li><strong>Soil Contamination:</strong> Heavy metals leach into soil from landfills</li>
+            <li><strong>Water Pollution:</strong> Toxic substances enter groundwater and surface water</li>
+            <li><strong>Air Pollution:</strong> Burning e-waste releases harmful chemicals</li>
+            <li><strong>Health Risks:</strong> Exposure can cause neurological damage, cancer, respiratory problems</li>
+        </ul>
+
+        <h4>Responsible E-Waste Disposal</h4>
+        <ul>
+            <li><strong>Authorized Recyclers:</strong> Use certified e-waste recycling facilities</li>
+            <li><strong>Manufacturer Take-Back:</strong> Many companies offer recycling programs</li>
+            <li><strong>Donation:</strong> Give working devices to schools or charities</li>
+            <li><strong>Data Security:</strong> Wipe all personal data before disposal</li>
+            <li><strong>Battery Disposal:</strong> Never throw batteries in regular trash</li>
+        </ul>
+
+        <h3>Social, Environmental, and Ethical Aspects</h3>
+        <p>Digital technology has profound social and ethical implications. Understanding these aspects helps create a more inclusive and responsible digital society.</p>
+
+        <h4>Digital Divide</h4>
+        <p>The gap between those who have access to digital technology and those who don't creates significant social and economic inequalities.</p>
+        <ul>
+            <li><strong>Economic Factors:</strong> Cost of devices, internet access, and digital literacy training</li>
+            <li><strong>Geographic Factors:</strong> Rural areas often have limited internet infrastructure</li>
+            <li><strong>Educational Impact:</strong> Students without access fall behind in digital skills</li>
+            <li><strong>Employment Barriers:</strong> Many jobs require digital literacy and access</li>
+        </ul>
+
+        <h4>Accessibility and Inclusion</h4>
+        <ul>
+            <li><strong>Disability Access:</strong> Screen readers, voice commands, alternative input devices</li>
+            <li><strong>Language Barriers:</strong> Multilingual interfaces, translation tools</li>
+            <li><strong>Age Considerations:</strong> User-friendly design for older adults</li>
+            <li><strong>Gender Equity:</strong> Encouraging equal participation in technology fields</li>
+        </ul>
+
+        <h4>Algorithmic Bias</h4>
+        <p>Computer systems can perpetuate or amplify existing social biases, leading to unfair outcomes.</p>
+        <ul>
+            <li><strong>Data Bias:</strong> Training data that reflects historical inequalities</li>
+            <li><strong>Design Bias:</strong> Systems designed without considering diverse users</li>
+            <li><strong>Impact Areas:</strong> Hiring, lending, criminal justice, healthcare</li>
+            <li><strong>Mitigation:</strong> Diverse development teams, bias testing, transparent algorithms</li>
+        </ul>
+
+        <h4>Environmental Impact of Technology</h4>
+        <ul>
+            <li><strong>Energy Consumption:</strong> Data centers and devices use significant electricity</li>
+            <li><strong>Carbon Footprint:</strong> Manufacturing, transportation, and operation of tech devices</li>
+            <li><strong>Resource Depletion:</strong> Rare earth metals and other finite resources</li>
+            <li><strong>Sustainable Solutions:</strong> Renewable energy, energy-efficient design, circular economy</li>
+        </ul>
+
+        <h3>Key Takeaways and Best Practices</h3>
+        <div class="intro">
+            <h4>🎯 Essential Principles for Digital Citizenship</h4>
+            <ul>
+                <li><strong>Think Before You Share:</strong> Every online action contributes to your digital footprint</li>
+                <li><strong>Protect Your Privacy:</strong> Use strong passwords, enable 2FA, and review privacy settings regularly</li>
+                <li><strong>Respect Others Online:</strong> Practice good netiquette and report cyberbullying</li>
+                <li><strong>Understand Licensing:</strong> Always read and follow license terms when using open source materials</li>
+                <li><strong>Dispose Responsibly:</strong> Use authorized e-waste recycling programs</li>
+                <li><strong>Promote Inclusion:</strong> Support efforts to bridge the digital divide and ensure accessibility</li>
+                <li><strong>Question Technology:</strong> Be aware of potential biases and environmental impacts</li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="rapid-revision">
+        <h2>Rapid Revision Sheet: Quick Reference Guide</h2>
+        <div class="exam-tips-card">
+            <h3>🚀 Exam Success Tips</h3>
+            <div class="tips-grid">
+                <div class="tip-item"><strong>✓ Problem Solving:</strong> Follow the 6-step lifecycle: Analyze → Develop Algorithm → Represent → Verify → Code → Test.</div>
+                <div class="tip-item"><strong>✓ Flowchart Shapes:</strong> Oval=Start/End, Parallelogram=Input/Output, Rectangle=Process, Diamond=Decision.</div>
+                <div class="tip-item"><strong>✓ Pseudocode:</strong> Write in simple English-like statements. Use keywords like INPUT, SET, IF/ELSE, FOR, WHILE.</div>
+                <div class="tip-item"><strong>✓ Dry Run:</strong> Always trace your algorithm with sample data before coding. Use a trace table to track variables.</div>
+                <div class="tip-item"><strong>✓ Decomposition:</strong> Break complex problems into smaller, manageable sub-problems. Solve them one by one.</div>
+                <div class="tip-item"><strong>✓ Algorithm vs. Code:</strong> Algorithm is the *plan*, Code is the *implementation* in a specific language.</div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="quiz-main">
+        <h2>Test Your Knowledge: Problem Solving Mastery Quiz</h2>
+        <div class="quiz-container">
+            <div class="quiz-navigation"><button class="btn" id="mainPrevBtn">❮</button><span class="question-counter"><span id="mainCurrentQ">1</span> of <span id="mainTotalQ">8</span></span><button class="btn" id="mainNextBtn">❯</button></div>
+            <div id="quiz-body-container"></div>
+        </div>
+    </section>
+
+    <section id="quiz-digital-ethics">
+        <h2>Digital Ethics and Cyber Safety Quiz</h2>
+        <div class="quiz-container">
+            <div class="quiz-navigation"><button class="btn" id="ethicsPrevBtn">❮</button><span class="question-counter"><span id="ethicsCurrentQ">1</span> of <span id="ethicsTotalQ">10</span></span><button class="btn" id="ethicsNextBtn">❯</button></div>
+            <div id="ethics-quiz-body-container"></div>
+        </div>
+    </section>
+
+    <section id="faq">
+        <h2>Frequently Asked Questions</h2>
+        <div id="faq-accordion-container"></div>
+    </section>
+
+    <section id="keywords-section">
+      <h2>Master These Tech Terms</h2>
+      <div class="glossary-cloud" id="glossaryCloud"></div>
+       <div class="glossary-hint">💡 Hover over any term to see its definition</div>
+    </section>
+
+  </div>
+
+  <footer class="site-footer">
+    <p class="footer-copy">© 2025 Beyond Dictionary. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // --- DATA ---
+      const quizQuestions = [
+        { q: "The process of breaking down a complex problem into smaller, manageable parts is called:", correct: 2, options: [ { text: "Algorithm", explanation: "Incorrect. An algorithm is the step-by-step solution, not the process of breaking down the problem." }, { text: "Debugging", explanation: "Incorrect. Debugging is the process of finding and fixing errors." }, { text: "Decomposition", explanation: "✅ Correct! Decomposition is a core problem-solving strategy where a large problem is broken into smaller sub-problems." }, { text: "Coding", explanation: "Incorrect. Coding is the process of implementing a solution in a programming language." } ] },
+        { q: "In a flowchart, which shape is used to represent a decision or a condition?", correct: 1, options: [ { text: "Rectangle", explanation: "Incorrect. A rectangle represents a process or an action." }, { text: "Diamond", explanation: "✅ Correct! A diamond shape is used for decisions (e.g., IF statements) and typically has two exit paths (Yes/No)." }, { text: "Parallelogram", explanation: "Incorrect. A parallelogram represents input or output." }, { text: "Oval", explanation: "Incorrect. An oval (or terminator shape) represents the start or end of the algorithm." } ] },
+        { q: "Manually tracing the execution of an algorithm with sample data is known as:", correct: 3, options: [ { text: "Verifying", explanation: "Incorrect. This is a form of verification, but there is a more specific term." }, { text: "Testing", explanation: "Incorrect. Testing usually refers to running the final coded program." }, { text: "Compiling", explanation: "Incorrect. Compiling is the process of translating code into a machine-readable format." }, { text: "Dry Run", explanation: "✅ Correct! A dry run is a mental or on-paper trace of an algorithm's logic before it is coded." } ] },
+        { q: "Which of the following is NOT a characteristic of a good algorithm?", correct: 0, options: [ { text: "Ambiguity", explanation: "✅ Correct! An algorithm must be unambiguous. Each step must have only one clear meaning." }, { text: "Finiteness", explanation: "Incorrect. An algorithm must be finite, meaning it must eventually stop." }, { text: "Well-defined Inputs", explanation: "Incorrect. An algorithm must have clearly defined inputs." }, { text: "Effectiveness", explanation: "Incorrect. Each step of an algorithm must be basic and executable." } ] },
+        { q: "A set of rules and conventions for writing algorithms in a human-readable, language-independent format is called:", correct: 2, options: [ { text: "A Flowchart", explanation: "Incorrect. A flowchart is a graphical representation." }, { text: "A Program", explanation: "Incorrect. A program is written in a specific programming language." }, { text: "Pseudocode", explanation: "✅ Correct! Pseudocode uses English-like statements to describe an algorithm without getting bogged down in the syntax of a specific language." }, { text: "A Syntax", explanation: "Incorrect. Syntax refers to the rules of a specific programming language." } ] },
+        { q: "The flow of control that involves executing a set of statements repeatedly is called:", correct: 1, options: [ { text: "Sequence", explanation: "Incorrect. Sequence is executing statements one after another." }, { text: "Iteration", explanation: "✅ Correct! Iteration (or looping) involves repeating a block of code, for example, with a WHILE or FOR loop." }, { text: "Selection", explanation: "Incorrect. Selection involves making a choice, like with an IF-ELSE statement." }, { text: "Decomposition", explanation: "Incorrect. Decomposition is about breaking down a problem." } ] },
+        { q: "In the problem-solving lifecycle, what step comes immediately after developing an algorithm?", correct: 3, options: [ { text: "Analyse the Problem", explanation: "Incorrect. Analysis comes before developing the algorithm." }, { text: "Test and Debug", explanation: "Incorrect. Testing comes after the solution is coded." }, { text: "Verify the Algorithm", explanation: "Incorrect. Verification (like a dry run) is part of developing the algorithm, not the next major step." }, { text: "Code the Solution", explanation: "✅ Correct! Once you have the blueprint (the algorithm), the next step is to implement it by writing code." } ] },
+        { q: "What is the primary purpose of a trace table?", correct: 0, options: [ { text: "To track the value of variables during a dry run.", explanation: "✅ Correct! A trace table is used to systematically record the state of each variable at each step of the algorithm's execution." }, { text: "To draw a flowchart.", explanation: "Incorrect. A flowchart is a separate graphical tool." }, { text: "To measure the speed of an algorithm.", explanation: "Incorrect. That involves algorithm analysis, not a dry run." }, { text: "To write the final code.", explanation: "Incorrect. It's a pre-coding verification tool." } ] }
+      ];
+
+      const digitalEthicsQuizQuestions = [
+        { q: "What is the difference between active and passive digital footprints?", correct: 2, options: [ { text: "Active footprints are permanent, passive are temporary", explanation: "Incorrect. Both types can be permanent or temporary." }, { text: "Active footprints are created by websites, passive by users", explanation: "Incorrect. It's the opposite - active footprints are created by users, passive by websites." }, { text: "Active footprints are information you knowingly share, passive are data collected automatically", explanation: "✅ Correct! Active footprints include posts and comments you make, while passive footprints include browsing history and location data collected without your direct input." }, { text: "Active footprints are public, passive are private", explanation: "Incorrect. Both types can be public or private depending on privacy settings." } ] },
+        { q: "Which of the following is an example of cyberbullying rather than just rude behavior?", correct: 1, options: [ { text: "Sending one mean comment on a social media post", explanation: "Incorrect. This would be considered rude behavior, not cyberbullying." }, { text: "Repeatedly sending threatening messages to someone over several weeks", explanation: "✅ Correct! Cyberbullying involves repeated, persistent harassment that causes emotional distress." }, { text: "Using all caps in an online discussion", explanation: "Incorrect. This is poor netiquette but not cyberbullying." }, { text: "Disagreeing with someone's opinion online", explanation: "Incorrect. Disagreement is normal online behavior, not cyberbullying." } ] },
+        { q: "What is the main purpose of two-factor authentication (2FA)?", correct: 3, options: [ { text: "To make passwords longer", explanation: "Incorrect. 2FA is not about password length." }, { text: "To reduce internet usage", explanation: "Incorrect. 2FA doesn't affect internet usage." }, { text: "To speed up login process", explanation: "Incorrect. 2FA actually adds an extra step to the login process." }, { text: "To provide an additional layer of security beyond passwords", explanation: "✅ Correct! 2FA requires two forms of verification, making accounts much harder to hack." } ] },
+        { q: "Which of the following is NOT a safe online practice?", correct: 0, options: [ { text: "Using the same password for all your accounts", explanation: "✅ Correct! Using the same password everywhere is unsafe - if one account is compromised, all accounts are at risk." }, { text: "Enabling two-factor authentication", explanation: "Incorrect. This is a safe practice." }, { text: "Regularly updating software and apps", explanation: "Incorrect. This is a safe practice." }, { text: "Using strong, unique passwords", explanation: "Incorrect. This is a safe practice." } ] },
+        { q: "What is the key difference between copyright and licensing?", correct: 2, options: [ { text: "Copyright is for software, licensing is for creative works", explanation: "Incorrect. Both copyright and licensing apply to various types of creative works." }, { text: "Copyright is temporary, licensing is permanent", explanation: "Incorrect. Copyright can last for decades, while licenses can be temporary or permanent." }, { text: "Copyright is automatic protection, licensing is permission granted by the copyright holder", explanation: "✅ Correct! Copyright exists automatically when you create something, while licensing is when you give others permission to use your work." }, { text: "Copyright is free, licensing costs money", explanation: "Incorrect. Copyright is automatic and free, but licensing can be free or paid." } ] },
+        { q: "What is the main environmental concern with e-waste?", correct: 1, options: [ { text: "It takes up too much space in landfills", explanation: "Incorrect. While space is a concern, it's not the main environmental issue." }, { text: "Hazardous materials like lead and mercury can contaminate soil and water", explanation: "✅ Correct! E-waste contains toxic substances that can harm the environment and human health if not properly disposed of." }, { text: "It's expensive to transport to recycling facilities", explanation: "Incorrect. While transportation costs exist, this isn't the main environmental concern." }, { text: "It creates too much noise when processed", explanation: "Incorrect. Noise is not a significant environmental concern with e-waste." } ] },
+        { q: "What does the 'digital divide' refer to?", correct: 3, options: [ { text: "The difference between old and new technology", explanation: "Incorrect. This describes technological advancement, not the digital divide." }, { text: "The gap between different operating systems", explanation: "Incorrect. This is about software compatibility, not the digital divide." }, { text: "The difference between online and offline activities", explanation: "Incorrect. This describes digital vs. analog activities." }, { text: "The gap between those who have access to digital technology and those who don't", explanation: "✅ Correct! The digital divide refers to inequalities in access to technology, internet, and digital literacy." } ] },
+        { q: "What is algorithmic bias?", correct: 0, options: [ { text: "Systematic prejudice in computer systems that can perpetuate social inequalities", explanation: "✅ Correct! Algorithmic bias occurs when computer systems reflect or amplify existing social biases, leading to unfair outcomes." }, { text: "A preference for certain programming languages", explanation: "Incorrect. This describes programming preferences, not algorithmic bias." }, { text: "The tendency to use algorithms instead of human judgment", explanation: "Incorrect. This describes automation, not bias." }, { text: "A bias against using open source software", explanation: "Incorrect. This would be a preference issue, not algorithmic bias." } ] },
+        { q: "Which of the following is an example of identity theft?", correct: 2, options: [ { text: "Hacking into a computer system", explanation: "Incorrect. This is hacking, not identity theft." }, { text: "Copying someone's homework", explanation: "Incorrect. This is plagiarism, not identity theft." }, { text: "Opening a credit card account using someone else's personal information", explanation: "✅ Correct! Identity theft involves using someone's personal information to impersonate them for fraudulent purposes." }, { text: "Sending spam emails", explanation: "Incorrect. This is spamming, not identity theft." } ] },
+        { q: "What is the main purpose of netiquette?", correct: 1, options: [ { text: "To make the internet faster", explanation: "Incorrect. Netiquette doesn't affect internet speed." }, { text: "To promote respectful and productive online communication", explanation: "✅ Correct! Netiquette provides guidelines for appropriate online behavior to create better digital interactions." }, { text: "To protect against computer viruses", explanation: "Incorrect. This describes cybersecurity practices, not netiquette." }, { text: "To reduce internet costs", explanation: "Incorrect. Netiquette doesn't affect internet costs." } ] }
+      ];
+
+      const keywords = [ 
+          { term: "Problem Solving", emoji: "🧩", def: "The process of identifying a problem, analyzing it, and developing a methodical solution." },
+          { term: "Algorithm", emoji: "📜", def: "A finite, step-by-step set of instructions designed to perform a specific task or solve a problem." },
+          { term: "Flowchart", emoji: "💠", def: "A graphical representation of an algorithm using standardized symbols to show the sequence of operations." },
+          { term: "Pseudocode", emoji: "✍️", def: "A high-level, informal description of an algorithm's logic, written in a human-readable format." },
+          { term: "Decomposition", emoji: "쪼", def: "The technique of breaking down a complex problem into smaller, more manageable sub-problems." },
+          { term: "Dry Run", emoji: "👣", def: "The process of manually tracing the execution of an algorithm to verify its logic before coding." },
+          { term: "Trace Table", emoji: "📋", def: "A table used during a dry run to track the values of variables at each step of an algorithm." },
+          { term: "Verification", emoji: "✔️", def: "The process of checking if an algorithm correctly solves the intended problem." },
+          { term: "Debugging", emoji: "🐞", def: "The process of finding and fixing errors (bugs) in a program." },
+          { term: "Flow of Control", emoji: "➡️", def: "The order in which statements are executed in an algorithm or program." },
+          { term: "Sequence", emoji: "🔢", def: "A flow of control where statements are executed one after another in the order they are written." },
+          { term: "Selection", emoji: "🤔", def: "A flow of control where a decision is made to execute one block of code over another (e.g., IF-ELSE)." },
+          { term: "Iteration", emoji: "🔄", def: "A flow of control where a block of code is executed repeatedly (e.g., WHILE or FOR loops)." },
+          { term: "Input", emoji: "📥", def: "Data that is provided to an algorithm or program to work with." },
+          { term: "Output", emoji: "📤", def: "The result produced by an algorithm or program after processing the input." },
+          { term: "Process", emoji: "⚙️", def: "An action or a series of actions performed by an algorithm, typically represented by a rectangle in a flowchart." },
+          { term: "Decision", emoji: "💎", def: "A point in an algorithm where a choice is made based on a condition, represented by a diamond in a flowchart." },
+          { term: "Terminator", emoji: "🏁", def: "A symbol (oval) in a flowchart that indicates the Start or End point of an algorithm." },
+          { term: "Variable", emoji: "📦", def: "A named storage location that holds a value which can change during the execution of an algorithm." },
+          { term: "Constant", emoji: "🔒", def: "A value that does not change during the execution of an algorithm." },
+          { term: "Efficiency", emoji: "⏱️", def: "A measure of how well an algorithm performs, often in terms of time taken or memory used." },
+          { term: "Modularity", emoji: "�", def: "The concept of designing a solution from smaller, independent parts (modules), which is achieved through decomposition." },
+          { term: "Bug", emoji: "🐛", def: "An error, flaw, or fault in a computer program that causes it to produce an incorrect or unexpected result." },
+          { term: "Coding", emoji: "💻", def: "The process of translating an algorithm into a specific programming language." },
+          { term: "Analysis", emoji: "🔍", def: "The first step in problem-solving, involving a deep understanding of the problem's requirements, inputs, and outputs." },
+          { term: "Digital Footprint", emoji: "👣", def: "The trail of data you leave behind when using digital devices and online services." },
+          { term: "Netiquette", emoji: "🤝", def: "The rules of acceptable behavior when communicating online." },
+          { term: "Cyberbullying", emoji: "🚫", def: "Repeated, intentional harassment or intimidation using digital technology." },
+          { term: "Data Privacy", emoji: "🔐", def: "The protection of personal information from unauthorized access or misuse." },
+          { term: "Open Source", emoji: "🔓", def: "Software or content that is freely available for use, modification, and distribution." },
+          { term: "E-Waste", emoji: "♻️", def: "Discarded electronic devices and components that require special disposal." },
+          { term: "Digital Divide", emoji: "🌐", def: "The gap between those who have access to digital technology and those who don't." },
+          { term: "Algorithmic Bias", emoji: "⚖️", def: "Systematic prejudice in computer systems that can perpetuate social inequalities." },
+          { term: "Copyright", emoji: "©️", def: "Legal protection that gives creators control over their original works." },
+          { term: "Licensing", emoji: "📄", def: "Permission granted by copyright holders for others to use their work." },
+          { term: "Identity Theft", emoji: "🆔", def: "Using someone's personal information to impersonate them for fraudulent purposes." },
+          { term: "Phishing", emoji: "🎣", def: "Attempting to steal personal information by posing as a trustworthy entity." },
+          { term: "Two-Factor Authentication", emoji: "🔑", def: "A security method requiring two forms of verification to access an account." },
+          { term: "VPN", emoji: "🛡️", def: "Virtual Private Network that encrypts internet traffic for enhanced privacy." },
+          { term: "Firewall", emoji: "🔥", def: "A security system that monitors and controls incoming and outgoing network traffic." },
+          { term: "Malware", emoji: "🦠", def: "Malicious software designed to harm computers or steal information." },
+          { term: "Encryption", emoji: "🔒", def: "The process of encoding information to prevent unauthorized access." },
+          { term: "Digital Citizenship", emoji: "🌍", def: "Responsible use of technology and participation in digital society." }
+      ];
+      
+      const faqs = {
+        "Level 1: Foundation & General Understanding": [
+            { q: "What's the difference between an algorithm and a program?", a: "An <strong>algorithm</strong> is like a recipe: it's a set of step-by-step instructions written in a general, human-readable way. A <strong>program</strong> is like the finished cake: it's that recipe written in a specific language (like Python or C++) that a computer can actually execute." },
+            { q: "Why do we need flowcharts and pseudocode if we are just going to write code anyway?", a: "They are planning tools. It's much easier to find and fix a logical mistake in a simple flowchart or in pseudocode than it is to find it in hundreds of lines of complex code. It's like drawing a blueprint before you start building a house." },
+            { q: "Is there only one correct algorithm for a problem?", a: "No, absolutely not. For any given problem, there can be many different algorithms to solve it. Some might be faster, some might use less memory, and some might be simpler to understand. Part of computer science is learning how to compare these different solutions." },
+            { q: "What is the most important step in problem-solving?", a: "While all steps are important, the most critical is the first one: <strong>Analyse the Problem</strong>. If you don't fully understand what you're being asked to do—what the inputs are and what the output should look like—any algorithm you design will be flawed from the start." },
+            { q: "Can a flowchart have a loop?", a: "Yes. A loop is represented in a flowchart by a flow line that goes from a lower point back to a higher point, usually after a decision (diamond) shape. This creates a cycle that repeats until a certain condition is met." },
+            { q: "What does 'unambiguous' mean for an algorithm?", a: "It means that each instruction must have only one possible interpretation. An instruction like 'Add about 5 to x' is ambiguous. A good instruction is 'Set x = x + 5', which is perfectly clear and can only be done one way." }
+        ],
+        "Level 2: Academic & Board Exams (CBSE)": [
+            { q: "Compare and contrast flowcharts and pseudocode.", a: "Both are tools for representing algorithms. <strong>Flowcharts</strong> are graphical, using symbols and arrows, which makes the flow of logic easy to visualize. <strong>Pseudocode</strong> is text-based, using English-like statements, which often makes it quicker to write and easier to convert into actual code. Flowcharts are better for visualizing simple logic, while pseudocode is often preferred for more complex algorithms." },
+            { q: "Explain the three basic types of 'flow of control'.", a: "The three types are: <strong>1. Sequence:</strong> This is the default, where instructions are executed one after another in a straight line. <strong>2. Selection:</strong> This is where a decision is made. Based on a condition, the algorithm chooses one path to follow out of two or more (e.g., IF-ELSE). <strong>3. Iteration:</strong> This is where a block of instructions is repeated. This is also called looping (e.g., WHILE, FOR)." },
+            { q: "What is the purpose of the 'Analyse the Problem' step in detail?", a: "This step involves deconstructing the problem statement to identify three key things: <strong>1. Inputs:</strong> What data is available to start with? <strong>2. Outputs:</strong> What result is required? What format should it be in? <strong>3. Constraints:</strong> Are there any limitations or rules that must be followed (e.g., the input number must be positive, the list is already sorted, etc.)?" },
+            { q: "How does decomposition help in managing complexity?", a: "Decomposition follows the 'divide and conquer' strategy. A large, overwhelming problem is broken down into smaller, self-contained sub-problems. This helps in several ways: it makes the problem easier to understand, allows different people to work on different parts simultaneously, and makes the final solution easier to test and debug because you can verify each small part individually." },
+            { q: "What is the difference between an algorithm and a heuristic?", a: "An <strong>algorithm</strong> is a guaranteed method to find the correct solution. It's a precise set of steps that will always work (e.g., the steps to solve a Rubik's Cube). A <strong>heuristic</strong> is a rule-of-thumb or a shortcut that is not guaranteed to find the perfect solution, but is often good enough and much faster (e.g., in a game of chess, 'control the center of the board' is a heuristic, not a guaranteed winning algorithm)." },
+            { q: "Why is 'finiteness' a crucial property of an algorithm?", a: "Finiteness guarantees that the algorithm will eventually terminate and produce a result. An algorithm that never stops is called an infinite loop. Such a process is not considered a valid algorithm because it would consume resources forever without ever solving the problem." }
+        ],
+        "Level 3: Advanced & Competitive Exam Level": [
+            { q: "How do you measure and compare the efficiency of algorithms?", a: "Efficiency is typically measured in terms of <strong>Time Complexity</strong> (how the number of operations grows as the input size grows) and <strong>Space Complexity</strong> (how the amount of memory used grows). We use a notation called Big O to describe this. For example, an algorithm with O(n) time complexity is generally more efficient for large inputs than one with O(n²)." },
+            { q: "What is the difference between a logical error and a syntax error?", a: "A <strong>syntax error</strong> is a mistake in the grammar of the programming language (e.g., a typo, a missing bracket). The computer will detect these and refuse to run the program. A <strong>logical error</strong> is a mistake in the algorithm itself. The program will run, but it will produce the wrong result because the plan was flawed. Logical errors can only be found through careful testing and dry runs." },
+            { q: "Explain the concept of 'top-down' vs 'bottom-up' design.", a: "These are two approaches to decomposition. In <strong>top-down design</strong>, you start with the main problem and repeatedly break it down into smaller and smaller sub-problems. In <strong>bottom-up design</strong>, you start by identifying and solving the smallest, most basic sub-problems first, and then combine those solutions to build up to a solution for the main problem." },
+            { q: "What is a recursive algorithm?", a: "A recursive algorithm is one that solves a problem by calling itself with a smaller version of the same problem. It must have two parts: a <strong>base case</strong>, which is a simple version of the problem that can be solved directly, and a <strong>recursive step</strong>, which breaks the problem down and calls itself. A classic example is calculating a factorial." },
+            { q: "How would you handle an ambiguous problem statement from a client?", a: "This is a critical part of the 'Analysis' phase. You must not make assumptions. The correct approach is to go back to the client with specific questions to clarify the ambiguities. For example, if they say 'process the student records,' you must ask: 'What specific records? What does 'process' mean in this context? What should the final output look like?' This iterative clarification is essential for successful problem-solving." },
+            { q: "Can a problem be unsolvable by any algorithm?", a: "Yes. In computer science, this is known as an 'undecidable problem.' The most famous example is the Halting Problem, which asks: given an arbitrary computer program and an input, will the program eventually stop, or will it run forever? It has been mathematically proven that no single algorithm can exist that can correctly answer this question for all possible programs." }
+        ]
+      };
+
+      // --- INITIALIZATION ---
+      function initializeAll() {
+        setupAccordions();
+        setupQuiz('quiz-main', quizQuestions);
+        setupQuiz('quiz-digital-ethics', digitalEthicsQuizQuestions);
+        setupGlossary();
+        setupFlowchartAnimator();
+        setupDryRunSimulator();
+        setupDecompositionTree();
+      }
+      
+      // --- INTERACTIVE COMPONENT SETUP ---
+
+      function setupFlowchartAnimator() {
+        const nextBtn = document.getElementById('fc-next');
+        const resetBtn = document.getElementById('fc-reset');
+        const explanationDiv = document.getElementById('flowchart-explanation');
+        const stage = document.getElementById('flowchart-stage');
+        const pointer = document.getElementById('flowchart-pointer');
+        if (!nextBtn) return;
+
+        const steps = [
+            { text: "<h5>Step 0: Start</h5><p><strong>Symbol:</strong> Terminator (Oval).<br><strong>Purpose:</strong> This shape always marks the beginning and end of a flowchart. The algorithm execution begins here.</p>" },
+            { text: "<h5>Step 1: Input</h5><p><strong>Symbol:</strong> Parallelogram.<br><strong>Purpose:</strong> This shape is used for any input (getting data from the user) or output (displaying data to the user) operation. Here, we get two numbers.</p>" },
+            { text: "<h5>Step 2: Decision</h5><p><strong>Symbol:</strong> Diamond.<br><strong>Purpose:</strong> This shape represents a question or a condition. It always has at least two exit paths (e.g., 'Yes' and 'No'). Here, we check if Num1 is greater than Num2.</p>" },
+            { text: "<h5>Step 3: Process (Yes Path)</h5><p><strong>Symbol:</strong> Rectangle.<br><strong>Purpose:</strong> This shape represents a process, calculation, or an action. Since Num1 was greater, we assign its value to the 'Max' variable.</p>" },
+            { text: "<h5>Step 4: Process (No Path)</h5><p><strong>Symbol:</strong> Rectangle.<br><strong>Purpose:</strong> This is the action for the 'No' path. Since Num1 was not greater, we assign Num2's value to the 'Max' variable.</p>" },
+            { text: "<h5>Step 5: Output</h5><p><strong>Symbol:</strong> Parallelogram.<br><strong>Purpose:</strong> An output operation. We display the final value that was stored in the 'Max' variable.</p>" },
+            { text: "<h5>Step 6: End</h5><p><strong>Symbol:</strong> Terminator (Oval).<br><strong>Purpose:</strong> This marks the successful completion of the algorithm.</p>" }
+        ];
+        let currentStep = 0;
+        let decisionPath = -1; // -1: not decided, 0: No, 1: Yes
+
+        function showStep(stepIndex) {
+            stage.querySelectorAll('.flow-node').forEach((node, i) => {
+                node.classList.toggle('active', i === stepIndex);
+            });
+            explanationDiv.innerHTML = steps[stepIndex].text;
+            pointer.style.display = 'block';
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep === 2) { // At the decision
+                if (decisionPath === -1) decisionPath = Math.random() < 0.5 ? 1 : 0; // Simulate a choice
+                currentStep = (decisionPath === 1) ? 3 : 4;
+            } else if (currentStep === 3 || currentStep === 4) { // After a process
+                currentStep = 5;
+            } else {
+                currentStep++;
+            }
+            
+            if (currentStep >= steps.length) {
+                currentStep = steps.length - 1;
+                nextBtn.disabled = true;
+            }
+            showStep(currentStep);
+        });
+
+        resetBtn.addEventListener('click', () => {
+            currentStep = 0;
+            decisionPath = -1;
+            showStep(0);
+            nextBtn.disabled = false;
+        });
+
+        showStep(0);
+      }
+      
+      function setupDryRunSimulator() {
+        const startBtn = document.getElementById('dr-start');
+        const nextBtn = document.getElementById('dr-next');
+        const inputEl = document.getElementById('n-input');
+        const codeContainer = document.getElementById('dry-run-pseudocode');
+        const traceBody = document.querySelector('#dry-run-trace-table tbody');
+        if (!startBtn) return;
+
+        let state;
+
+        function resetState() {
+            state = { step: 0, scores: [], max_score: '?', score: '?', condition: '?', notes: '', list_index: -1, isFinished: false };
+            traceBody.innerHTML = '';
+            nextBtn.disabled = true;
+            startBtn.disabled = false;
+            inputEl.disabled = false;
+            codeContainer.querySelectorAll('.code-line').forEach(el => el.classList.remove('highlight-code'));
+            hideError();
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('input-error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            const errorDiv = document.getElementById('input-error');
+            errorDiv.style.display = 'none';
+        }
+
+        function validateInput(input) {
+            if (!input.trim()) {
+                return { valid: false, message: "Please enter some scores." };
+            }
+            
+            const scores = input.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            
+            if (scores.length === 0) {
+                return { valid: false, message: "Please enter at least one score." };
+            }
+            
+            for (let i = 0; i < scores.length; i++) {
+                const num = parseInt(scores[i]);
+                if (isNaN(num)) {
+                    return { valid: false, message: `"${scores[i]}" is not a valid number.` };
+                }
+                if (num < 0 || num > 100) {
+                    return { valid: false, message: `Score "${num}" should be between 0 and 100.` };
+                }
+            }
+            
+            return { valid: true, scores: scores.map(s => parseInt(s)) };
+        }
+
+        function highlightCodeLine(lineNumber) {
+            codeContainer.querySelectorAll('.code-line').forEach(el => el.classList.remove('highlight-code'));
+            const line = document.getElementById(`line${lineNumber}`);
+            if(line) line.classList.add('highlight-code');
+        }
+        
+        function renderTrace() {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${state.step}</td><td>${state.score}</td><td>${state.max_score}</td><td>${state.condition}</td><td>${state.notes}</td>`;
+            traceBody.appendChild(row);
+        }
+
+        startBtn.addEventListener('click', () => {
+            resetState();
+            
+            const validation = validateInput(inputEl.value);
+            if (!validation.valid) {
+                showError(validation.message);
+                return;
+            }
+            
+            state.scores = validation.scores;
+            state.step = 1;
+            highlightCodeLine(1);
+            state.notes = `Input list: [${state.scores.join(', ')}]`;
+            renderTrace();
+            
+            state.step = 2;
+            highlightCodeLine(2);
+            state.max_score = state.scores[0];
+            state.notes = 'Initialize max_score with the first element.';
+            renderTrace();
+
+            startBtn.disabled = true;
+            inputEl.disabled = true;
+            nextBtn.disabled = false;
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if(state.isFinished) return;
+            
+            state.list_index++;
+            if (state.list_index >= state.scores.length) {
+                highlightCodeLine(8);
+                state.notes = `Loop finished. Final max_score is ${state.max_score}.`;
+                state.score = '-';
+                state.condition = '-';
+                state.isFinished = true;
+                nextBtn.disabled = true;
+                renderTrace();
+                return;
+            }
+
+            state.step = 3;
+            highlightCodeLine(3);
+            state.score = state.scores[state.list_index];
+            state.notes = `Loop starts. Current score is ${state.score}.`;
+            renderTrace();
+            
+            state.step = 4;
+            highlightCodeLine(4);
+            const conditionMet = state.score > state.max_score;
+            state.condition = `${state.score} > ${state.max_score} is ${conditionMet}`;
+            if (conditionMet) {
+                state.notes = 'Condition is true. Update max_score.';
+                renderTrace();
+                state.step = 5;
+                highlightCodeLine(5);
+                state.max_score = state.score;
+                state.notes = `max_score is now ${state.max_score}.`;
+            } else {
+                state.notes = 'Condition is false. Do nothing.';
+            }
+            renderTrace();
+        });
+
+        // Add input event listener to clear errors when user types
+        inputEl.addEventListener('input', () => {
+            if (document.getElementById('input-error').style.display !== 'none') {
+                hideError();
+            }
+        });
+
+        resetState();
+      }
+
+      function setupDecompositionTree() {
+        const expandableNodes = document.querySelectorAll('.decomp-tree .expandable');
+        expandableNodes.forEach(node => {
+            node.addEventListener('click', () => {
+                const sublist = node.nextElementSibling;
+                if (sublist && sublist.tagName === 'UL') {
+                    sublist.classList.toggle('expanded');
+                }
+            });
+        });
+      }
+
+      // --- GENERIC SETUP ---
+      function setupAccordions() {
+          const faqContainer = document.getElementById('faq-accordion-container');
+          if (faqContainer) {
+            let html = '';
+            for (const level in faqs) {
+                html += `<h3>${level}</h3><div class="accordion">`;
+                html += faqs[level].map((faq, i) => `
+                    <div class="accordion-item">
+                         <button class="accordion-header" aria-expanded="false" aria-controls="faq-${level.replace(/\s/g, '')}-${i}"><span class="accordion-title"><strong>Q${i+1}:</strong> ${faq.q}</span></button>
+                         <div class="accordion-content" id="faq-${level.replace(/\s/g, '')}-${i}"><p><strong>A:</strong> ${faq.a}</p></div>
+                    </div>
+                `).join('');
+                html += `</div>`;
+            }
+            faqContainer.innerHTML = html;
+          }
+          
+          document.querySelectorAll('.accordion-header').forEach(h => h.addEventListener('click', () => {
+              const expanded = h.getAttribute('aria-expanded') === 'true';
+              h.setAttribute('aria-expanded', !expanded);
+              h.nextElementSibling.style.display = expanded ? 'none' : 'block';
+          }));
+      }
+
+      function setupQuiz(containerId, questionsData) {
+        const quizSection = document.getElementById(containerId);
+        if (!quizSection) return;
+        
+        // Determine which quiz this is and set up the correct selectors
+        const isMainQuiz = containerId === 'quiz-main';
+        const bodyContainerId = isMainQuiz ? '#quiz-body-container' : '#ethics-quiz-body-container';
+        const prevBtnId = isMainQuiz ? '#mainPrevBtn' : '#ethicsPrevBtn';
+        const nextBtnId = isMainQuiz ? '#mainNextBtn' : '#ethicsNextBtn';
+        const currentQId = isMainQuiz ? '#mainCurrentQ' : '#ethicsCurrentQ';
+        const totalQId = isMainQuiz ? '#mainTotalQ' : '#ethicsTotalQ';
+        
+        const bodyContainer = quizSection.querySelector(bodyContainerId);
+        const prevBtn = quizSection.querySelector(prevBtnId);
+        const nextBtn = quizSection.querySelector(nextBtnId);
+        const currentQSpan = quizSection.querySelector(currentQId);
+        const totalQSpan = quizSection.querySelector(totalQId);
+        
+        if (!bodyContainer || !prevBtn || !nextBtn || !currentQSpan || !totalQSpan) return;
+        let currentQuestionIndex = 0;
+        totalQSpan.textContent = questionsData.length;
+
+        function renderQuestion() {
+            const qData = questionsData[currentQuestionIndex];
+            let optionsHTML = qData.options.map((opt, index) => `
+                <div class="quiz-option" data-option-index="${index}">
+                    <label>
+                        <input type="radio" name="q${currentQuestionIndex}" value="${index}">
+                        <span>${opt.text}</span>
+                    </label>
+                    <div class="explanation">${opt.explanation}</div>
+                </div>`).join('');
+            bodyContainer.innerHTML = `<div class="quiz-body active"><p><strong>Q${currentQuestionIndex + 1}:</strong> ${qData.q}</p><div class="quiz-options">${optionsHTML}</div></div>`;
+            currentQSpan.textContent = currentQuestionIndex + 1;
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.disabled = currentQuestionIndex === questionsData.length - 1;
+            bodyContainer.querySelectorAll('.quiz-option input').forEach(radio => radio.addEventListener('change', handleOptionSelect));
+        }
+
+        function handleOptionSelect(e) {
+            const selectedOptionIndex = parseInt(e.target.value);
+            const qData = questionsData[currentQuestionIndex];
+            const parentQuestionDiv = e.target.closest('.quiz-body');
+            parentQuestionDiv.querySelectorAll('.quiz-option').forEach(optDiv => {
+                optDiv.classList.remove('selected', 'correct', 'wrong');
+                optDiv.querySelector('.explanation').style.display = 'none';
+            });
+            const selectedOptionDiv = e.target.closest('.quiz-option');
+            selectedOptionDiv.classList.add('selected');
+            selectedOptionDiv.querySelector('.explanation').style.display = 'block';
+            if (selectedOptionIndex === qData.correct) {
+                selectedOptionDiv.classList.add('correct');
+            } else {
+                selectedOptionDiv.classList.add('wrong');
+                parentQuestionDiv.querySelector(`.quiz-option[data-option-index="${qData.correct}"]`).classList.add('correct');
+            }
+        }
+        prevBtn.addEventListener('click', () => { if (currentQuestionIndex > 0) { currentQuestionIndex--; renderQuestion(); } });
+        nextBtn.addEventListener('click', () => { if (currentQuestionIndex < questionsData.length - 1) { currentQuestionIndex++; renderQuestion(); } });
+        renderQuestion();
+      }
+      
+      function setupGlossary() {
+        const cloud = document.getElementById('glossaryCloud');
+        if (!cloud) return;
+        cloud.innerHTML = keywords.map(kw => `<button class="glossary-chip" type="button"><span class="icon">${kw.emoji || '🔸'}</span><span>${kw.term}</span></button>`).join('');
+         
+         const tip = document.createElement('div');
+         tip.className = 'chip-tip';
+         tip.innerHTML = '<div class="arrow" aria-hidden="true"></div><div class="tip-content"></div>';
+         document.body.appendChild(tip);
+         const tipContent = tip.querySelector('.tip-content');
+         const tipArrow = tip.querySelector('.arrow');
+         let openBtn = null;
+         
+         function clamp(n, min, max){ return Math.max(min, Math.min(n, max)); }
+         
+         function positionTipFor(btn){
+           const rect = btn.getBoundingClientRect();
+           const vw = window.innerWidth;
+           const pad = 8;
+           tip.style.maxWidth = Math.min(vw - pad*2, 420) + 'px';
+           const tipRect = tip.getBoundingClientRect();
+           const preferTop = rect.top > (window.innerHeight - rect.bottom);
+           const top = preferTop ? rect.top - tipRect.height - 12 : rect.bottom + 12;
+           const left = clamp(rect.left + rect.width/2 - tipRect.width/2, pad, vw - tipRect.width - pad);
+           tip.style.top = Math.max(8, top) + 'px';
+           tip.style.left = left + 'px';
+           tipArrow.style.top = preferTop ? (tipRect.height - 6) + 'px' : '-6px';
+           tipArrow.style.left = clamp(rect.left + rect.width/2 - left - 6, 10, tipRect.width - 22) + 'px';
+         }
+         
+         function openTip(btn, text){ 
+           tipContent.textContent = text; 
+           tip.classList.add('show'); 
+           positionTipFor(btn); 
+           openBtn = btn; 
+         }
+         
+         function closeTip(){ 
+           tip.classList.remove('show'); 
+           openBtn = null; 
+         }
+         
+                   cloud.querySelectorAll('.glossary-chip').forEach((btn,i)=>{
+            const def = keywords[i].def;
+            btn.addEventListener('mouseenter',()=>{ openTip(btn, def); });
+            btn.addEventListener('mouseleave',()=>{ closeTip(); });
+            btn.addEventListener('focus',()=>{ openTip(btn, def); });
+            btn.addEventListener('blur',()=>{ closeTip(); });
+          });
+         
+         window.addEventListener('resize',()=>{ if(openBtn) positionTipFor(openBtn); });
+         window.addEventListener('scroll',()=>{ if(openBtn) positionTipFor(openBtn); }, {passive:true});
+         document.addEventListener('click',(e)=>{ if(openBtn && !openBtn.contains(e.target) && !tip.contains(e.target)) closeTip(); });
+      }
+
+      // --- RUN ---
+      initializeAll();
+    });
+  </script>
+</body>
+</html>
