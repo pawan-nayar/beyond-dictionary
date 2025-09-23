@@ -34,15 +34,15 @@ Transform the **entire CBSE curriculum (Classes 1–12)** into a **multi-layered
 
 ### 2. **Knowledge Atomization**
 
-* **Concept Cards**: Subject-neutral interactive cards encapsulating definitions, examples, analogies, misconceptions, and critical thinking triggers. A small-medium-large architecture of all concepts covered in CBSE curriculum, translating to 50 words to 1000 words +25 FAQs for every learnable entity.
-* **DeepThink Modules**: Scenario-driven reasoning units applicable across disciplines (e.g., Chemistry → application mechanism, History → causality analysis, Economics → policy simulation, Business Studies → corporate entity formation).
-* **Dynamic FAQs**: Anticipated student confusions, clarifications, and exam-specific nuances. 100k and growing!
+* **Concept Cards**: Subject-neutral interactive cards encapsulating definitions, examples, analogies, misconceptions, and critical thinking triggers. The cards can scale to small-medium-large architecture [50 words to 1000 words, and cover the depth you need.]
+* **DeepThink Modules**: Scenario-driven reasoning units applicable across disciplines (e.g., Chemistry → application mechanism, History → causality analysis, Economics → policy simulation; Business studies - formation of real commercial entity).
+* **Dynamic FAQs**: Anticipated student confusions, clarifications, and exam-specific nuances. 100k+ and growing.
 
 ### 3. **Assessment Framework**
 
-* **200-500 Questions per Chapter**: Systematic banks covering all formats (MCQ, FTB, SAQ, LAQ, RTC, sequencing, matching, Rubric).
+* **200-500 Questions per Chapter**: Systematic banks covering all formats (MCQ, FTB, SAQ, LAQ, RTC, sequencing, matching).
 * **Cognitive Layering**: Tagged by Bloom’s levels (Knowledge → Application → Synthesis → Evaluation).
-* **Adaptive Mock Tests**: Configurable for difficulty, timing, and integration into class or self-study environments.
+* **Adaptive Mock Tests**: Configurable for difficulty, timing, and integration into class or self-study environments. Practice this week class, exam on this month coverage, term test or prepare for final exam, and take 30 exams for 30 days in a row.
 
 ### 4. **Narrative & Integration Layer**
 
@@ -104,13 +104,6 @@ Transform the **entire CBSE curriculum (Classes 1–12)** into a **multi-layered
 > [!IMPORTANT]
 > Success metric: percentage of chapters converted into linked assets (cards, assessments, articles) with measured learning gains per cohort.
 
----
-
-## Conclusion
-The CBSE Curriculum Intelligence System is designed not as a collection of subject experiments, but as a **unified educational intelligence engine**. By encapsulating textbooks into structured, reusable, and cross-disciplinary assets, it establishes a new paradigm for digital learning—fluid, interconnected, and globally scalable.
-
-We envision parents as the closest **educational companions** of their children—true friends in learning. Our curriculum is designed to spark curiosity in anyone—parent, sibling, or mentor—so they can quickly engage and converse with students. Together with **teachers** and **tutors**, this **parent-powered troika** forms a circle of positive reinforcement, nurturing lifelong success.
-
 ## Related Links
 
 * **Local Reference (same folder):**
@@ -121,5 +114,11 @@ We envision parents as the closest **educational companions** of their children�
   * [CBSE Main Hub](https://beyonddictionary.com/cbse)
   * [Class 12 Kaleidoscope – Tomorrow (Sample Chapter)](https://beyonddictionary.com/cbse/12/kaliedoscope/tomorrow)
   * [Interactive Quizzes & Dictionary Cards](https://beyonddictionary.com/cbsequiz/cbsestart)
- 
+  * [CBSE Class Glossary](https://pawan-nayar.github.io/beyond-dictionary/commerce-class-12-laws-glossary.html)
+  * [Reasoning for Toppers](https://pawan-nayar.github.io/beyond-dictionary/deepthink-reasoning-engine-business-studies-class11-12.html)
+    
 
+---
+
+## Conclusion
+The CBSE Curriculum Intelligence System is designed not as a collection of subject experiments, but as a **unified educational intelligence engine**. By encapsulating textbooks into structured, reusable, and cross-disciplinary assets, it establishes a new paradigm for digital learning—fluid, interconnected, and globally scalable.
