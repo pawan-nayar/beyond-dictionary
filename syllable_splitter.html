@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Interactive Syllable Splitter with Voice-First Audio</title>
+  <style>
+    body { margin:0; padding:1rem; font-family:'Segoe UI',sans-serif; background:#f3f4f6; }
+    h1 { font-size:1.5rem; margin-bottom:1rem; color:#1f2937; text-align:center; }
+    .main { display:flex; flex-direction:column; gap:1rem; }
+    @media(min-width:600px) { .main { flex-direction:row; } .column { width:48%; } }
+    .column { background:#fff; padding:1rem; border-radius:0.5rem; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    .word-display { font-size:2rem; margin-bottom:1rem; letter-spacing:0.05em; text-align:center; user-select:none; }
+    .word-display .split { position:relative; color:#2563eb; cursor:help; }
+    .tooltip, .tooltip-syl { position:absolute; background:#1f2937; color:#fff; padding:0.25rem 0.5rem; border-radius:0.25rem; font-size:0.75rem; white-space:nowrap; opacity:0; visibility:hidden; transition:opacity 0.2s; }
+    .tooltip { bottom:-1.8rem; left:50%; transform:translateX(-50%); }
+    .tooltip-syl { top:-1.8rem; left:50%; transform:translateX(-50%); }
+    .word-display .split:hover .tooltip { opacity:1; visibility:visible; }
+    .syllable:hover .tooltip-syl { opacity:1; visibility:visible; }
+    .controls { display:flex; flex-direction:column; align-items:center; gap:0.5rem; margin-bottom:1rem; }
+    .nav-buttons, .play-buttons { display:flex; gap:0.5rem; }
+    button { background:#2563eb; color:#fff; border:none; padding:0.5rem 1rem; border-radius:0.375rem; cursor:pointer; font-size:0.9rem; }
+    button:disabled { background:#a5b4fc; cursor:not-allowed; }
+    input[type=range] { width:100%; }
+    .syllable-container { display:flex; flex-wrap:wrap; justify-content:center; gap:0.5rem; margin-bottom:1rem; }
+    .syllable { background:#fff; padding:0.75rem 1rem; border-radius:0.5rem; box-shadow:0 2px 6px rgba(0,0,0,0.1); font-size:1.25rem; color:#111827; cursor:pointer; position:relative; }
+    .instructions { color:#4b5563; font-size:0.9rem; }
+    .glossary h2 { margin-top:0; font-size:1.1rem; }
+    .glossary table { width:100%; border-collapse:collapse; margin-top:0.5rem; }
+    .glossary th, .glossary td { text-align:left; padding:0.25rem; border-bottom:1px solid #e5e7eb; font-size:0.85rem; }
+    .sentence-section { margin-top:1rem; text-align:center; }
+    .sentence-section button { background:#10b981; }
+    .sentence-text { margin-top:0.5rem; font-size:0.9rem; color:#374151; }
+  </style>
+</head>
+<body>
+  <h1>Syllable Splitter with Voice-First Audio</h1>
+  <div class="main">
+    <!-- Interactive Column -->
+    <div class="column">
+      <div class="word-display" id="wordDisplay" title="Long-press to hear a sample sentence"></div>
+      <div class="controls">
+        <div class="nav-buttons">
+          <button id="prevBtn">Previous</button>
+          <button id="nextBtn">Next</button>
+          <button id="jumblerBtn">Random</button>
+        </div>
+        <label for="pauseRange">Pause between syllables: <span id="pauseValue">0.2</span>s</label>
+        <input type="range" id="pauseRange" min="0.1" max="1.0" step="0.1" value="0.2">
+        <div class="play-buttons">
+          <button id="playAllBtn">Play Syllables</button>
+          <button id="playWordBtn">Play Word</button>
+        </div>
+      </div>
+      <div class="syllable-container" id="syllableContainer"></div>
+      <div class="instructions">Tap syllables or word to hear; long-press word for sentence.</div>
+    </div>
+    <!-- Glossary Column -->
+    <div class="column glossary">
+      <h2>Phonetic Legend & Sentence</h2>
+      <table id="legendTable">
+        <tr><th>Syllable</th><th>Sound</th></tr>
+      </table>
+      <div class="sentence-section">
+        <button id="playSentenceBtn">🔊 Play Sentence</button>
+        <div class="sentence-text" id="sentenceText"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+const wordsData = [
+    { word: 'responsible', segments: ['re', 'spon', 'si', 'ble'], phonetics: ['ri', 'spon', 'suh', 'bull'], sentence: 'She is a very responsible and reliable person.' },
+    { word: 'unforgettable', segments: ['un', 'for', 'get', 'ta', 'ble'], phonetics: ['un', 'for', 'get', 'a', 'bull'], sentence: 'Our trip to the Grand Canyon was unforgettable.' },
+    { word: 'dinosaur', segments: ['di', 'no', 'saur'], phonetics: ['dy', 'noh', 'sor'], sentence: 'The T-Rex was a very large dinosaur.' },
+    { word: 'animal', segments: ['an', 'i', 'mal'], phonetics: ['an', 'i', 'mal'], sentence: 'The koala is a fascinating animal.' },
+    { word: 'celebration', segments: ['cel', 'e', 'bra', 'tion'], phonetics: ['sel', 'uh', 'bray', 'shun'], sentence: 'We had a big celebration for her success.' },
+    { word: 'transportation', segments: ['trans', 'por', 'ta', 'tion'], phonetics: ['trans', 'por', 'tay', 'shun'], sentence: 'Public transportation is a great alternative to driving.' },
+    { word: 'communication', segments: ['com', 'mu', 'ni', 'ca', 'tion'], phonetics: ['com', 'myu', 'nee', 'kay', 'shun'], sentence: 'Good communication builds strong relationships.' },
+    { word: 'banana', segments: ['ba', 'na', 'na'], phonetics: ['buh', 'na', 'nuh'], sentence: 'A banana is a good source of potassium.' },
+    { word: 'vulnerability', segments: ['vul', 'ner', 'a', 'bil', 'i', 'ty'], phonetics: ['vul', 'ner', 'a', 'bil', 'i', 'tee'], sentence: 'Showing vulnerability can build trust with others.' },
+    { word: 'together', segments: ['to', 'geth', 'er'], phonetics: ['tuh', 'geth', 'er'], sentence: 'The team worked together to win the game.' },
+    { word: 'pencil', segments: ['pen', 'cil'], phonetics: ['pen', 'sil'], sentence: 'I need a sharp pencil to draw.' },
+    { word: 'doctor', segments: ['doc', 'tor'], phonetics: ['dok', 'tor'], sentence: 'The doctor advised him to get more rest.' },
+    { word: 'activity', segments: ['ac', 'tiv', 'i', 'ty'], phonetics: ['ak', 'tiv', 'i', 'tee'], sentence: 'What is your favorite outdoor activity?' },
+    { word: 'geography', segments: ['ge', 'og', 'ra', 'phy'], phonetics: ['jee', 'og', 'ruh', 'fee'], sentence: 'Geography teaches us about the world.' },
+    { word: 'remember', segments: ['re', 'mem', 'ber'], phonetics: ['ree', 'mem', 'ber'], sentence: 'Always remember to be kind to everyone.' },
+    { word: 'enthusiasm', segments: ['en', 'thu', 'si', 'asm'], phonetics: ['en', 'thoo', 'zee', 'az', 'um'], sentence: 'Her enthusiasm for the project was contagious.' },
+    { word: 'material', segments: ['ma', 'te', 'ri', 'al'], phonetics: ['muh', 'teer', 'ee', 'ul'], sentence: 'This shirt is made of a soft material.' },
+    { word: 'capitalization', segments: ['cap', 'i', 'tal', 'i', 'za', 'tion'], phonetics: ['kap', 'i', 'tal', 'eye', 'zay', 'shun'], sentence: 'Proper capitalization is important in writing.' },
+    { word: 'collaboration', segments: ['col', 'lab', 'o', 'ra', 'tion'], phonetics: ['kuh', 'lab', 'o', 'ray', 'shun'], sentence: 'Collaboration is the key to our team’s success.' },
+    { word: 'biodiversity', segments: ['bi', 'o', 'di', 'ver', 'si', 'ty'], phonetics: ['by', 'oh', 'die', 'vur', 'si', 'tee'], sentence: 'The rainforest has incredible biodiversity.' },
+    { word: 'recommendation', segments: ['rec', 'om', 'men', 'da', 'tion'], phonetics: ['rek', 'uh', 'men', 'day', 'shun'], sentence: 'I will follow your excellent recommendation.' },
+    { word: 'winter', segments: ['win', 'ter'], phonetics: ['win', 'ter'], sentence: 'The first snow of winter is magical.' },
+    { word: 'opportunity', segments: ['op', 'por', 'tu', 'ni', 'ty'], phonetics: ['op', 'er', 'too', 'nih', 'tee'], sentence: 'This is a great opportunity for your career.' },
+    { word: 'experimentation', segments: ['ex', 'per', 'i', 'men', 'ta', 'tion'], phonetics: ['ek', 'sper', 'i', 'men', 'tay', 'shun'], sentence: 'Scientific progress relies on experimentation.' },
+    { word: 'information', segments: ['in', 'for', 'ma', 'tion'], phonetics: ['in', 'for', 'may', 'shun'], sentence: 'Information is power when used wisely.' },
+    { word: 'solution', segments: ['so', 'lu', 'tion'], phonetics: ['suh', 'loo', 'shun'], sentence: 'We need to find a solution quickly.' },
+    { word: 'people', segments: ['peo', 'ple'], phonetics: ['pee', 'pull'], sentence: 'Many people gathered for the town festival.' },
+    { word: 'photography', segments: ['pho', 'tog', 'ra', 'phy'], phonetics: ['fuh', 'tog', 'ruh', 'fee'], sentence: 'She has a passion for nature photography.' },
+    { word: 'wonderful', segments: ['won', 'der', 'ful'], phonetics: ['wun', 'der', 'full'], sentence: 'We had a wonderful vacation by the sea.' },
+    { word: 'fantastic', segments: ['fan', 'tas', 'tic'], phonetics: ['fan', 'tas', 'tik'], sentence: 'She had a fantastic time at the party.' },
+    { word: 'important', segments: ['im', 'por', 'tant'], phonetics: ['im', 'por', 'tant'], sentence: 'It is important to listen to others carefully.' },
+    { word: 'pronunciation', segments: ['pro', 'nun', 'ci', 'a', 'tion'], phonetics: ['pro', 'nun', 'see', 'ay', 'shun'], sentence: 'Correct pronunciation is key to clear communication.' },
+    { word: 'water', segments: ['wa', 'ter'], phonetics: ['waw', 'ter'], sentence: 'Drink plenty of water throughout the day.' },
+    { word: 'ceremony', segments: ['cer', 'e', 'mo', 'ny'], phonetics: ['ser', 'e', 'moh', 'nee'], sentence: 'The graduation ceremony was held in the auditorium.' },
+    { word: 'curiosity', segments: ['cu', 'ri', 'os', 'i', 'ty'], phonetics: ['kyoor', 'ee', 'os', 'i', 'tee'], sentence: 'Her curiosity led her to explore new ideas.' },
+    { word: 'misunderstanding', segments: ['mis', 'un', 'der', 'stand', 'ing'], phonetics: ['mis', 'un', 'der', 'stand', 'ing'], sentence: 'There was a slight misunderstanding between them.' },
+    { word: 'happy', segments: ['hap', 'py'], phonetics: ['hap', 'pee'], sentence: 'Singing a cheerful song makes me feel happy.' },
+    { word: 'community', segments: ['com', 'mu', 'ni', 'ty'], phonetics: ['kuh', 'myoo', 'ni', 'tee'], sentence: 'He is a valued member of the community.' },
+    { word: 'biology', segments: ['bi', 'ol', 'o', 'gy'], phonetics: ['by', 'ol', 'uh', 'jee'], sentence: 'Biology is the science of all living things.' },
+    { word: 'democracy', segments: ['de', 'moc', 'ra', 'cy'], phonetics: ['duh', 'mock', 'reh', 'see'], sentence: 'Democracy means government by the people.' },
+    { word: 'sustainability', segments: ['sus', 'tain', 'a', 'bil', 'i', 'ty'], phonetics: ['sus', 'tayn', 'a', 'bil', 'i', 'tee'], sentence: 'Sustainability is crucial for our future.' },
+    { word: 'education', segments: ['ed', 'u', 'ca', 'tion'], phonetics: ['ed', 'you', 'kay', 'shun'], sentence: 'Education opens doors to new opportunities.' },
+    { word: 'computer', segments: ['com', 'pu', 'ter'], phonetics: ['kom', 'pyoo', 'ter'], sentence: 'My new computer is incredibly fast and efficient.' },
+    { word: 'summer', segments: ['sum', 'mer'], phonetics: ['sum', 'mer'], sentence: 'We always go to the beach during summer.' },
+    { word: 'purple', segments: ['pur', 'ple'], phonetics: ['pur', 'pull'], sentence: 'Purple is her favorite color to wear.' },
+    { word: 'yesterday', segments: ['yes', 'ter', 'day'], phonetics: ['yes', 'ter', 'day'], sentence: 'I finished reading that entire book yesterday.' },
+    { word: 'application', segments: ['ap', 'pli', 'ca', 'tion'], phonetics: ['ap', 'li', 'kay', 'shun'], sentence: 'His job application was accepted.' },
+    { word: 'delicious', segments: ['de', 'li', 'cious'], phonetics: ['di', 'lish', 'us'], sentence: 'The chocolate cake was absolutely delicious.' },
+    { word: 'unbelievable', segments: ['un', 'be', 'liev', 'a', 'ble'], phonetics: ['un', 'buh', 'leev', 'uh', 'bull'], sentence: 'The magician performed an unbelievable trick.' },
+    { word: 'family', segments: ['fam', 'i', 'ly'], phonetics: ['fam', 'il', 'ee'], sentence: 'He loves spending quality time with his family.' },
+    { word: 'imagination', segments: ['i', 'mag', 'i', 'na', 'tion'], phonetics: ['ɪ', 'maj', 'ɪ', 'nay', 'shun'], sentence: 'Her imagination painted the most colorful worlds.' },
+    { word: 'orange', segments: ['or', 'ange'], phonetics: ['or', 'inj'], sentence: 'An orange is a very healthy snack.' },
+    { word: 'agriculture', segments: ['ag', 'ri', 'cul', 'ture'], phonetics: ['ag', 'ri', 'kul', 'cher'], sentence: 'Agriculture is vital for our food supply.' },
+    { word: 'tomorrow', segments: ['to', 'mor', 'row'], phonetics: ['tuh', 'mor', 'oh'], sentence: 'We have a very important meeting tomorrow morning.' },
+    { word: 'beautiful', segments: ['beau', 'ti', 'ful'], phonetics: ['byoo', 'tih', 'full'], sentence: 'The sunset was absolutely beautiful tonight.' },
+    { word: 'garden', segments: ['gar', 'den'], phonetics: ['gar', 'den'], sentence: 'The garden is full of beautiful flowers.' },
+    { word: 'responsibility', segments: ['re', 'spon', 'si', 'bil', 'i', 'ty'], phonetics: ['ri', 'spon', 'suh', 'bil', 'i', 'tee'], sentence: 'It is our responsibility to protect the planet.' },
+    { word: 'discover', segments: ['dis', 'cov', 'er'], phonetics: ['dis', 'kuv', 'er'], sentence: 'Scientists hope to discover new planets.' },
+    { word: 'environment', segments: ['en', 'vi', 'ron', 'ment'], phonetics: ['en', 'vy', 'run', 'ment'], sentence: 'We must work to protect our environment.' },
+    { word: 'music', segments: ['mu', 'sic'], phonetics: ['myu', 'zik'], sentence: 'She loves listening to classical music.' },
+    { word: 'understanding', segments: ['un', 'der', 'stand', 'ing'], phonetics: ['un', 'der', 'stand', 'ing'], sentence: 'He has a deep understanding of the subject.' },
+    { word: 'excellent', segments: ['ex', 'cel', 'lent'], phonetics: ['ek', 'suh', 'lent'], sentence: 'She did an excellent job on her project.' },
+    { word: 'necessary', segments: ['nec', 'es', 'sar', 'y'], phonetics: ['nes', 'e', 'ser', 'ee'], sentence: 'Is it necessary to attend the meeting?' },
+    { word: 'population', segments: ['pop', 'u', 'la', 'tion'], phonetics: ['pop', 'yoo', 'lay', 'shun'], sentence: 'The world population continues to grow steadily.' },
+    { word: 'congratulation', segments: ['con', 'grat', 'u', 'la', 'tion'], phonetics: ['kon', 'gra', 'choo', 'lay', 'shun'], sentence: 'She sent a card of congratulation.' },
+    { word: 'history', segments: ['his', 'to', 'ry'], phonetics: ['his', 'tuh', 'ree'], sentence: 'She is studying ancient history at the university.' },
+    { word: 'problem', segments: ['prob', 'lem'], phonetics: ['prob', 'lem'], sentence: 'Every problem has a creative solution.' },
+    { word: 'instrument', segments: ['in', 'stru', 'ment'], phonetics: ['in', 'struh', 'ment'], sentence: 'The piano is a difficult instrument to master.' },
+    { word: 'creativity', segments: ['cre', 'a', 'tiv', 'i', 'ty'], phonetics: ['kree', 'ay', 'tiv', 'i', 'tee'], sentence: 'Her creativity is shown in her artwork.' },
+    { word: 'development', segments: ['de', 'vel', 'op', 'ment'], phonetics: ['di', 'vel', 'up', 'ment'], sentence: 'The city is undergoing rapid development.' },
+    { word: 'intelligent', segments: ['in', 'tel', 'li', 'gent'], phonetics: ['in', 'tel', 'i', 'jent'], sentence: 'Dolphins are known to be highly intelligent animals.' },
+    { word: 'extraordinary', segments: ['ex', 'traor', 'di', 'nar', 'y'], phonetics: ['ek', 'stror', 'dih', 'ner', 'ee'], sentence: 'He has an extraordinary talent for music.' },
+    { word: 'seven', segments: ['sev', 'en'], phonetics: ['sev', 'en'], sentence: 'There are seven days in a week.' },
+    { word: 'determination', segments: ['de', 'ter', 'mi', 'na', 'tion'], phonetics: ['di', 'tur', 'mi', 'nay', 'shun'], sentence: 'His determination helped him to achieve his goals.' },
+    { word: 'metamorphosis', segments: ['met', 'a', 'mor', 'pho', 'sis'], phonetics: ['met', 'uh', 'mor', 'foh', 'sis'], sentence: 'A caterpillar undergoes a complete metamorphosis.' },
+    { word: 'picture', segments: ['pic', 'ture'], phonetics: ['pik', 'cher'], sentence: 'He drew a wonderful picture of his family.' },
+    { word: 'elephant', segments: ['el', 'e', 'phant'], phonetics: ['el', 'uh', 'funt'], sentence: 'The elephant is a majestic and intelligent animal.' },
+    { word: 'window', segments: ['win', 'dow'], phonetics: ['win', 'doh'], sentence: 'Please open the window for some fresh air.' },
+    { word: 'number', segments: ['num', 'ber'], phonetics: ['num', 'ber'], sentence: 'Pick a number between one and ten.' },
+    { word: 'organization', segments: ['or', 'gan', 'i', 'za', 'tion'], phonetics: ['or', 'gan', 'eye', 'zay', 'shun'], sentence: 'The organization helps people in need worldwide.' },
+    { word: 'technology', segments: ['tech', 'nol', 'o', 'gy'], phonetics: ['tek', 'nol', 'uh', 'jee'], sentence: 'Technology has changed how we all live.' },
+    { word: 'famous', segments: ['fa', 'mous'], phonetics: ['fay', 'mus'], sentence: 'That actor is famous all over the world.' },
+    { word: 'humanitarian', segments: ['hu', 'man', 'i', 'tar', 'i', 'an'], phonetics: ['hyoo', 'man', 'i', 'tair', 'ee', 'an'], sentence: 'She dedicated her life to humanitarian work.' },
+    { word: 'adventure', segments: ['ad', 'ven', 'ture'], phonetics: ['ad', 'ven', 'cher'], sentence: 'Their trip to the mountains was an adventure.' },
+    { word: 'answer', segments: ['an', 'swer'], phonetics: ['an', 'ser'], sentence: 'She knew the answer to the question.' },
+    { word: 'electricity', segments: ['e', 'lec', 'tric', 'i', 'ty'], phonetics: ['ee', 'lek', 'tris', 'i', 'tee'], sentence: 'The storm knocked out the electricity last night.' },
+    { word: 'cinematography', segments: ['cin', 'e', 'ma', 'tog', 'ra', 'phy'], phonetics: ['sin', 'e', 'ma', 'tog', 'ra', 'fee'], sentence: 'The film won an award for cinematography.' },
+    { word: 'mathematics', segments: ['math', 'e', 'mat', 'ics'], phonetics: ['math', 'eh', 'mat', 'iks'], sentence: 'Mathematics is the language of the universe.' },
+    { word: 'characteristic', segments: ['char', 'ac', 'ter', 'is', 'tic'], phonetics: ['kar', 'ak', 'ter', 'is', 'tik'], sentence: 'Patience is a valuable characteristic.' },
+    { word: 'negotiation', segments: ['ne', 'go', 'ti', 'a', 'tion'], phonetics: ['ni', 'go', 'shee', 'ay', 'shun'], sentence: 'The negotiation between the two countries was successful.' },
+    { word: 'exercise', segments: ['ex', 'er', 'cise'], phonetics: ['ek', 'ser', 'size'], sentence: 'Regular exercise is good for your health.' },
+    { word: 'astronomy', segments: ['as', 'tron', 'o', 'my'], phonetics: ['uh', 'stron', 'uh', 'mee'], sentence: 'She studies astronomy to learn about stars.' },
+    { word: 'umbrella', segments: ['um', 'brel', 'la'], phonetics: ['um', 'brel', 'uh'], sentence: 'You should take an umbrella, it might rain.' },
+    { word: 'dictionary', segments: ['dic', 'tion', 'ar', 'y'], phonetics: ['dik', 'shun', 'air', 'ee'], sentence: 'Use a dictionary to look up unknown words.' },
+    { word: 'exploration', segments: ['ex', 'plo', 'ra', 'tion'], phonetics: ['eks', 'plor', 'ray', 'shun'], sentence: 'Space exploration expands our collective horizons.' },
+    { word: 'interpretation', segments: ['in', 'ter', 'pre', 'ta', 'tion'], phonetics: ['in', 'ter', 'preh', 'tay', 'shun'], sentence: 'His interpretation of the poem was unique.' },
+    { word: 'classification', segments: ['clas', 'si', 'fi', 'ca', 'tion'], phonetics: ['klas', 'i', 'fi', 'kay', 'shun'], sentence: 'The library uses a classification system.' },
+    { word: 'vocabulary', segments: ['vo', 'cab', 'u', 'lar', 'y'], phonetics: ['vo', 'kab', 'yoo', 'lair', 'ee'], sentence: 'Reading books will expand your vocabulary.' },
+    { word: 'energy', segments: ['en', 'er', 'gy'], phonetics: ['en', 'er', 'jee'], sentence: 'Solar panels convert sunlight into energy.' },
+    { word: 'hospital', segments: ['hos', 'pi', 'tal'], phonetics: ['hos', 'pi', 'tal'], sentence: 'The new hospital has modern equipment.' }
+];
+
+
+    let index = 0;
+    // Elements
+    const wordDisplay = document.getElementById('wordDisplay');
+    const syllableContainer = document.getElementById('syllableContainer');
+    const legendTable = document.getElementById('legendTable');
+    const sentenceText = document.getElementById('sentenceText');
+    const playSentenceBtn = document.getElementById('playSentenceBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const jumblerBtn = document.getElementById('jumblerBtn');
+    const playAllBtn = document.getElementById('playAllBtn');
+    const playWordBtn = document.getElementById('playWordBtn');
+    const pauseRange = document.getElementById('pauseRange');
+    const pauseValue = document.getElementById('pauseValue');
+    let longPressTimer;
+    const longPressDuration = 600;
+
+    function renderWord() {
+      const data = wordsData[index];
+      // Word Display
+      wordDisplay.innerHTML = data.segments.map((s,i) =>
+        `<span class="split">${s}<div class="tooltip">${data.phonetics[i]}</div></span>`
+      ).join('<span>&sdot;</span>');
+      // Syllables
+      renderSyllables(data);
+      // Legend
+      renderLegend(data);
+      // Sentence
+      sentenceText.textContent = data.sentence;
+    }
+    function renderSyllables(data) {
+      syllableContainer.innerHTML = '';
+      data.segments.forEach((seg,i) => {
+        const btn = document.createElement('button');
+        btn.className='syllable'; btn.textContent=seg;
+        btn.innerHTML+=`<div class="tooltip-syl">${data.phonetics[i]}</div>`;
+        btn.addEventListener('click',()=>speak(data.phonetics[i]));
+        syllableContainer.appendChild(btn);
+      });
+    }
+    function renderLegend(data) {
+      legendTable.innerHTML='<tr><th>Syllable</th><th>Sound</th></tr>'+data.segments.map((s,i)=>
+        `<tr><td>${s}</td><td>${data.phonetics[i]}</td></tr>`
+      ).join('');
+    }
+
+    // Navigation
+    prevBtn.addEventListener('click',()=>{index=(index-1+wordsData.length)%wordsData.length;renderWord();});
+    nextBtn.addEventListener('click',()=>{index=(index+1)%wordsData.length;renderWord();});
+    jumblerBtn.addEventListener('click',()=>{let r;do{r=Math.floor(Math.random()*wordsData.length);}while(r===index);index=r;renderWord();});
+    pauseRange.addEventListener('input',()=>{pauseValue.textContent=pauseRange.value;});
+
+    // Play controls
+    playAllBtn.addEventListener('click',async()=>{disableControls(true);const pauseMs=parseFloat(pauseRange.value)*1000;for(const p of wordsData[index].phonetics){await speakAsync(p);await delay(pauseMs);}disableControls(false);});
+    playWordBtn.addEventListener('click',()=>speak(wordsData[index].word));
+    playSentenceBtn.addEventListener('click',()=>speakSentence(wordsData[index].sentence));
+
+    // Long press for sentence
+    wordDisplay.addEventListener('mousedown',()=>{clearTimeout(longPressTimer);longPressTimer=setTimeout(()=>speakSentence(wordsData[index].sentence),longPressDuration);});
+    ['mouseup','mouseleave','click'].forEach(evt=>wordDisplay.addEventListener(evt,()=>clearTimeout(longPressTimer)));
+    wordDisplay.addEventListener('mousedown',()=>{clearTimeout(longPressTimer);longPressTimer=setTimeout(()=>speak(wordsData[index].sentence),longPressDuration);});
+    ['mouseup','mouseleave','click'].forEach(evt=>wordDisplay.addEventListener(evt,()=>clearTimeout(longPressTimer)));
+
+    function speak(text){if(!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=1;u.pitch=1;window.speechSynthesis.speak(u);}    
+    function speakSentence(text){if(!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=0.75;u.pitch=1;window.speechSynthesis.speak(u);}    
+    function speakAsync(text){return new Promise(res=>{if(!window.speechSynthesis)return res();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=1;u.pitch=1;u.onend=res;window.speechSynthesis.speak(u);});}
+    function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+    function disableControls(disabled){[prevBtn,nextBtn,jumblerBtn,playAllBtn,playWordBtn,pauseRange,playSentenceBtn].forEach(el=>el.disabled=disabled);}
+
+    renderWord();
+  </script>
+  <footer style="text-align:center;font-size:0.75rem;color:#6b7280;margin-top:1rem;">Made with ❤️ for learners @ Beyond Dictionary</footer>
+</body>
+</html>
