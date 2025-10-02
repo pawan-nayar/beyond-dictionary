@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CBSE Class 12 Business Studies - Directing RTC Quiz</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: rgb(43, 31, 31);
+      min-height: 100vh;
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: rgb(43, 31, 31);
+      color: white;
+      border-radius: 10px;
+    }
+    .header h1 { font-size: 2.2em; margin-bottom: 10px; }
+    .header p { font-size: 1.1em; opacity: 0.9; }
+    .start-screen, .result-screen { text-align: center; padding: 40px 20px; }
+    .scenario-counter {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .rtc-passage {
+      background: #f8f9fa;
+      padding: 20px;
+      margin-bottom: 25px;
+      border-left: 5px solid #ff6b47;
+      border-radius: 8px;
+      line-height: 1.6;
+      font-size: 1.05em;
+    }
+    .rtc-passage h3 {
+      color: #ff6b47;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+    .question-container {
+      margin-bottom: 25px;
+      padding: 20px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      background: white;
+      transition: all 0.3s ease;
+    }
+    .question-container.correct {
+      border-color: #28a745;
+      background: #f8fff9;
+    }
+    .question-container.wrong {
+      border-color: #dc3545;
+      background: #fff8f8;
+    }
+    .question-header {
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #495057;
+      font-size: 1.1em;
+    }
+    .question-type {
+      background: #667eea;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 0.8em;
+      margin-left: 10px;
+    }
+    .options label {
+      display: block;
+      margin: 12px 0;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+    }
+    .options label:hover {
+      background: #e9ecef;
+      border-color: #667eea;
+    }
+    .options label.selected {
+      background: #667eea;
+      color: white;
+      font-weight: bold;
+    }
+    .options input[type="radio"] {
+      margin-right: 10px;
+    }
+    .text-input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #dee2e6;
+      border-radius: 6px;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+    .text-input:focus {
+      outline: none;
+      border-color: #ff6b47;
+    }
+    .explanation {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-left: 4px solid #ff6b47;
+      border-radius: 8px;
+      line-height: 1.6;
+    }
+    .explanation.show { 
+      display: block; 
+      animation: fadeIn 0.3s ease-in;
+    }
+    .explanation h4 {
+      color: #ff6b47;
+      margin-bottom: 12px;
+      font-size: 1.1em;
+    }
+    .explanation .why-correct {
+      background: #d4edda;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 12px 0;
+      border-left: 4px solid #28a745;
+    }
+    .explanation .why-wrong {
+      background: #f8d7da;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 12px 0;
+      border-left: 4px solid #dc3545;
+    }
+    .explanation .connect-concept {
+      background: #e2f3ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 12px 0;
+      border-left: 4px solid #007bff;
+    }
+    .explanation .exam-tip {
+      background: #fff3cd;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 12px 0;
+      border-left: 4px solid #ffc107;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .context-intro {
+      background: #e2f3ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #007bff;
+    }
+    .context-intro p {
+      margin: 0;
+      color: #495057;
+      font-size: 1.05em;
+    }
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 30px 0;
+      gap: 8px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 2px solid #e9ecef;
+    }
+    .scenario-indicator {
+      font-weight: bold;
+      color: rgb(43, 31, 31);
+      font-size: 1em;
+      text-align: center;
+      flex: 1;
+      max-width: 120px;
+    }
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      min-width: 80px;
+    }
+    .btn-primary {
+      background: #ff6b47;
+      color: white;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 107, 71, 0.4);
+      background: #e55a3e;
+    }
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .hidden { display: none; }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e9ecef;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .progress-indicator {
+      font-size: 0.8em;
+      color: #6c757d;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #ff6b47;
+      transition: width 0.3s ease;
+    }
+    .score-display {
+      font-size: 2em;
+      font-weight: bold;
+      color: #ff6b47;
+      margin: 20px 0;
+    }
+    .result-breakdown {
+      text-align: left;
+      margin: 30px 0;
+      padding: 0;
+    }
+    .result-section {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      border-left: 4px solid #ff6b47;
+    }
+    .result-section h3 {
+      color: rgb(43, 31, 31);
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+    .result-section h4 {
+      color: #ff6b47;
+      margin: 20px 0 10px 0;
+      font-size: 1.1em;
+    }
+    .result-section p {
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+    .result-section ul {
+      margin: 15px 0 15px 20px;
+    }
+    .result-section li {
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+    .performance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 15px 0;
+    }
+    .performance-item {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid #e9ecef;
+    }
+    .performance-item strong {
+      color: #ff6b47;
+    }
+    .start-instructions {
+      text-align: left;
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 25px 0;
+      line-height: 1.6;
+    }
+    .start-instructions h3 {
+      margin-bottom: 15px;
+      margin-top: 25px;
+      color: rgb(43, 31, 31);
+    }
+    .start-instructions h3:first-child {
+      margin-top: 0;
+    }
+    .start-instructions p {
+      margin-bottom: 15px;
+    }
+    .start-instructions ul {
+      margin-left: 20px;
+      margin-top: 15px;
+      margin-bottom: 20px;
+    }
+    .start-instructions li {
+      margin: 10px 0;
+    }
+    @media (max-width: 768px) {
+      .container { padding: 10px; }
+      .navigation { 
+        gap: 5px;
+        padding: 12px;
+      }
+      .btn {
+        padding: 6px 10px;
+        font-size: 0.8em;
+        min-width: 60px;
+      }
+      .scenario-indicator {
+        font-size: 0.85em;
+        max-width: 80px;
+        white-space: nowrap;
+      }
+      .header h1 { font-size: 1.8em; }
+      .performance-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Start Screen -->
+    <div id="startScreen" class="start-screen">
+      <div class="header">
+        <h1>CBSE Class 12 Business Studies</h1>
+        <p>Directing Chapter - Reference to Context Quiz</p>
+      </div>
+      
+      <div class="start-instructions">
+        <h3>📚 About This Quiz</h3>
+        <p><strong>Purpose:</strong> Master the art of identifying key Directing concepts from business scenarios - a crucial skill for CBSE exams where 6-mark questions often test your ability to infer exact concepts from narratives.</p>
+        
+        <h3>🎯 What You'll Practice</h3>
+        <ul>
+          <li><strong>Leadership Styles</strong> - Identifying autocratic, democratic, and laissez-faire approaches</li>
+          <li><strong>Motivation Techniques</strong> - Recognizing financial and non-financial motivators</li>
+          <li><strong>Communication Types</strong> - Understanding formal, informal, and grapevine communication</li>
+          <li><strong>Communication Barriers</strong> - Spotting semantic, psychological, and organizational obstacles</li>
+          <li><strong>Supervision Methods</strong> - Analyzing different supervisory approaches</li>
+          <li><strong>Team Dynamics</strong> - Understanding group formation and management</li>
+        </ul>
+        
+        <h3>📝 Quiz Structure</h3>
+        <ul>
+          <li><strong>7 Scenarios</strong> - Each with detailed 100-150 word business context</li>
+          <li><strong>6 Questions per scenario</strong> - Mix of MCQ, Fill in the Blanks, Short Answer, and Long Answer</li>
+          <li><strong>Progressive Difficulty</strong> - From basic recall to analytical application</li>
+          <li><strong>Instant Feedback</strong> - Detailed explanations for every answer</li>
+        </ul>
+        
+        <h3>💡 How to Use</h3>
+        <ul>
+          <li>Read each scenario carefully - every detail matters</li>
+          <li>Answer all 6 questions before moving to next scenario</li>
+          <li>Review explanations to understand the reasoning</li>
+          <li>Use 'Previous' to revisit scenarios if needed</li>
+        </ul>
+      </div>
+      
+      <button class="btn btn-primary" onclick="startQuiz()">🚀 Start Quiz</button>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quizScreen" class="hidden">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-indicator" id="progressIndicator"></div>
+      
+      <div class="scenario-counter" id="scenarioCounter"></div>
+      
+      <div id="scenarioContent"></div>
+      
+      <div class="navigation">
+        <button class="btn btn-secondary" id="prevBtn" onclick="previousScenario()">← Prev</button>
+        <div class="scenario-indicator" id="scenarioIndicator"></div>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextScenario()">Next →</button>
+      </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="resultScreen" class="result-screen hidden">
+      <div class="header">
+        <h1>🎉 Quiz Complete!</h1>
+        <p>Your Performance Summary</p>
+      </div>
+      
+      <div class="score-display" id="finalScore"></div>
+      
+      <div class="result-breakdown" id="resultBreakdown"></div>
+      
+      <button class="btn btn-primary" onclick="restartQuiz()">🔄 Retake Quiz</button>
+    </div>
+  </div>
+
+  <script>
+    const scenarios = [
+      {
+        title: "Leadership Style in Crisis Management",
+        passage: `TechnoSoft Ltd., a software development company, faced a critical security breach that threatened client data. CEO Rajesh immediately took control, making all decisions without consulting his team. He assigned specific tasks to each department head, set strict deadlines, and monitored progress hourly. "There's no time for discussions," he declared, "follow my instructions precisely." While some employees felt overwhelmed by the rigid approach, the crisis was resolved within 48 hours. However, several senior developers later expressed frustration about not being consulted, despite their expertise in cybersecurity. The incident highlighted different perspectives on Rajesh's management approach during emergencies.`,
+        questions: [
+          {
+            type: "MCQ",
+            question: "What leadership style did Rajesh demonstrate during the crisis?",
+            options: [
+              "Democratic leadership",
+              "Autocratic leadership", 
+              "Laissez-faire leadership",
+              "Transformational leadership"
+            ],
+            correct: 1,
+            explanation: {
+              concept: "Leadership Styles - Autocratic vs Democratic",
+              whyCorrect: "Autocratic leadership is exactly right! Rajesh demonstrated classic autocratic behavior: making all decisions unilaterally without consulting anyone, giving direct orders ('follow my instructions precisely'), monitoring progress hourly, and declaring 'there's no time for discussions.' This leadership style centralizes all authority in the leader, with subordinates having zero input in decision-making. The crisis situation revealed his natural autocratic tendency.",
+              whyWrong: {
+                0: "Democratic leadership involves team consultation and collaborative decisions.",
+                2: "Laissez-faire gives complete freedom to employees, opposite of Rajesh's control.",
+                3: "Transformational leadership inspires through vision, not direct commands."
+              },
+              connectConcept: "In CBSE scenarios, look for key behavioral indicators. 'No discussions' + 'follow instructions precisely' + 'hourly monitoring' = autocratic markers. The leadership style is determined by behavior patterns, not just outcomes.",
+              examTip: "6-mark questions test concept identification from scenarios. Focus on specific actions and phrases rather than results. Success doesn't determine the leadership style - the approach does."
+            }
+          },
+          {
+            type: "FTB",
+            question: "The leadership approach where decisions are made without consulting team members is called _______ leadership.",
+            correct: "autocratic",
+            explanation: {
+              concept: "Definition of Autocratic Leadership",
+              whyCorrect: "'Autocratic' is the perfect answer! This term comes from Greek 'auto' (self) and 'kratos' (power), meaning 'self-power.' In autocratic leadership, the leader holds all decision-making power without seeking input from team members. This directly connects to Rajesh's behavior - he made decisions 'without consulting team members,' which is the textbook definition of autocratic leadership in CBSE curriculum.",
+              whyWrong: "Incorrect. The correct answer is 'autocratic'. Standard CBSE management terminology for centralized leadership.",
+              connectConcept: "The phrase 'without consultation' is the key indicator distinguishing autocratic from democratic leadership. When leaders exclude team input completely, they're being autocratic.",
+              examTip: "Fill-in-the-blank questions require exact textbook terminology. CBSE prefers 'autocratic,' 'democratic,' and 'laissez-faire' for leadership styles, not synonyms."
+            }
+          },
+          {
+            type: "SAQ",
+            question: "Identify two advantages of Rajesh's leadership style during the crisis situation.",
+            options: [
+              "Quick decision-making and clear direction during emergency",
+              "Enhanced team motivation and job satisfaction",
+              "Improved creativity and innovation in problem-solving",
+              "Better long-term employee retention and loyalty"
+            ],
+            correct: 0,
+            explanation: {
+              concept: "Advantages of Autocratic Leadership in Crisis",
+              whyCorrect: "Quick decision-making and clear direction is absolutely correct! During the crisis, Rajesh's autocratic style delivered exactly what emergencies require: lightning-fast decisions without the delay of group discussions, and crystal-clear direction so everyone knew their exact tasks. In crisis situations, speed and clarity often matter more than consensus. The 48-hour resolution proves these advantages worked effectively.",
+              whyWrong: {
+                1: "Autocratic leadership typically reduces motivation and satisfaction, as shown by developer frustration.",
+                2: "This style actually stifles creativity since Rajesh said 'no time for discussions.'",
+                3: "Long-term retention suffers under autocratic leadership due to feeling undervalued."
+              },
+              connectConcept: "Leadership advantages are situational. Autocratic works for emergencies (speed matters), while democratic works for routine operations (engagement matters). Context determines effectiveness.",
+              examTip: "CBSE advantage/disadvantage questions require contextual thinking. Crisis situations favor autocratic benefits, normal times favor democratic benefits. Always match the leadership style to the situation."
+            }
+          },
+          {
+            type: "MCQ",
+            question: "Why did senior developers express frustration after the crisis was resolved?",
+            options: [
+              "They were not given adequate compensation",
+              "Their expertise was not utilized in decision-making",
+              "They had to work extended hours",
+              "They disagreed with the final solution"
+            ],
+            correct: 1,
+            explanation: {
+              concept: "Employee Frustration in Autocratic Leadership",
+              whyCorrect: "Their expertise was not utilized in decision-making is exactly right! The passage clearly states that senior developers expressed frustration 'despite their expertise in cybersecurity' because they were not consulted during the decision-making process. This is a classic consequence of autocratic leadership - skilled employees feel undervalued when their knowledge and experience are ignored, even if the outcome is successful.",
+              whyWrong: {
+                0: "No mention of compensation issues in the passage.",
+                2: "Extended hours weren't mentioned as the source of frustration.",
+                3: "They didn't disagree with the solution, but with being excluded."
+              },
+              connectConcept: "This illustrates a key limitation of autocratic leadership - it can demotivate skilled employees who want to contribute their expertise. Even when autocratic decisions work, the process can damage morale.",
+              examTip: "Look for emotional reactions in scenarios. Words like 'frustration,' 'despite their expertise' signal that the issue isn't about results but about the process and feeling valued."
+            }
+          },
+          {
+            type: "LAQ",
+            question: "Analyze the appropriateness of Rajesh's leadership style in this situation.",
+            options: [
+              "Completely inappropriate as it ignored team expertise",
+              "Appropriate for crisis but should transition to collaborative approach post-crisis",
+              "Perfect approach that should be maintained permanently",
+              "Partially appropriate but needed more delegation"
+            ],
+            correct: 1,
+            explanation: {
+              concept: "Situational Leadership Analysis",
+              whyCorrect: "Appropriate for crisis but should transition to collaborative approach post-crisis is the most balanced answer! Rajesh's autocratic style was justified during the emergency because quick decisions were essential for resolving the security breach within 48 hours. However, post-crisis, he should have shifted to a more collaborative approach to address team frustration, utilize their expertise for prevention strategies, and maintain long-term morale and retention.",
+              whyWrong: {
+                0: "This ignores the emergency context where speed was crucial.",
+                2: "Permanent autocratic leadership would damage team morale and retention.",
+                3: "More delegation during a crisis could have slowed critical decisions."
+              },
+              connectConcept: "Effective leaders adapt their style to situations. Crisis = autocratic for speed. Normal operations = democratic for engagement. The key is flexibility and knowing when to transition between styles.",
+              examTip: "CBSE analysis questions often have nuanced answers. Look for options that acknowledge both positives and negatives, showing understanding of contextual leadership rather than absolute judgments."
+            }
+          },
+          {
+            type: "FTB",
+            question: "The frustration expressed by senior developers indicates a lack of _______ in the decision-making process.",
+            correct: "participation",
+            explanation: {
+              concept: "Employee Participation in Decision-Making",
+              whyCorrect: "'Participation' is the perfect answer! The developers' frustration stemmed directly from lack of participation or involvement in the decision-making process, despite having relevant cybersecurity expertise. Participation is a key element of democratic leadership and employee empowerment. When skilled employees are excluded from decisions in their area of expertise, it leads to frustration and feeling undervalued.",
+              whyWrong: "Incorrect. The correct answer is 'participation'. CBSE term for employee involvement in decisions.",
+              connectConcept: "Employee participation in decision-making is crucial for motivation, especially for skilled professionals. Lack of participation, even in successful outcomes, can damage morale and retention.",
+              examTip: "For participation-related blanks, CBSE typically expects 'participation' over synonyms like 'involvement' or 'consultation.' Stick to standard management terminology."
+            }
+          }
+        ]
+      },
+      {
+        title: "Motivation Strategies in Manufacturing",
+        passage: `GreenTech Manufacturing implemented a comprehensive motivation program after noticing declining productivity and increasing absenteeism. The company introduced performance-based bonuses, flexible working hours, and recognition awards for outstanding employees. Additionally, they established an employee suggestion scheme where workers could propose improvements and receive monetary rewards for implemented ideas. The company also created comfortable break areas, provided free health check-ups, and organized team-building activities. Manager Priya noticed that while financial incentives initially boosted performance, the non-financial benefits like recognition and autonomy had more lasting effects on employee satisfaction and commitment to the organization.`,
+        questions: [
+          {
+            type: "MCQ",
+            question: "Which motivation theory best explains the lasting effect of non-financial benefits?",
+            options: [
+              "Maslow's Hierarchy of Needs",
+              "Taylor's Scientific Management",
+              "Weber's Bureaucratic Theory",
+              "Fayol's Administrative Principles"
+            ],
+            correct: 0,
+            explanation: {
+              concept: "Maslow's Hierarchy and Non-Financial Motivation",
+              whyCorrect: "Option 1 (Maslow's Hierarchy of Needs) is exactly right! The passage mentions that recognition and autonomy had 'more lasting effects' - this perfectly aligns with Maslow's theory. Recognition fulfills esteem needs (feeling valued and respected), while autonomy satisfies self-actualization needs (reaching one's potential). These higher-order needs provide more sustained motivation than basic financial needs.",
+              whyWrong: {
+                1: "Taylor's Scientific Management focuses purely on financial incentives and efficiency. Taylor believed workers were only motivated by money, which contradicts the passage's emphasis on non-financial benefits.",
+                2: "Weber's Bureaucratic Theory deals with organizational structure and authority, not individual motivation. It doesn't explain why recognition and autonomy create lasting effects.",
+                3: "Fayol's Administrative Principles cover management functions (planning, organizing, directing, controlling) but don't specifically address what motivates employees at different levels."
+              },
+              connectConcept: "The key insight here is understanding that financial incentives address lower-order needs (physiological and safety), while non-financial benefits like recognition and autonomy address higher-order needs (esteem and self-actualization). According to Maslow, once lower needs are satisfied, people seek fulfillment of higher needs.",
+              examTip: "In CBSE questions about motivation theories, look for clues in the scenario. Words like 'recognition,' 'autonomy,' 'lasting effects,' and 'self-fulfillment' point toward Maslow's theory. Financial incentives alone suggest Taylor's approach."
+            }
+          },
+          {
+            type: "FTB",
+            question: "The motivation techniques that don't involve monetary rewards are called _______ incentives.",
+            correct: "non-financial",
+            explanation: {
+              concept: "Types of Motivation - Financial vs Non-Financial",
+              whyCorrect: "'Non-financial' is exactly right! These are motivation techniques that don't involve direct monetary rewards but still drive employee performance. Examples from the passage include recognition awards, flexible working hours, team-building activities, and employee suggestion schemes. Non-financial incentives often address higher-order needs like esteem, recognition, and self-actualization, which create more lasting motivation than money alone.",
+              whyWrong: "Incorrect. The correct answer is 'non-financial'. Standard CBSE term for motivation without monetary rewards.",
+              connectConcept: "Non-financial incentives work because they fulfill psychological needs beyond basic survival. They make employees feel valued, recognized, and part of something meaningful.",
+              examTip: "CBSE distinguishes between 'financial' (money-based) and 'non-financial' (non-money) incentives. Use these exact terms rather than synonyms like monetary/non-monetary."
+            }
+          },
+          {
+            type: "SAQ",
+            question: "Identify two financial and two non-financial motivators mentioned in the passage.",
+            options: [
+              "Financial: bonuses, suggestion rewards; Non-financial: recognition, team activities",
+              "Financial: salary, overtime; Non-financial: training, promotion",
+              "Financial: pension, insurance; Non-financial: job security, status",
+              "Financial: allowances, commissions; Non-financial: autonomy, flexibility"
+            ],
+            correct: 0,
+            explanation: {
+              concept: "Identifying Financial vs Non-Financial Motivators",
+              whyCorrect: "Financial: bonuses, suggestion rewards; Non-financial: recognition, team activities is exactly right! The passage clearly mentions 'performance-based bonuses' and 'monetary rewards for implemented ideas' as financial motivators, while 'recognition awards' and 'team-building activities' are identified as non-financial motivators. This demonstrates the company's comprehensive approach using both types of incentives.",
+              whyWrong: {
+                1: "These motivators aren't specifically mentioned in the GreenTech scenario.",
+                2: "Pension and insurance aren't mentioned in this particular passage.",
+                3: "Allowances and commissions aren't specifically referenced in the passage."
+              },
+              connectConcept: "Effective motivation programs combine financial incentives (direct monetary benefits) with non-financial incentives (psychological and social benefits) to address different employee needs.",
+              examTip: "When identifying motivators from passages, stick to what's explicitly mentioned rather than general knowledge. CBSE tests careful reading and specific identification."
+            }
+          },
+          {
+            type: "MCQ",
+            question: "What does the employee suggestion scheme primarily address?",
+            options: [
+              "Financial security needs",
+              "Physiological needs",
+              "Esteem and self-actualization needs",
+              "Safety and security needs"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Maslow's Hierarchy - Higher Order Needs",
+              whyCorrect: "Esteem and self-actualization needs is exactly right! The employee suggestion scheme addresses esteem needs by recognizing employees' ideas and making them feel valued, and self-actualization needs by allowing creativity and meaningful contribution to organizational improvement. When employees see their suggestions implemented, it fulfills their need for achievement and personal growth, which are higher-order needs in Maslow's hierarchy.",
+              whyWrong: {
+                0: "Financial security is a lower-order need related to basic monetary stability.",
+                1: "Physiological needs involve basic survival requirements like food and shelter.",
+                3: "Safety needs relate to job security and protection from harm."
+              },
+              connectConcept: "Employee suggestion schemes are powerful motivators because they fulfill multiple higher-order needs: esteem (recognition), self-actualization (creativity), and belongingness (contribution to the organization).",
+              examTip: "When suggestion schemes or employee participation programs are mentioned, they typically address higher-order needs (esteem and self-actualization) rather than basic survival needs."
+            }
+          },
+          {
+            type: "LAQ",
+            question: "Evaluate the effectiveness of GreenTech's comprehensive motivation strategy.",
+            options: [
+              "Ineffective as it focuses too much on non-financial aspects",
+              "Highly effective as it addresses multiple levels of employee needs",
+              "Moderately effective but lacks proper implementation",
+              "Effective only for short-term productivity gains"
+            ],
+            correct: 1,
+            explanation: {
+              concept: "Comprehensive Motivation Strategy Evaluation",
+              whyCorrect: "Highly effective as it addresses multiple levels of employee needs is the most accurate evaluation! GreenTech's strategy is comprehensive because it addresses multiple levels of Maslow's hierarchy: physiological needs (health check-ups), safety needs (job security through performance recognition), esteem needs (recognition awards), and self-actualization needs (suggestion scheme). The passage shows lasting effects, indicating the strategy's effectiveness in creating sustained motivation.",
+              whyWrong: {
+                0: "The strategy actually balances financial and non-financial motivators effectively.",
+                2: "The positive results mentioned suggest successful implementation.",
+                3: "The 'lasting effects' mentioned indicate long-term effectiveness, not just short-term gains."
+              },
+              connectConcept: "The most effective motivation strategies are comprehensive, addressing multiple levels of human needs rather than focusing on just one type of motivator.",
+              examTip: "Look for strategies that address multiple aspects of motivation. CBSE often favors comprehensive approaches that consider different types of employee needs over single-focus strategies."
+            }
+          },
+          {
+            type: "LAQ",
+            question: "Evaluate the effectiveness of GreenTech's comprehensive motivation strategy.",
+            options: [
+              "Ineffective as it focuses too much on non-financial aspects",
+              "Highly effective as it addresses multiple levels of employee needs",
+              "Moderately effective but lacks proper implementation",
+              "Effective only for short-term productivity gains"
+            ],
+            correct: 1,
+            explanation: "The strategy is highly effective because it addresses multiple levels of Maslow's hierarchy - physiological (health check-ups), safety (job security through performance), esteem (recognition), and self-actualization (suggestion scheme), creating comprehensive motivation."
+          },
+          {
+            type: "FTB",
+            question: "The lasting effects of recognition and autonomy suggest they fulfill employees' _______ order needs.",
+            correct: "higher",
+            explanation: "Recognition and autonomy fulfill higher-order needs in Maslow's hierarchy (esteem and self-actualization), which provide more sustained motivation compared to lower-order needs like basic financial security."
+          }
+        ]
+      },
+      {
+        title: "Communication Barriers in Multinational Corporation",
+        passage: `GlobalCorp, a multinational company, experienced significant communication challenges when expanding operations to India. During a crucial project meeting, Japanese manager Takeshi used technical jargon that confused the Indian team. Meanwhile, cultural differences led to misunderstandings - when Indian employees nodded during explanations, Takeshi assumed agreement, but they were actually showing respect while having concerns. The hierarchical structure made junior employees hesitant to voice doubts to senior management. Additionally, poor internet connectivity during virtual meetings caused message distortions. The situation worsened when informal gossip spread inaccurate information about potential layoffs, creating anxiety among employees and affecting productivity.`,
+        questions: [
+          {
+            type: "MCQ",
+            question: "The use of technical jargon that confused the Indian team represents which type of communication barrier?",
+            options: [
+              "Physical barrier",
+              "Semantic barrier",
+              "Psychological barrier",
+              "Organizational barrier"
+            ],
+            correct: 1,
+            explanation: {
+              concept: "Types of Communication Barriers - Semantic",
+              whyCorrect: "Semantic barrier is exactly right! Technical jargon represents a semantic barrier because it involves problems with the meaning and interpretation of words. When Takeshi used technical terms that the Indian team couldn't understand, it created confusion due to language and terminology differences. Semantic barriers occur when the sender and receiver interpret words, symbols, or meanings differently.",
+              whyWrong: {
+                0: "Physical barriers involve environmental factors like noise or poor connectivity.",
+                2: "Psychological barriers relate to emotional states, not word meanings.",
+                3: "Organizational barriers involve company structure, not language interpretation."
+              },
+              connectConcept: "Technical jargon creates semantic barriers because specialized terms may not translate across teams or cultures. The same word can have different meanings in different contexts.",
+              examTip: "When CBSE asks about communication barriers, look for clues: jargon/language = semantic, emotions = psychological, hierarchy = organizational, technology/environment = physical."
+            }
+          },
+          {
+            type: "FTB",
+            question: "The cultural misunderstanding about nodding represents a _______ barrier to communication.",
+            correct: "cultural",
+            explanation: {
+              concept: "Cultural Barriers in Communication",
+              whyCorrect: "'Cultural' is the perfect answer! This represents a cultural barrier because the same gesture (nodding) had different meanings in Japanese and Indian cultures. In Japan, nodding might indicate understanding or agreement, while in India, it can show respect without necessarily indicating agreement. Cultural barriers arise when people from different cultural backgrounds interpret behaviors, gestures, or communication styles differently.",
+              whyWrong: "Incorrect. The correct answer is 'cultural'. Different cultural interpretations of the same gesture.",
+              connectConcept: "Cultural barriers are common in multinational companies where diverse cultural backgrounds lead to different interpretations of the same communication cues.",
+              examTip: "When you see misunderstandings due to different cultural interpretations of gestures, behaviors, or communication styles, the answer is typically 'cultural' barrier."
+            }
+          },
+          {
+            type: "SAQ",
+            question: "Identify the organizational barrier mentioned in the passage.",
+            options: [
+              "Poor internet connectivity",
+              "Use of technical jargon",
+              "Hierarchical structure preventing open communication",
+              "Cultural differences in interpretation"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Organizational Barriers - Hierarchical Structure",
+              whyCorrect: "Hierarchical structure preventing open communication is absolutely correct! The passage clearly states that 'the hierarchical structure made junior employees hesitant to voice doubts to senior management.' This is a classic organizational barrier where the company's structure and authority levels create obstacles to free communication flow. Junior employees feel intimidated by hierarchy and avoid communicating concerns upward.",
+              whyWrong: {
+                0: "Poor connectivity is a physical/technical barrier, not organizational.",
+                1: "Technical jargon is a semantic barrier related to language.",
+                3: "Cultural differences are cultural barriers, not organizational structure issues."
+              },
+              connectConcept: "Organizational barriers stem from company structure, policies, and hierarchy. When structure itself prevents communication, it becomes an organizational barrier.",
+              examTip: "Look for structure-related communication problems: hierarchy preventing upward communication, rigid policies, or organizational design that blocks information flow."
+            }
+          },
+          {
+            type: "MCQ",
+            question: "The spread of inaccurate information about layoffs represents which communication network?",
+            options: [
+              "Formal communication",
+              "Upward communication", 
+              "Grapevine communication",
+              "Downward communication"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Grapevine Communication Network",
+              whyCorrect: "Grapevine communication is exactly right! The passage mentions 'informal gossip spread inaccurate information about potential layoffs.' Grapevine refers to the informal communication network where rumors, unofficial information, and gossip spread rapidly among employees outside official channels. It's characterized by being fast, unofficial, and often containing distorted or incomplete information.",
+              whyWrong: {
+                0: "Formal communication follows official organizational channels and procedures.",
+                1: "Upward communication flows from subordinates to superiors through official channels.",
+                3: "Downward communication flows from management to employees through official channels."
+              },
+              connectConcept: "Grapevine communication fills information gaps when formal communication is inadequate. It spreads faster than formal channels but often contains rumors and distortions.",
+              examTip: "When you see 'gossip,' 'rumors,' 'informal spread of information,' or 'unofficial communication,' the answer is typically grapevine communication."
+            }
+          },
+          {
+            type: "LAQ",
+            question: "Analyze the multiple communication barriers affecting GlobalCorp's effectiveness.",
+            options: [
+              "Only semantic barriers are significant challenges",
+              "Multiple barriers (semantic, cultural, organizational, physical) create compounded communication problems",
+              "Physical barriers are the primary concern",
+              "Organizational barriers are easily manageable"
+            ],
+            correct: 1,
+            explanation: {
+              concept: "Multiple Communication Barriers Analysis",
+              whyCorrect: "Multiple barriers creating compounded communication problems is the most comprehensive answer! GlobalCorp faces interconnected barriers: semantic (technical jargon), cultural (nodding misinterpretation), organizational (hierarchy preventing upward communication), and physical (poor connectivity). These barriers compound each other, creating complex communication challenges that require multiple solutions rather than addressing just one type.",
+              whyWrong: {
+                0: "This ignores cultural, organizational, and physical barriers mentioned in the passage.",
+                2: "Physical barriers are just one of several types affecting the company.",
+                3: "Organizational barriers like hierarchy are often the most difficult to change."
+              },
+              connectConcept: "In real organizations, multiple communication barriers often exist simultaneously and interact with each other, creating more complex problems than single barriers.",
+              examTip: "CBSE analysis questions often require recognizing multiple factors. Look for comprehensive answers that acknowledge all barriers mentioned in the scenario rather than focusing on just one type."
+            }
+          },
+          {
+            type: "FTB",
+            question: "Poor internet connectivity during virtual meetings represents a _______ barrier to communication.",
+            correct: "physical",
+            explanation: {
+              concept: "Physical Barriers in Communication",
+              whyCorrect: "'Physical' is the correct answer! Poor internet connectivity represents a physical barrier because it's an environmental or technological factor that impedes the transmission of messages. Physical barriers include noise, poor technology, distance, faulty equipment, or any external factor that interferes with the communication process. The connectivity issue physically prevents clear message delivery.",
+              whyWrong: "Incorrect. The correct answer is 'physical'. Technical/environmental obstacles that block message transmission.",
+              connectConcept: "Physical barriers are external factors that interfere with communication transmission. They include technology problems, environmental noise, distance, or equipment failures.",
+              examTip: "When communication problems involve technology, environment, equipment, or physical obstacles preventing message transmission, the answer is 'physical' barrier."
+            }
+          }
+        ]
+      },
+      {
+        title: "Supervision Approaches in Retail Chain",
+        passage: `MegaMart, a large retail chain, employed different supervision approaches across its stores. Store Manager Amit practiced close supervision, constantly monitoring cashiers' transactions, checking inventory counts hourly, and requiring approval for every customer complaint resolution. His store had low theft rates but high employee turnover. In contrast, Store Manager Sunita adopted a general supervision approach, setting clear targets for her team, providing necessary training, and checking progress weekly rather than daily. She encouraged employees to handle routine customer issues independently and only intervened when necessary. Sunita's store showed higher employee satisfaction, lower absenteeism, and comparable sales performance despite initial concerns about reduced oversight.`,
+        questions: [
+          {
+            type: "MCQ",
+            question: "What type of supervision did Amit practice?",
+            options: [
+              "General supervision",
+              "Close supervision",
+              "Democratic supervision",
+              "Participative supervision"
+            ],
+            correct: 1,
+            explanation: {
+              concept: "Types of Supervision - Close vs General",
+              whyCorrect: "Close supervision is exactly right! Amit demonstrated all characteristics of close supervision: constantly monitoring cashiers' transactions, checking inventory hourly, and requiring approval for every customer complaint resolution. Close supervision involves detailed, frequent oversight of employee activities with minimal autonomy given to workers. The supervisor maintains tight control over all decisions and processes.",
+              whyWrong: {
+                0: "General supervision involves setting targets and periodic checking, not constant monitoring.",
+                2: "Democratic supervision focuses on participation in decision-making, not constant oversight.",
+                3: "Participative supervision emphasizes employee involvement in planning and decisions."
+              },
+              connectConcept: "Close supervision is characterized by frequent monitoring, detailed control, and minimal employee autonomy. It's often used when trust is low or tasks are critical.",
+              examTip: "Look for keywords: 'constantly monitoring,' 'hourly checking,' 'requiring approval for everything' = close supervision. 'Setting targets,' 'weekly checks,' 'employee independence' = general supervision."
+            }
+          },
+          {
+            type: "FTB",
+            question: "The supervision approach that involves setting targets and checking progress periodically is called _______ supervision.",
+            correct: "general",
+            explanation: {
+              concept: "General Supervision Definition",
+              whyCorrect: "'General' is the perfect answer! General supervision involves setting clear objectives and targets for employees, then allowing them autonomy to achieve these goals with periodic progress checks rather than constant monitoring. Sunita exemplified this by setting targets, checking progress weekly, and encouraging employees to handle routine issues independently. This approach builds trust and employee responsibility.",
+              whyWrong: "Incorrect. The correct answer is 'general'. Supervision with targets and periodic checks, not constant monitoring.",
+              connectConcept: "General supervision balances control with autonomy. Supervisors set expectations and check results periodically rather than controlling every action.",
+              examTip: "CBSE uses 'general supervision' for the hands-off approach with periodic checks, versus 'close supervision' for constant monitoring. Use these exact terms."
+            }
+          },
+          {
+            type: "SAQ",
+            question: "Compare the outcomes of both supervision approaches mentioned in the passage.",
+            options: [
+              "Close supervision: low theft, high turnover; General supervision: high satisfaction, low absenteeism",
+              "Close supervision: high satisfaction; General supervision: high theft rates",
+              "Both approaches showed identical results",
+              "Close supervision: better performance; General supervision: poor results"
+            ],
+            correct: 0,
+            explanation: {
+              concept: "Supervision Outcomes Comparison",
+              whyCorrect: "This comparison is exactly right! The passage clearly states the contrasting outcomes: Amit's close supervision resulted in 'low theft rates but high employee turnover,' while Sunita's general supervision achieved 'higher employee satisfaction, lower absenteeism, and comparable sales performance.' This shows the trade-offs between different supervision approaches - close supervision may prevent problems but can demotivate employees.",
+              whyWrong: {
+                1: "This reverses the actual outcomes described in the passage.",
+                2: "The outcomes were clearly different between the two approaches.",
+                3: "Close supervision wasn't universally better - it had the downside of high turnover."
+              },
+              connectConcept: "Different supervision styles create different outcomes. Close supervision may improve control and reduce errors but can decrease satisfaction. General supervision can improve morale but requires more trust.",
+              examTip: "When comparing supervision outcomes, look for specific results mentioned in the passage. CBSE often tests understanding of trade-offs between control and employee satisfaction."
+            }
+          },
+          {
+            type: "MCQ",
+            question: "Why did Sunita's store show higher employee satisfaction?",
+            options: [
+              "Higher salaries and better benefits",
+              "Less workload and easier targets",
+              "Trust, autonomy, and empowerment in decision-making",
+              "More flexible working hours"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Employee Satisfaction Factors",
+              whyCorrect: "Trust, autonomy, and empowerment in decision-making is exactly right! Sunita's approach gave employees autonomy to 'handle routine customer issues independently' and involved them in decision-making. She provided training and trusted them to achieve targets without constant oversight. This empowerment and trust led to higher job satisfaction because employees felt valued and responsible for their work.",
+              whyWrong: {
+                0: "The passage doesn't mention salary or benefits differences between the stores.",
+                1: "There's no indication that workload or targets were easier in Sunita's store.",
+                3: "Working hours aren't mentioned as a factor in the satisfaction difference."
+              },
+              connectConcept: "Employee satisfaction often increases when workers feel trusted, empowered, and given autonomy. General supervision builds these feelings by allowing independent decision-making.",
+              examTip: "When CBSE asks about satisfaction factors, look for empowerment, autonomy, trust, and participation rather than just monetary benefits. These psychological factors are often more important."
+            }
+          },
+          {
+            type: "LAQ",
+            question: "Evaluate which supervision approach is more effective for retail operations.",
+            options: [
+              "Close supervision is always better for retail",
+              "General supervision is universally superior",
+              "General supervision appears more effective as it balances control with employee satisfaction",
+              "Both approaches are equally effective"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Supervision Effectiveness Evaluation",
+              whyCorrect: "General supervision appears more effective as it balances control with employee satisfaction is the most balanced evaluation! While Amit's close supervision achieved low theft rates, it came at the cost of high employee turnover. Sunita's general supervision achieved comparable sales performance while maintaining higher satisfaction and lower absenteeism. This suggests general supervision is more sustainable and effective for long-term retail success.",
+              whyWrong: {
+                0: "The evidence shows close supervision has significant drawbacks like high turnover.",
+                1: "No supervision approach is universally superior in all situations.",
+                3: "The outcomes clearly show different effectiveness levels between the approaches."
+              },
+              connectConcept: "Effective supervision balances organizational needs with employee motivation. The best approach achieves business objectives while maintaining staff satisfaction and retention.",
+              examTip: "CBSE evaluation questions often require balanced analysis. Look for approaches that achieve multiple objectives rather than just one, and consider both short-term and long-term effectiveness."
+            }
+          },
+          {
+            type: "FTB",
+            question: "High employee turnover in Amit's store suggests that excessive _______ can negatively impact staff retention.",
+            correct: "control",
+            explanation: {
+              concept: "Excessive Control and Employee Retention",
+              whyCorrect: "'Control' is the perfect answer! Amit's close supervision involved excessive control through constant monitoring, hourly checks, and requiring approval for every decision. This level of control made employees feel micromanaged and untrusted, leading to high turnover. Excessive control can demotivate employees and make them feel their skills and judgment aren't valued, prompting them to seek employment elsewhere.",
+              whyWrong: "Incorrect. The correct answer is 'control'. Too much supervision and monitoring leads to employee dissatisfaction.",
+              connectConcept: "While some control is necessary in organizations, excessive control can backfire by reducing employee motivation, creativity, and job satisfaction, ultimately harming retention.",
+              examTip: "When discussing negative effects of close supervision, focus on 'control' as the key issue. CBSE often tests understanding of the balance between necessary oversight and excessive micromanagement."
+            }
+          }
+        ]
+      },
+      {
+        title: "Team Formation and Group Dynamics",
+        passage: `Innovation Labs brought together specialists from different departments to develop a new product. The newly formed team initially struggled with coordination as members came from engineering, marketing, design, and finance backgrounds. During early meetings, conflicts arose over project priorities - engineers focused on technical perfection, marketers emphasized customer appeal, designers wanted aesthetic excellence, and finance demanded cost efficiency. Team leader Dr. Sarah recognized these challenges and organized team-building sessions, established clear roles, and created shared objectives. Gradually, members began appreciating each other's perspectives, developed mutual respect, and started collaborating effectively. The team eventually delivered an innovative product that balanced all departmental concerns and exceeded expectations.`,
+        questions: [
+          {
+            type: "MCQ",
+            question: "The initial conflicts in the team represent which stage of group formation?",
+            options: [
+              "Forming stage",
+              "Storming stage",
+              "Norming stage",
+              "Performing stage"
+            ],
+            correct: 1,
+            explanation: {
+              concept: "Group Formation Stages - Storming",
+              whyCorrect: "Storming stage is exactly right! The passage describes conflicts over project priorities where different departments (engineering, marketing, design, finance) asserted their different perspectives and competed for influence. The storming stage is characterized by conflicts, competition, and disagreements as team members establish their roles and assert their ideas. This is a natural part of team development where differences surface.",
+              whyWrong: {
+                0: "Forming stage involves initial politeness and getting acquainted, not conflicts.",
+                2: "Norming stage is when conflicts are resolved and cooperation begins.",
+                3: "Performing stage is when the team works efficiently toward goals."
+              },
+              connectConcept: "The storming stage is necessary for team development. Conflicts help teams understand different perspectives and eventually lead to better solutions if managed properly.",
+              examTip: "Look for keywords: conflicts, disagreements, competing priorities, asserting different views = storming stage. Politeness = forming. Cooperation = norming. High performance = performing."
+            }
+          },
+          {
+            type: "FTB",
+            question: "When team members began appreciating each other's perspectives and developing mutual respect, they entered the _______ stage.",
+            correct: "norming",
+            explanation: {
+              concept: "Group Formation Stages - Norming",
+              whyCorrect: "'Norming' is the perfect answer! The passage states that team members 'began appreciating each other's perspectives, developed mutual respect, and started collaborating effectively.' This describes the norming stage where conflicts are resolved, team norms are established, and members develop cohesion and mutual respect. The team moves from conflict to cooperation.",
+              whyWrong: "Incorrect. The correct answer is 'norming'. Stage where conflicts resolve and cooperation develops.",
+              connectConcept: "The norming stage follows storming and involves establishing team norms, resolving conflicts, and building cohesion. Members start working together cooperatively.",
+              examTip: "When you see 'mutual respect,' 'appreciating perspectives,' 'cooperation developing,' or 'team cohesion,' the answer is typically 'norming' stage."
+            }
+          },
+          {
+            type: "SAQ",
+            question: "Identify the main challenge faced by the cross-functional team initially.",
+            options: [
+              "Lack of technical expertise",
+              "Insufficient resources and budget",
+              "Conflicting priorities due to different departmental perspectives",
+              "Poor leadership and guidance"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Cross-Functional Team Challenges",
+              whyCorrect: "Conflicting priorities due to different departmental perspectives is exactly right! The passage clearly describes how each department had different priorities: engineers wanted technical perfection, marketers emphasized customer appeal, designers focused on aesthetics, and finance demanded cost efficiency. This is the classic challenge of cross-functional teams where different functional expertise leads to different priorities and perspectives.",
+              whyWrong: {
+                0: "The team had technical expertise from engineering; lack of expertise wasn't the issue.",
+                1: "Resources and budget aren't mentioned as problems in the passage.",
+                3: "Dr. Sarah provided good leadership by organizing team-building and establishing roles."
+              },
+              connectConcept: "Cross-functional teams bring together different expertise, which is their strength, but also creates challenges as each function has different priorities and success measures.",
+              examTip: "When analyzing cross-functional team problems, look for conflicts arising from different departmental priorities rather than lack of skills or resources."
+            }
+          },
+          {
+            type: "MCQ",
+            question: "What strategy did Dr. Sarah use to improve team effectiveness?",
+            options: [
+              "Replaced conflicting team members",
+              "Increased individual targets and competition",
+              "Organized team-building, established roles, and created shared objectives",
+              "Reduced team size and complexity"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Team Leadership Strategies",
+              whyCorrect: "Organized team-building, established roles, and created shared objectives is exactly right! Dr. Sarah used multiple complementary strategies: team-building sessions to improve relationships and understanding, established clear roles to reduce confusion and overlap, and created shared objectives to align different departmental priorities toward common goals. This comprehensive approach addressed the root causes of team dysfunction.",
+              whyWrong: {
+                0: "She worked with existing members rather than replacing them.",
+                1: "She focused on collaboration, not individual competition.",
+                3: "She improved team dynamics rather than reducing team size."
+              },
+              connectConcept: "Effective team leadership involves multiple interventions: building relationships, clarifying roles, and aligning objectives. No single strategy is sufficient for complex team challenges.",
+              examTip: "Look for comprehensive leadership approaches that address multiple aspects of team dysfunction: relationships, structure, and goals."
+            }
+          },
+          {
+            type: "LAQ",
+            question: "Analyze how cross-functional teams can overcome initial coordination challenges.",
+            options: [
+              "By maintaining separate departmental goals",
+              "Through clear communication, role definition, shared objectives, and team-building activities",
+              "By having stronger hierarchical control",
+              "Through individual performance incentives"
+            ],
+            correct: 1,
+            explanation: {
+              concept: "Cross-Functional Team Success Strategies",
+              whyCorrect: "Through clear communication, role definition, shared objectives, and team-building activities is the most comprehensive answer! The passage demonstrates how Dr. Sarah successfully used these strategies: team-building sessions improved communication and relationships, clear roles reduced conflicts, and shared objectives aligned different departmental priorities. Cross-functional teams need structured approaches to bridge different perspectives and expertise areas.",
+              whyWrong: {
+                0: "Separate departmental goals would perpetuate conflicts rather than resolve them.",
+                2: "Stronger hierarchy would reduce the benefits of diverse expertise and perspectives.",
+                3: "Individual incentives would encourage competition rather than collaboration."
+              },
+              connectConcept: "Cross-functional teams succeed when they leverage diverse expertise while creating unity through shared goals, clear communication, and mutual understanding.",
+              examTip: "For cross-functional team questions, look for collaborative solutions that bring different functions together rather than keeping them separate or imposing rigid control."
+            }
+          },
+          {
+            type: "FTB",
+            question: "The final stage where the team delivered an innovative product that exceeded expectations represents the _______ stage of group development.",
+            correct: "performing",
+            explanation: {
+              concept: "Group Formation Stages - Performing",
+              whyCorrect: "'Performing' is the perfect answer! The passage describes how the team 'eventually delivered an innovative product that balanced all departmental concerns and exceeded expectations.' This represents the performing stage where the team operates at high efficiency, members work collaboratively toward common goals, and the team achieves superior results that exceed expectations. The team has moved through all previous stages to reach peak performance.",
+              whyWrong: "Incorrect. The correct answer is 'performing'. Final stage where teams achieve high performance and superior results.",
+              connectConcept: "The performing stage is the ultimate goal of team development where all previous challenges are resolved and the team operates at maximum effectiveness.",
+              examTip: "When teams achieve 'superior results,' 'exceed expectations,' or 'high performance,' they've reached the 'performing' stage of group development."
+            }
+          }
+        ]
+      },
+      {
+        title: "Formal vs Informal Communication Networks",
+        passage: `At TechSolutions Inc., the formal communication system followed a strict hierarchical structure where all instructions flowed from CEO to department heads, then to team leaders, and finally to employees. However, employees also relied heavily on informal communication networks. During lunch breaks and coffee conversations, valuable information about project updates, policy changes, and even personal matters was exchanged. When the company planned a restructuring, the formal announcement was delayed, but news spread rapidly through informal channels, creating uncertainty and speculation. Some employees received accurate information through informal networks, while others heard distorted versions that caused unnecessary panic. The management realized the power of informal communication and decided to leverage it positively while improving formal communication timing.`,
+        questions: [
+          {
+            type: "MCQ",
+            question: "The hierarchical flow from CEO to employees represents which type of communication?",
+            options: [
+              "Informal communication",
+              "Horizontal communication",
+              "Formal communication",
+              "Grapevine communication"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Formal Communication Networks",
+              whyCorrect: "Formal communication is exactly right! The passage describes a 'strict hierarchical structure where all instructions flowed from CEO to department heads, then to team leaders, and finally to employees.' This represents formal communication which follows official organizational channels, established authority lines, and prescribed hierarchical structures. Formal communication is official, documented, and follows the organization chart.",
+              whyWrong: {
+                0: "Informal communication operates outside official channels through casual interactions.",
+                1: "Horizontal communication flows between peers at the same organizational level.",
+                3: "Grapevine is informal communication, not official hierarchical flow."
+              },
+              connectConcept: "Formal communication follows the organizational structure and chain of command. It's official, documented, and provides clear authority and accountability.",
+              examTip: "Look for keywords: 'hierarchical structure,' 'official channels,' 'CEO to department heads' = formal communication. 'Casual conversations,' 'lunch breaks' = informal communication."
+            }
+          },
+          {
+            type: "FTB",
+            question: "The lunch break and coffee conversations represent _______ communication networks.",
+            correct: "informal",
+            explanation: {
+              concept: "Informal Communication Networks",
+              whyCorrect: "'Informal' is the perfect answer! The passage describes 'lunch breaks and coffee conversations' where 'valuable information about project updates, policy changes, and even personal matters was exchanged.' Informal communication networks operate outside official organizational channels through casual interactions, personal relationships, and spontaneous exchanges. These networks are unstructured and relationship-based.",
+              whyWrong: "Incorrect. The correct answer is 'informal'. Casual conversations outside official channels.",
+              connectConcept: "Informal communication networks develop naturally based on personal relationships and social interactions. They're faster but less controlled than formal channels.",
+              examTip: "When you see 'lunch breaks,' 'coffee conversations,' 'casual interactions,' or 'personal relationships,' the answer is typically 'informal' communication."
+            }
+          },
+          {
+            type: "SAQ",
+            question: "What problem arose from the delay in formal announcement about restructuring?",
+            options: [
+              "Employees lost interest in the company",
+              "Information spread through informal channels creating uncertainty and speculation",
+              "Productivity increased significantly",
+              "All employees received accurate information"
+            ],
+            correct: 1,
+            explanation: {
+              concept: "Communication Timing and Information Gaps",
+              whyCorrect: "Information spread through informal channels creating uncertainty and speculation is exactly right! The passage states that when 'the formal announcement was delayed, news spread rapidly through informal channels, creating uncertainty and speculation.' This demonstrates how information gaps in formal communication are filled by informal networks, but with potential distortions and rumors that create anxiety and confusion.",
+              whyWrong: {
+                0: "There's no indication employees lost interest in the company.",
+                2: "The situation created anxiety, not increased productivity.",
+                3: "The passage shows some employees received distorted information, not accurate information."
+              },
+              connectConcept: "When formal communication is delayed or inadequate, informal networks fill the information gap, but often with incomplete or distorted information that can cause more problems.",
+              examTip: "Look for cause-and-effect relationships: delayed formal communication often leads to rumors and speculation through informal channels."
+            }
+          },
+          {
+            type: "MCQ",
+            question: "What advantage of informal communication is evident in the passage?",
+            options: [
+              "Always provides accurate information",
+              "Eliminates need for formal communication",
+              "Spreads information rapidly",
+              "Prevents all misunderstandings"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Advantages of Informal Communication",
+              whyCorrect: "Spreads information rapidly is exactly right! The passage clearly demonstrates this advantage when it states that 'news spread rapidly through informal channels' even before the formal announcement. Informal communication networks are faster than formal channels because they don't follow hierarchical approvals and can spread through multiple relationships simultaneously. This speed is both an advantage and a potential problem.",
+              whyWrong: {
+                0: "The passage shows informal communication can spread distorted information, not always accurate.",
+                1: "Informal communication supplements but doesn't eliminate the need for formal communication.",
+                3: "The passage shows informal communication can create misunderstandings and panic."
+              },
+              connectConcept: "Informal communication's main advantage is speed - it can spread information much faster than formal channels, but this speed comes with risks of distortion.",
+              examTip: "When analyzing informal communication advantages, focus on speed and relationship-building. For disadvantages, focus on potential for distortion and lack of control."
+            }
+          },
+          {
+            type: "LAQ",
+            question: "Evaluate the relationship between formal and informal communication in organizations.",
+            options: [
+              "Formal communication should completely replace informal communication",
+              "Informal communication is always detrimental to organizations",
+              "Both systems coexist and complement each other when managed properly",
+              "Only informal communication is necessary in modern organizations"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Formal and Informal Communication Integration",
+              whyCorrect: "Both systems coexist and complement each other when managed properly is the most balanced and accurate evaluation! The passage demonstrates this by showing how both formal (hierarchical structure) and informal (lunch conversations) communication existed simultaneously. The management's decision to 'leverage informal communication positively while improving formal communication timing' shows the wisdom of managing both systems rather than eliminating either one.",
+              whyWrong: {
+                0: "Completely replacing informal communication is impossible and undesirable - it provides valuable benefits.",
+                1: "Informal communication has benefits like speed and relationship-building, not just detriments.",
+                3: "Formal communication provides structure, accountability, and official documentation that's essential."
+              },
+              connectConcept: "Effective organizational communication requires both formal and informal networks working together. Formal provides structure and accountability; informal provides speed and relationship-building.",
+              examTip: "CBSE often tests understanding that organizational systems work best when different elements complement each other rather than compete. Look for balanced, integrative answers."
+            }
+          },
+          {
+            type: "FTB",
+            question: "The management's decision to leverage informal communication positively shows understanding of its _______ in organizational communication.",
+            correct: "importance",
+            explanation: {
+              concept: "Management Recognition of Informal Communication",
+              whyCorrect: "'Importance' is the perfect answer! The management's decision to 'leverage informal communication positively' demonstrates their recognition of the importance or significance of informal networks in organizational communication. Rather than trying to eliminate informal communication (which is impossible), they understood its value and decided to work with it constructively. This shows mature management thinking.",
+              whyWrong: "Incorrect. The correct answer is 'importance'. Management recognized the significance of informal networks.",
+              connectConcept: "Smart managers recognize that informal communication is inevitable and important, so they work to channel it positively rather than fight it or ignore it.",
+              examTip: "When management adapts to work with informal systems rather than against them, it shows recognition of their 'importance' or 'value' in organizational dynamics."
+            }
+          }
+        ]
+      },
+      {
+        title: "Communication Process and Feedback Mechanism",
+        passage: `HealthFirst Hospital implemented a new patient feedback system to improve service quality. The hospital administration (sender) designed a comprehensive questionnaire asking patients about their experience, treatment satisfaction, and suggestions for improvement. This information (message) was collected through both digital tablets and paper forms (medium/channel) and sent to patients (receivers) at discharge. However, many elderly patients found the digital format confusing, and some questions were too technical for general understanding. The feedback received (response) was mixed - while younger patients provided detailed digital responses, older patients either skipped questions or provided incomplete answers. The administration realized that effective communication requires considering the receiver's capacity and choosing appropriate channels for different audiences.`,
+        questions: [
+          {
+            type: "MCQ",
+            question: "In this communication process, who is the sender?",
+            options: [
+              "Patients",
+              "Hospital administration",
+              "Digital tablets",
+              "Feedback forms"
+            ],
+            correct: 1,
+            explanation: {
+              concept: "Communication Process - Sender",
+              whyCorrect: "Hospital administration is exactly right! The passage clearly identifies the hospital administration as the sender by stating 'The hospital administration (sender) designed a comprehensive questionnaire.' The sender is the person or entity who initiates the communication by creating and transmitting the message. In this case, the administration designed the feedback system to gather information from patients.",
+              whyWrong: {
+                0: "Patients are the receivers who respond to the questionnaire.",
+                2: "Digital tablets are the medium/channel used to transmit the message.",
+                3: "Feedback forms are part of the medium/channel, not the sender."
+              },
+              connectConcept: "In the communication process, the sender is whoever initiates the communication by creating and sending the message. Identifying the sender helps understand communication purpose and perspective.",
+              examTip: "Look for who 'designed,' 'created,' 'initiated,' or 'sent' the communication. The sender is always the originator of the message, not the responders or the tools used."
+            }
+          },
+          {
+            type: "FTB",
+            question: "The comprehensive questionnaire asking about patient experience represents the _______ in the communication process.",
+            correct: "message",
+            explanation: {
+              concept: "Communication Process - Message",
+              whyCorrect: "'Message' is the perfect answer! The passage explicitly states 'This information (message) was collected through...' referring to the questionnaire. The message is the actual content being communicated - in this case, the specific questions about patient experience, treatment satisfaction, and suggestions for improvement. The message is what the sender wants to convey to the receiver.",
+              whyWrong: "Incorrect. The correct answer is 'message'. The actual content/information being communicated.",
+              connectConcept: "The message is the core content or information that the sender wants to communicate to the receiver. It can be questions, statements, instructions, or any meaningful content.",
+              examTip: "The message is always the actual content, information, or questions being communicated, not the method or tool used to send it."
+            }
+          },
+          {
+            type: "SAQ",
+            question: "What communication barriers affected the effectiveness of the feedback system?",
+            options: [
+              "Technical language and inappropriate channel selection for elderly patients",
+              "Lack of sufficient paper forms",
+              "Too many questions in the survey",
+              "Insufficient time given to patients"
+            ],
+            correct: 0,
+            explanation: {
+              concept: "Communication Barriers in Feedback Systems",
+              whyCorrect: "Technical language and inappropriate channel selection for elderly patients is exactly right! The passage identifies two specific barriers: semantic barriers (technical language that patients couldn't understand) and channel barriers (digital format being inappropriate for elderly patients who found it confusing). These barriers prevented effective communication by making the message unclear and the medium unsuitable for the audience.",
+              whyWrong: {
+                1: "The passage doesn't mention insufficient paper forms as a problem.",
+                2: "The number of questions isn't identified as the main barrier.",
+                3: "Time constraints aren't mentioned as affecting the feedback system effectiveness."
+              },
+              connectConcept: "Communication barriers can occur at multiple points: message clarity (semantic), channel appropriateness, and receiver capacity. Effective communication requires addressing all potential barriers.",
+              examTip: "When identifying communication barriers, look for specific problems mentioned: unclear language, inappropriate channels, or receiver difficulties rather than general issues."
+            }
+          },
+          {
+            type: "MCQ",
+            question: "The mixed feedback received from patients represents which element of communication?",
+            options: [
+              "Encoding",
+              "Decoding",
+              "Feedback/Response",
+              "Channel"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Communication Process - Feedback/Response",
+              whyCorrect: "Feedback/Response is exactly right! The passage states 'The feedback received (response) was mixed' and describes how different patients responded differently to the questionnaire. Feedback or response is the information sent back by the receiver to the sender, completing the communication cycle. It shows whether the message was understood and allows the sender to evaluate communication effectiveness.",
+              whyWrong: {
+                0: "Encoding is the process of converting thoughts into communicable form by the sender.",
+                1: "Decoding is the process of interpreting the message by the receiver.",
+                3: "Channel is the medium used to transmit the message (digital tablets, paper forms)."
+              },
+              connectConcept: "Feedback completes the communication cycle by allowing the sender to know if the message was received and understood correctly. It enables communication improvement.",
+              examTip: "Feedback/response is always the information that flows back from receiver to sender. Look for words like 'response,' 'replied,' 'answered,' or 'feedback received.'"
+            }
+          },
+          {
+            type: "LAQ",
+            question: "Analyze how the hospital can improve its communication effectiveness.",
+            options: [
+              "Use only digital formats for all patients",
+              "Eliminate feedback systems entirely",
+              "Adapt channels and language based on receiver characteristics",
+              "Use only paper-based systems"
+            ],
+            correct: 2,
+            explanation: {
+              concept: "Communication Effectiveness Improvement",
+              whyCorrect: "Adapt channels and language based on receiver characteristics is the most comprehensive and effective solution! The passage shows that communication failed because it didn't consider receiver differences - elderly patients struggled with digital formats and technical language. Effective communication requires adapting both the channel (digital for younger patients, paper for elderly) and the message (simple language instead of technical terms) based on the audience's characteristics and capabilities.",
+              whyWrong: {
+                0: "Using only digital formats would exclude elderly patients who found it confusing.",
+                1: "Eliminating feedback systems would prevent quality improvement efforts.",
+                3: "Using only paper systems would be inefficient for younger patients comfortable with digital formats."
+              },
+              connectConcept: "Communication effectiveness requires understanding your audience and adapting both the message content and delivery method to match receiver characteristics, preferences, and capabilities.",
+              examTip: "Look for solutions that consider receiver differences and adapt communication accordingly, rather than one-size-fits-all approaches. CBSE often tests adaptive communication strategies."
+            }
+          },
+          {
+            type: "FTB",
+            question: "The digital tablets and paper forms used to collect feedback represent the _______ or _______ in communication.",
+            correct: "medium",
+            explanation: {
+              concept: "Communication Process - Medium/Channel",
+              whyCorrect: "'Medium' is the perfect answer! The passage explicitly states 'This information (message) was collected through both digital tablets and paper forms (medium/channel).' The medium or channel refers to the method, tool, or pathway used to transmit the message from sender to receiver. In this case, both digital tablets and paper forms serve as different channels for collecting patient feedback.",
+              whyWrong: "Incorrect. The correct answer is 'medium'. The method or tool used to transmit the message.",
+              connectConcept: "The medium or channel is the pathway through which the message travels from sender to receiver. Different media have different characteristics and suitability for different audiences.",
+              examTip: "Medium/channel refers to the transmission method: face-to-face, digital, paper, phone, etc. It's always the 'how' of communication delivery."
+            }
+          }
+        ]
+      }
+    ];
+
+    let currentScenario = 0;
+    let userAnswers = [];
+    let score = 0;
+
+    function startQuiz() {
+      document.getElementById('startScreen').classList.add('hidden');
+      document.getElementById('quizScreen').classList.remove('hidden');
+      showScenario(0);
+    }
+
+    function showScenario(index) {
+      currentScenario = index;
+      updateProgress();
+      updateScenarioIndicator();
+      
+      const scenario = scenarios[index];
+      const content = document.getElementById('scenarioContent');
+      
+      let questionsHTML = '';
+      scenario.questions.forEach((q, qIndex) => {
+        let questionContent = '';
+        
+        if (q.type === 'MCQ' || q.type === 'SAQ' || q.type === 'LAQ') {
+          questionContent = `
+            <div class="options">
+              ${q.options.map((option, oIndex) => `
+                <label>
+                  <input type="radio" name="q${index}_${qIndex}" value="${oIndex}">
+                  ${option}
+                </label>
+              `).join('')}
+            </div>
+          `;
+        } else if (q.type === 'FTB') {
+          questionContent = `
+            <input type="text" class="text-input" placeholder="Type your answer here..." data-scenario="${index}" data-question="${qIndex}">
+          `;
+        }
+        
+        questionsHTML += `
+          <div class="question-container" data-scenario="${index}" data-question="${qIndex}">
+            <div class="question-header">
+              Q${qIndex + 1}: ${q.question}
+              <span class="question-type">${q.type}</span>
+            </div>
+            ${questionContent}
+            <div class="explanation"></div>
+          </div>
+        `;
+      });
+      
+      content.innerHTML = `
+        <div class="context-intro">
+          <p><strong>📖 Read the following business scenario carefully and answer the questions that follow:</strong></p>
+        </div>
+        <div class="rtc-passage">
+          <h3>${scenario.title}</h3>
+          <p>${scenario.passage}</p>
+        </div>
+        ${questionsHTML}
+      `;
+      
+      // Add event listeners
+      addEventListeners();
+      updateNavigationButtons();
+      
+      // Restore previous answers if any
+      restoreAnswers(index);
+      
+      // Scroll to top of container
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function addEventListeners() {
+      // Radio button listeners
+      const radios = document.querySelectorAll('input[type="radio"]');
+      radios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          handleAnswer(this);
+        });
+      });
+      
+      // Text input listeners
+      const textInputs = document.querySelectorAll('.text-input');
+      textInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+          handleTextAnswer(this);
+        });
+        input.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            handleTextAnswer(this);
+          }
+        });
+      });
+    }
+
+    function handleAnswer(radio) {
+      const container = radio.closest('.question-container');
+      const scenarioIndex = parseInt(container.dataset.scenario);
+      const questionIndex = parseInt(container.dataset.question);
+      const selectedValue = parseInt(radio.value);
+      
+      // Save answer
+      if (!userAnswers[scenarioIndex]) userAnswers[scenarioIndex] = [];
+      userAnswers[scenarioIndex][questionIndex] = selectedValue;
+      
+      // Visual feedback
+      const labels = container.querySelectorAll('label');
+      labels.forEach(label => label.classList.remove('selected'));
+      radio.parentElement.classList.add('selected');
+      
+      // Show detailed explanation
+      const explanation = container.querySelector('.explanation');
+      const question = scenarios[scenarioIndex].questions[questionIndex];
+      const correctAnswer = question.correct;
+      
+      container.classList.remove('correct', 'wrong');
+      explanation.classList.add('show');
+      
+      if (selectedValue === correctAnswer) {
+        container.classList.add('correct');
+        explanation.innerHTML = createDetailedExplanation(question, selectedValue, true);
+      } else {
+        container.classList.add('wrong');
+        explanation.innerHTML = createDetailedExplanation(question, selectedValue, false);
+      }
+    }
+
+    function handleTextAnswer(input) {
+      const scenarioIndex = parseInt(input.dataset.scenario);
+      const questionIndex = parseInt(input.dataset.question);
+      const userAnswer = input.value.trim().toLowerCase();
+      const question = scenarios[scenarioIndex].questions[questionIndex];
+      const correctAnswer = question.correct.toLowerCase();
+      
+      // Save answer
+      if (!userAnswers[scenarioIndex]) userAnswers[scenarioIndex] = [];
+      userAnswers[scenarioIndex][questionIndex] = input.value.trim();
+      
+      const container = input.closest('.question-container');
+      const explanation = container.querySelector('.explanation');
+      
+      container.classList.remove('correct', 'wrong');
+      explanation.classList.add('show');
+      
+      if (userAnswer === correctAnswer) {
+        container.classList.add('correct');
+        explanation.innerHTML = createDetailedExplanation(question, input.value.trim(), true);
+      } else {
+        container.classList.add('wrong');
+        explanation.innerHTML = createDetailedExplanation(question, input.value.trim(), false);
+      }
+    }
+
+    function createDetailedExplanation(question, userAnswer, isCorrect) {
+      const exp = question.explanation;
+      
+      let html = `<h4>💡 Understanding: ${exp.concept}</h4>`;
+      
+      if (isCorrect) {
+        html += `<div class="why-correct">
+          <strong>🎉 Correct! Here's why this answer is perfect:</strong><br>
+          ${exp.whyCorrect}
+        </div>`;
+      } else {
+        // Show why the selected answer is wrong (brief)
+        if (question.type === 'FTB') {
+          html += `<div class="why-wrong">
+            <strong>❌ ${exp.whyWrong}</strong>
+          </div>`;
+        } else {
+          // MCQ - explain why the selected choice is wrong (brief)
+          const wrongChoiceIndex = parseInt(userAnswer);
+          if (exp.whyWrong && exp.whyWrong[wrongChoiceIndex]) {
+            html += `<div class="why-wrong">
+              <strong>❌ Incorrect.</strong> ${exp.whyWrong[wrongChoiceIndex]}
+            </div>`;
+          }
+        }
+        
+        // Show why the correct answer is right (detailed)
+        html += `<div class="why-correct">
+          <strong>✅ Correct Answer: ${question.type === 'FTB' ? question.correct : question.options[question.correct]}</strong><br>
+          ${exp.whyCorrect}
+        </div>`;
+      }
+      
+      html += `<div class="connect-concept">
+        <strong>🔗 Connecting the dots:</strong><br>
+        ${exp.connectConcept}
+      </div>`;
+      
+      html += `<div class="exam-tip">
+        <strong>📝 Exam Strategy:</strong><br>
+        ${exp.examTip}
+      </div>`;
+      
+      return html;
+    }
+
+    function restoreAnswers(scenarioIndex) {
+      if (!userAnswers[scenarioIndex]) return;
+      
+      userAnswers[scenarioIndex].forEach((answer, questionIndex) => {
+        if (answer !== undefined) {
+          const container = document.querySelector(`[data-scenario="${scenarioIndex}"][data-question="${questionIndex}"]`);
+          const question = scenarios[scenarioIndex].questions[questionIndex];
+          
+          if (question.type === 'FTB') {
+            const input = container.querySelector('.text-input');
+            if (input) {
+              input.value = answer;
+              handleTextAnswer(input);
+            }
+          } else {
+            const radio = container.querySelector(`input[value="${answer}"]`);
+            if (radio) {
+              radio.checked = true;
+              handleAnswer(radio);
+            }
+          }
+        }
+      });
+    }
+
+    function updateProgress() {
+      const progress = ((currentScenario + 1) / scenarios.length) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+      document.getElementById('progressIndicator').textContent = `${currentScenario + 1} of ${scenarios.length}`;
+    }
+
+    function updateScenarioIndicator() {
+      document.getElementById('scenarioIndicator').textContent = 
+        `Scenario ${currentScenario + 1} of ${scenarios.length}`;
+    }
+
+    function updateNavigationButtons() {
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      
+      prevBtn.disabled = currentScenario === 0;
+      
+      if (currentScenario === scenarios.length - 1) {
+        nextBtn.textContent = 'Finish Quiz';
+        nextBtn.onclick = finishQuiz;
+      } else {
+        nextBtn.textContent = 'Next →';
+        nextBtn.onclick = nextScenario;
+      }
+    }
+
+    function previousScenario() {
+      if (currentScenario > 0) {
+        showScenario(currentScenario - 1);
+      }
+    }
+
+    function nextScenario() {
+      if (currentScenario < scenarios.length - 1) {
+        showScenario(currentScenario + 1);
+      }
+    }
+
+    function finishQuiz() {
+      calculateScore();
+      showResults();
+    }
+
+    function calculateScore() {
+      score = 0;
+      let totalQuestions = 0;
+      
+      scenarios.forEach((scenario, sIndex) => {
+        scenario.questions.forEach((question, qIndex) => {
+          totalQuestions++;
+          if (userAnswers[sIndex] && userAnswers[sIndex][qIndex] !== undefined) {
+            if (question.type === 'FTB') {
+              if (userAnswers[sIndex][qIndex].toLowerCase() === question.correct.toLowerCase()) {
+                score++;
+              }
+            } else {
+              if (userAnswers[sIndex][qIndex] === question.correct) {
+                score++;
+              }
+            }
+          }
+        });
+      });
+      
+      return { score, totalQuestions };
+    }
+
+    function showResults() {
+      const { score: finalScore, totalQuestions } = calculateScore();
+      const percentage = Math.round((finalScore / totalQuestions) * 100);
+      
+      document.getElementById('quizScreen').classList.add('hidden');
+      document.getElementById('resultScreen').classList.remove('hidden');
+      
+      document.getElementById('finalScore').textContent = `${finalScore}/${totalQuestions} (${percentage}%)`;
+      
+      // Performance by question type
+      const typeStats = {};
+      scenarios.forEach((scenario, sIndex) => {
+        scenario.questions.forEach((question, qIndex) => {
+          if (!typeStats[question.type]) typeStats[question.type] = { correct: 0, total: 0 };
+          typeStats[question.type].total++;
+          
+          if (userAnswers[sIndex] && userAnswers[sIndex][qIndex] !== undefined) {
+            let isCorrect = false;
+            if (question.type === 'FTB') {
+              isCorrect = userAnswers[sIndex][qIndex].toLowerCase() === question.correct.toLowerCase();
+            } else {
+              isCorrect = userAnswers[sIndex][qIndex] === question.correct;
+            }
+            if (isCorrect) typeStats[question.type].correct++;
+          }
+        });
+      });
+      
+      let performanceByType = '';
+      Object.keys(typeStats).forEach(type => {
+        const stats = typeStats[type];
+        const typePercentage = Math.round((stats.correct / stats.total) * 100);
+        performanceByType += `
+          <div class="performance-item">
+            <strong>${type}:</strong> ${stats.correct}/${stats.total} (${typePercentage}%)
+          </div>
+        `;
+      });
+      
+      let recommendationText = '';
+      if (percentage >= 90) {
+        recommendationText = `<p>🌟 <strong>Excellent!</strong> You have a strong grasp of Directing concepts. Focus on exam practice and application-based questions.</p>`;
+      } else if (percentage >= 75) {
+        recommendationText = `<p>👍 <strong>Good work!</strong> Review the explanations for incorrect answers and practice more scenario-based questions.</p>`;
+      } else if (percentage >= 60) {
+        recommendationText = `<p>📖 <strong>Keep practicing!</strong> Focus on understanding the theoretical concepts behind each topic and their practical applications.</p>`;
+      } else {
+        recommendationText = `<p>📚 <strong>More study needed.</strong> Review your textbook chapters on Directing, focus on key concepts, and retake this quiz after studying.</p>`;
+      }
+      
+      let resultBreakdown = `
+        <div class="result-section">
+          <h3>📊 Performance Summary</h3>
+          <p><strong>Overall Score:</strong> ${finalScore} out of ${totalQuestions} questions correct</p>
+          <p><strong>Percentage:</strong> ${percentage}%</p>
+          
+          <h4>Performance by Question Type</h4>
+          <div class="performance-grid">
+            ${performanceByType}
+          </div>
+        </div>
+
+        <div class="result-section">
+          <h3>📚 Key Areas Covered</h3>
+          <ul>
+            <li><strong>Leadership Styles:</strong> Autocratic, Democratic, and Laissez-faire approaches</li>
+            <li><strong>Motivation Theories:</strong> Financial and Non-financial incentives</li>
+            <li><strong>Communication Barriers:</strong> Semantic, Cultural, Physical, and Organizational obstacles</li>
+            <li><strong>Supervision Methods:</strong> Close supervision vs General supervision techniques</li>
+            <li><strong>Group Dynamics:</strong> Team formation stages (Storming, Norming, Performing)</li>
+            <li><strong>Communication Networks:</strong> Formal vs Informal communication systems</li>
+            <li><strong>Communication Process:</strong> Complete cycle including Sender, Message, Medium, Receiver, and Feedback</li>
+          </ul>
+        </div>
+        
+        <div class="result-section">
+          <h3>💡 Study Recommendations</h3>
+          ${recommendationText}
+          
+          <h4>Next Steps:</h4>
+          <ul>
+            <li>Review explanations for any incorrect answers</li>
+            <li>Focus on scenario-based practice questions</li>
+            <li>Study the theoretical foundations of each concept</li>
+            <li>Practice identifying concepts from business narratives</li>
+            <li>Retake this quiz to track improvement</li>
+          </ul>
+        </div>
+      `;
+      
+      document.getElementById('resultBreakdown').innerHTML = resultBreakdown;
+    }
+
+    function restartQuiz() {
+      currentScenario = 0;
+      userAnswers = [];
+      score = 0;
+      
+      document.getElementById('resultScreen').classList.add('hidden');
+      document.getElementById('startScreen').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
