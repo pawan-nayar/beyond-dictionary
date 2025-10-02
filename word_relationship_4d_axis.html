@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Relationship Galaxy</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      background-color: #0d1117;
+      color: #e6edf3;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* Prevent scrolling when modal is open */
+    }
+
+    .header {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #161b22;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .header h3 {
+      margin: 0;
+      padding: 1rem;
+      font-size: 1.5rem;
+      color: #58a6ff;
+    }
+
+    #help-button {
+        position: absolute;
+        right: 1.5rem;
+        background: #30363d;
+        color: #c9d1d9;
+        border: 1px solid #484f58;
+        border-radius: 6px;
+        padding: 5px 12px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #help-button:hover {
+        background-color: #484f58;
+        border-color: #8b949e;
+    }
+
+
+    #viz-container {
+      flex: 1;
+      position: relative;
+    }
+
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .node {
+        cursor: pointer;
+    }
+
+    .node circle {
+      stroke: #fff;
+      stroke-width: 1.5px;
+      transition: r 0.3s ease, filter 0.3s ease;
+    }
+
+    .node:hover circle {
+        r: 20px;
+        filter: drop-shadow(0 0 8px rgba(100, 181, 246, 0.7));
+    }
+
+
+    .node text {
+      font-size: 13px;
+      fill: white;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      pointer-events: none; /* Make text unselectable */
+    }
+
+    .link {
+      stroke: #aaa;
+      stroke-opacity: 0.5;
+    }
+
+    .caption,
+    .legend {
+      font-size: 12px;
+      padding: 0.6rem 1rem;
+      background-color: #161b22;
+      color: #c9d1d9;
+      border-top: 1px solid #30363d;
+    }
+
+    .caption {
+      text-align: center;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem 1rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .legend-box {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+    
+    /* Modal Styles */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(13, 17, 23, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.visible {
+        display: flex;
+        opacity: 1;
+    }
+
+    .modal-box {
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 700px;
+        max-height: 80vh;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+    }
+    
+    #related-words-modal .modal-box {
+        height: 80vh;
+    }
+
+    .modal-overlay.visible .modal-box {
+        transform: scale(1);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #30363d;
+        flex-shrink: 0;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: #58a6ff;
+    }
+    
+    .modal-header h2 .word {
+        color: #e6edf3;
+        font-style: italic;
+    }
+
+    .close-button {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #8b949e;
+        cursor: pointer;
+        background: none;
+        border: none;
+        line-height: 1;
+    }
+
+    .close-button:hover {
+        color: #c9d1d9;
+    }
+    
+    .modal-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        position: relative;
+        overflow-y: auto;
+    }
+
+    #help-modal .modal-content p {
+        margin-top: 0;
+        line-height: 1.6;
+    }
+     #help-modal .modal-content h4 {
+        color: #58a6ff;
+        margin-bottom: 0.5rem;
+        margin-top: 1.5rem;
+        border-bottom: 1px solid #30363d;
+        padding-bottom: 0.3rem;
+       }
+
+    
+    #scatter-plot-container {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .scatter-plot .axis-label {
+      font-size: 0.75rem;
+      fill: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: opacity 1s ease;
+    }
+    
+    .scatter-plot .tick line {
+      stroke: #30363d;
+      stroke-dasharray: 2,2;
+    }
+    
+    .scatter-plot .domain {
+      stroke: #8b949e;
+    }
+    
+    .scatter-plot .tick text {
+      display: none;
+    }
+    
+    .plot-point text {
+      font-size: 0.85rem;
+      fill: #c9d1d9;
+      text-anchor: middle;
+      paint-order: stroke;
+      stroke: #161b22;
+      stroke-width: 3px;
+      stroke-linejoin: round;
+      cursor: default;
+    }
+
+    .plot-point.base-word text {
+        font-weight: bold;
+        font-size: 1.1rem;
+        fill: #FFD700;
+    }
+    
+    .plot-point.synonym text, .plot-point.parallel text {
+      fill: #58a6ff; /* Blue for similar */
+    }
+
+    .plot-point.antonym text, .plot-point.divergent text {
+      fill: #f85149; /* Red for dissimilar */
+    }
+
+    /* Override based on position - positive connotation (top) = blue, negative connotation (bottom) = red */
+    .plot-point[data-y-pos="positive"] text {
+      fill: #58a6ff; /* Blue for positive connotation */
+    }
+
+    .plot-point[data-y-pos="negative"] text {
+      fill: #f85149; /* Red for negative connotation */
+    }
+
+    .completion-dots {
+        /* This class is now only for potential future styling, positioning is handled in JS */
+    }
+
+    .completion-dots circle {
+        fill: #8b949e; /* Made the initial color lighter to be visible */
+        opacity: 0.7;
+        transition: fill 0.5s ease, r 0.5s ease, opacity 0.5s ease;
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h3>Word Relationship Galaxy</h3>
+    <button id="help-button">Help</button>
+  </div>
+  <div id="viz-container">
+    <svg></svg>
+  </div>
+  <div class="caption">Explore how a single word radiates into meanings, contexts, emotions, and roles.</div>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-box" style="background:#32CD32"></span> Synonym</div>
+    <div class="legend-item"><span class="legend-box" style="background:#FF6347"></span> Antonym</div>
+    <div class="legend-item"><span class="legend-box" style="background:#FFD700"></span> Emotion Core</div>
+    <div class="legend-item"><span class="legend-box" style="background:#00BFFF"></span> Category</div>
+    <div class="legend-item"><span class="legend-box" style="background:#DA70D6"></span> Hashtag</div>
+    <div class="legend-item"><span class="legend-box" style="background:#40E0D0"></span> Emoji</div>
+    <div class="legend-item"><span class="legend-box" style="background:#FF8C00"></span> Before</div>
+    <div class="legend-item"><span class="legend-box" style="background:#8FBC8F"></span> After</div>
+    <div class="legend-item"><span class="legend-box" style="background:#FF1493"></span> Service</div>
+  </div>
+
+  <!-- Relationship Modal Structure -->
+  <div class="modal-overlay" id="related-words-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="modal-title">Related Words: <span class="word"></span></h2>
+        <button class="close-button" id="close-modal-button">&times;</button>
+      </div>
+      <div class="modal-content">
+        <div id="scatter-plot-container"></div>
+      </div>
+    </div>
+  </div>
+  
+    <!-- Help Modal Structure -->
+  <div class="modal-overlay" id="help-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Help</h2>
+        <button class="close-button" id="close-help-modal-button">&times;</button>
+      </div>
+      <div class="modal-content">
+          <h4>The Galaxy View</h4>
+          <p>This is the main screen where words are shown as a connected network or "galaxy."</p>
+          <ul>
+                <li><b>Nodes:</b> Each circle is a word or concept. You can drag them around to rearrange the galaxy.</li>
+                <li><b>Colors:</b> The color of a node tells you its category (e.g., Synonym, Antonym, Emoji), as shown in the legend at the bottom.</li>
+                <li><b>Interaction:</b> Click on any node to open a detailed view of its relationships.</li>
+          </ul>
+
+          <h4>The Relationship Scatter Plot</h4>
+          <p>When you click a node, this view opens to show 12-15 related words on a grid.</p>
+          <ul>
+                <li><b>Horizontal Axis (Similarity):</b> Words on the right are a **Similar Concept**, while words on the left are a **Different Concept**.</li>
+                <li><b>Vertical Axis (Connotation):</b> Words at the top have a positive connotation, and words at the bottom have a negative one.</li>
+                 <li><b>Animation:</b> The words animate into place one by one. Once the five dots at the bottom turn green, the animation is complete.</li>
+          </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const svg = d3.select('svg');
+    const container = document.getElementById('viz-container');
+    const modal = document.getElementById('related-words-modal');
+    const closeModalButton = document.getElementById('close-modal-button');
+    const modalTitleWord = document.querySelector('#modal-title .word');
+    const scatterPlotContainer = document.getElementById('scatter-plot-container');
+
+    // Help Modal elements
+    const helpButton = document.getElementById('help-button');
+    const helpModal = document.getElementById('help-modal');
+    const closeHelpModalButton = document.getElementById('close-help-modal-button');
+    
+    const wordRelationships = {};
+    let activeSimulation = null; // To control the force simulation
+
+    const rawData = `
+joy	Synonym1	happiness	0.9
+joy	Synonym2	delight	0.85
+joy	Parallel90	ecstasy	0.98
+joy	Antonym1	sadness	-0.8
+joy	Antonym2	grief	-0.9
+joy	Antonym3	sorrow	-0.85
+joy	Divergent30	serenity	0.5
+joy	Divergent60	peace	0.4
+joy	Parallel30	glee	-0.3
+joy	Parallel60	mirth	-0.4
+joy	Divergent90	mania	-0.5
+joy	Synonym3	elation	0.95
+happiness	Synonym1	cheer	0.8
+happiness	Synonym2	pleasure	0.7
+happiness	Parallel90	glee	0.85
+happiness	Antonym1	sorrow	-0.85
+happiness	Antonym2	misery	-0.9
+happiness	Antonym3	despair	-0.95
+happiness	Divergent30	comfort	0.4
+happiness	Divergent60	relief	0.5
+happiness	Parallel30	smugness	-0.3
+happiness	Parallel60	pride	-0.2
+happiness	Divergent90	ennui	-0.4
+happiness	Synonym3	contentment	0.75
+delight	Synonym1	thrill	0.85
+delight	Synonym2	rapture	0.9
+delight	Parallel90	euphoria	0.95
+delight	Antonym1	displeasure	-0.6
+delight	Antonym2	annoyance	-0.5
+delight	Antonym3	revulsion	-0.8
+delight	Divergent30	curiosity	0.3
+delight	Divergent60	wonder	0.4
+delight	Parallel30	schadenfreude	-0.7
+delight	Parallel60	gloating	-0.6
+delight	Divergent90	tedium	-0.4
+delight	Synonym3	enjoyment	0.75
+sadness	Synonym1	sorrow	-0.85
+sadness	Synonym2	gloom	-0.7
+sadness	Parallel90	anguish	-0.95
+sadness	Antonym1	joy	0.9
+sadness	Antonym2	happiness	0.8
+sadness	Antonym3	cheer	0.7
+sadness	Divergent30	peace	0.5
+sadness	Divergent60	tranquility	0.4
+sadness	Parallel30	apathy	0.2
+sadness	Parallel60	listlessness	0.1
+sadness	Divergent90	ennui	-0.3
+sadness	Synonym3	unhappiness	-0.75
+grief	Synonym1	mourning	-0.9
+grief	Synonym2	anguish	-0.95
+grief	Parallel90	misery	-0.9
+grief	Antonym1	comfort	0.4
+grief	Antonym2	solace	0.5
+grief	Antonym3	respite	0.3
+grief	Divergent30	acceptance	0.3
+grief	Divergent60	remembrance	0.1
+grief	Parallel30	celebration	0.8
+grief	Parallel60	relief	0.6
+grief	Divergent90	detachment	-0.2
+grief	Synonym3	heartache	-0.85
+bliss	Synonym1	euphoria	0.95
+bliss	Synonym2	paradise	1.0
+bliss	Parallel90	ecstasy	0.98
+bliss	Antonym1	misery	-0.9
+bliss	Antonym2	despair	-0.95
+bliss	Antonym3	agony	-1.0
+bliss	Divergent30	serenity	0.5
+bliss	Divergent60	peacefulness	0.6
+bliss	Parallel30	oblivion	-0.1
+bliss	Parallel60	ignorance	-0.2
+bliss	Divergent90	awareness	0.2
+bliss	Synonym3	rapture	0.9
+emotion	Synonym1	feeling	0.3
+emotion	Synonym2	sentiment	0.4
+emotion	Parallel90	passion	0.7
+emotion	Antonym1	apathy	-0.5
+emotion	Antonym2	indifference	-0.3
+emotion	Antonym3	numbness	-0.6
+emotion	Divergent30	reason	0.2
+emotion	Divergent60	logic	0.1
+emotion	Parallel30	intuition	-0.2
+emotion	Parallel60	instinct	-0.1
+emotion	Divergent90	stoicism	-0.4
+emotion	Synonym3	sensation	0.2
+#joyful	Synonym1	#happy	0.8
+#joyful	Synonym2	#blessed	0.85
+#joyful	Parallel90	#radiant	0.8
+#joyful	Antonym1	#sad	-0.8
+#joyful	Antonym2	#grim	-0.6
+#joyful	Antonym3	#miserable	-0.9
+#joyful	Divergent30	#serene	0.4
+#joyful	Divergent60	#peaceful	0.5
+#joyful	Parallel30	#manic	-0.5
+#joyful	Parallel60	#hysterical	-0.6
+#joyful	Divergent90	#moody	-0.3
+#joyful	Synonym3	#grateful	0.7
+😊	SynonymEmoji1	😀	0.8
+😊	SynonymEmoji2	😄	0.85
+😊	SynonymEmoji3	😂	0.9
+😊	AntonymEmoji1	😢	-0.8
+😊	AntonymEmoji2	😭	-0.9
+😊	AntonymEmoji3	😠	-0.7
+😊	DivergentWord1	thoughtful	0.4
+😊	DivergentWord2	pensive	0.3
+😊	ParallelWord1	smug	-0.4
+😊	ParallelWord2	mocking	-0.5
+😊	DivergentWord3	neutral	-0.2
+😊	SynonymEmoji4	😁	0.75
+spark	Synonym1	glimmer	0.4
+spark	Synonym2	flash	0.5
+spark	Parallel90	ignition	0.8
+spark	Antonym1	dullness	-0.5
+spark	Antonym2	darkness	-0.8
+spark	Antonym3	void	-0.9
+spark	Divergent30	potential	0.7
+spark	Divergent60	promise	0.6
+spark	Parallel30	friction	-0.3
+spark	Parallel60	tension	-0.4
+spark	Divergent90	shadow	-0.6
+spark	Synonym3	glint	0.35
+radiate	Synonym1	glow	0.7
+radiate	Synonym2	shine	0.8
+radiate	Parallel90	broadcast	0.7
+radiate	Antonym1	absorb	-0.7
+radiate	Antonym2	hide	-0.6
+radiate	Antonym3	conceal	-0.5
+radiate	Divergent30	comfort	0.4
+radiate	Divergent60	soothe	0.5
+radiate	Parallel30	glare	-0.6
+radiate	Parallel60	blare	-0.5
+radiate	Divergent90	contain	0.2
+radiate	Synonym3	beam	0.75
+JoyAPI	Synonym1	tool	0.2
+JoyAPI	Synonym2	utility	0.4
+JoyAPI	Parallel90	platform	0.4
+JoyAPI	Antonym1	blocker	-0.6
+JoyAPI	Antonym2	obstacle	-0.7
+JoyAPI	Antonym3	hindrance	-0.8
+JoyAPI	Divergent30	feature	0.5
+JoyAPI	Divergent60	benefit	0.6
+JoyAPI	Parallel30	complexity	-0.4
+JoyAPI	Parallel60	bug	-0.7
+JoyAPI	Divergent90	task	0.1
+JoyAPI	Synonym3	service	0.3
+`;
+    
+    function nudge(value) {
+        const min_dist = 0.15;
+        if (value >= 0 && value < min_dist) return min_dist;
+        if (value < 0 && value > -min_dist) return -min_dist;
+        return value;
+    }
+
+    function parseAndInitializeData(data) {
+        const lines = data.trim().split('\n');
+        const tempRelationships = {};
+
+        lines.forEach(line => {
+            const [word, label, value, sentimentStr] = line.split('\t');
+            if (!word || !label || !value || !sentimentStr) return;
+
+            if (!tempRelationships[word]) {
+                tempRelationships[word] = new Map();
+            }
+            
+            // Strict De-duplication: Do not add if the word already exists for this node.
+            if(tempRelationships[word].has(value)) return;
+
+            const sentiment = parseFloat(sentimentStr);
+            let type;
+            let xPosRaw;
+            
+            if (label.startsWith('Synonym')) { type = 'synonym'; xPosRaw = 0.35; }
+            else if (label.startsWith('Antonym')) { type = 'antonym'; xPosRaw = -0.35; }
+            else if (label.startsWith('Parallel30')) { type = 'parallel'; xPosRaw = 0.6; }
+            else if (label.startsWith('Parallel60')) { type = 'parallel'; xPosRaw = 0.8; }
+            else if (label.startsWith('Parallel90')) { type = 'parallel'; xPosRaw = 1.0; }
+            else if (label.startsWith('Divergent30')) { type = 'divergent'; xPosRaw = -0.6; }
+            else if (label.startsWith('Divergent60')) { type = 'divergent'; xPosRaw = -0.8; }
+            else if (label.startsWith('Divergent90')) { type = 'divergent'; xPosRaw = -1.0; }
+            else if (label.startsWith('ParallelWord')) { type = 'parallel'; xPosRaw = 0.7; }
+            else if (label.startsWith('DivergentWord')) { type = 'divergent'; xPosRaw = -0.7; }
+            else if (label.startsWith('SynonymEmoji')) { type = 'synonym'; xPosRaw = 0.35; }
+            else if (label.startsWith('AntonymEmoji')) { type = 'antonym'; xPosRaw = -0.35; }
+
+            if(type) {
+                const randomness = (Math.random() - 0.5) * 0.1;
+                const finalX = nudge(xPosRaw + randomness);
+                const finalY = nudge(sentiment + randomness);
+                tempRelationships[word].set(value, { word: value, type, sentiment, targetX: finalX, targetY: finalY });
+            }
+        });
+        
+        for(const word in tempRelationships) {
+            wordRelationships[word] = Array.from(tempRelationships[word].values());
+        }
+    }
+
+    // --- Modal Logic ---
+    function showModal(nodeData) {
+        modalTitleWord.textContent = nodeData.id;
+        d3.select(scatterPlotContainer).select('svg').remove(); 
+
+        const relatedData = wordRelationships[nodeData.id];
+        if (!relatedData) {
+            scatterPlotContainer.innerHTML = '<p style="text-align: center; color: #8b949e;">No data available.</p>';
+            modal.classList.add('visible');
+            return;
+        };
+
+        modal.classList.add('visible');
+        createScatterPlot(nodeData.id, relatedData);
+
+    }
+
+    function closeModal() {
+        if(activeSimulation) {
+            activeSimulation.stop();
+            activeSimulation = null;
+        }
+        modal.classList.remove('visible');
+    }
+
+    closeModalButton.addEventListener('click', closeModal);
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+
+    // --- Help Modal Listeners ---
+    helpButton.addEventListener('click', () => {
+        helpModal.classList.add('visible');
+    });
+
+    function closeHelpModal() {
+        helpModal.classList.remove('visible');
+    }
+
+    closeHelpModalButton.addEventListener('click', closeHelpModal);
+    helpModal.addEventListener('click', (event) => {
+        if (event.target === helpModal) {
+            closeHelpModal();
+        }
+    });
+    
+    function createScatterPlot(baseWord, data) {
+        d3.select(scatterPlotContainer).select('svg').remove();
+        if(activeSimulation) activeSimulation.stop();
+        
+        const containerRect = scatterPlotContainer.getBoundingClientRect();
+        if (containerRect.width <= 0) return;
+
+        const margin = {top: 40, right: 40, bottom: 40, left: 40};
+        const width = containerRect.width - margin.left - margin.right;
+        const height = containerRect.height - margin.top - margin.bottom;
+
+        const svg = d3.select(scatterPlotContainer)
+            .append("svg")
+            .attr("width", '100%')
+            .attr("height", '100%')
+            .attr("viewBox", `0 0 ${containerRect.width} ${containerRect.height}`)
+            .append("g")
+            .attr("class", "scatter-plot")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+        
+        const xScale = d3.scaleLinear().domain([-1.2, 1.2]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-1.2, 1.2]).range([height, 0]);
+
+        const grid = svg.append("g").style("opacity", 0);
+        
+        grid.append("g").attr("class", "x-axis-grid").attr("transform", `translate(0, ${height})`).call(d3.axisBottom(xScale).tickSize(-height).tickFormat(""));
+        grid.append("g").attr("class", "y-axis-grid").call(d3.axisLeft(yScale).tickSize(-width).tickFormat(""));
+        grid.append("line").attr("x1", xScale(0)).attr("y1", 0).attr("x2", xScale(0)).attr("y2", height).attr("stroke", "#8b949e");
+        grid.append("line").attr("x1", 0).attr("y1", yScale(0)).attr("x2", width).attr("y2", yScale(0)).attr("stroke", "#8b949e");
+
+        grid.append("text").attr("class", "axis-label middle-axis-label").attr("text-anchor", "start").attr("x", 5).attr("y", yScale(0) - 10).text("Different Concept");
+        grid.append("text").attr("class", "axis-label middle-axis-label").attr("text-anchor", "end").attr("x", width - 5).attr("y", yScale(0) - 10).text("Similar Concept");
+        grid.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", -15).text("Positive Connotation");
+        grid.append("text").attr("class", "axis-label").attr("text-anchor", "middle").attr("x", xScale(0)).attr("y", height + 25).text("Negative Connotation");
+        
+        const dots = svg.append("g")
+            .attr("class", "completion-dots")
+            // *** CHANGE: Positioned dots in bottom-right, aligned with label ***
+            .attr("transform", `translate(${width}, ${height + 25})`);
+
+        dots.selectAll("circle")
+            // *** CHANGE: Adjusted data to draw dots from right-to-left ***
+            .data([-80, -65, -50, -35, -20])
+            .enter()
+            .append("circle")
+            .attr("cx", d => d)
+            .attr("r", 3);
+
+        const points = svg.append("g");
+        let animatedData = [];
+
+        function updatePlot(isSun = false) {
+          const pointGroups = points.selectAll(".plot-point").data(animatedData, d => d.word);
+          
+          const enterGroups = pointGroups.enter().append("g")
+            .attr("class", d => `plot-point ${d.type}`)
+            .attr("data-y-pos", d => d.targetY >= 0 ? "positive" : "negative")
+            .style("opacity", 0);
+
+          enterGroups.append("text").attr("dy", "0.3em").text(d => d.word);
+          
+          const merged = pointGroups.merge(enterGroups);
+          
+          if(!isSun) {
+              merged.transition().duration(500).style("opacity", 1);
+          }
+          
+          activeSimulation.nodes(animatedData).alpha(0.8).restart();
+        }
+        
+        activeSimulation = d3.forceSimulation(animatedData)
+            .force("x", d3.forceX(d => xScale(d.targetX)).strength(0.1))
+            .force("y", d3.forceY(d => yScale(d.targetY)).strength(0.1))
+            .force("collide", d3.forceCollide().radius(d => (d.word.length * 4.5) + (d.type === 'base-word' ? 5 : 3) ).strength(1))
+            .on("tick", () => {
+                // Ensure the 'points' group is on top of the grid/axes
+                points.raise();
+                const radius = 10; 
+                points.selectAll(".plot-point")
+                    .attr("transform", d => {
+                        d.x = Math.max(radius, Math.min(width - radius, d.x));
+                        d.y = Math.max(radius, Math.min(height - radius, d.y));
+                        
+                        if (d.type === 'base-word' && d.fx) {
+                            d.x = d.fx;
+                            d.y = d.fy;
+                        }
+
+                        return `translate(${d.x}, ${d.y})`;
+                    });
+            });
+
+        function startAnimation() {
+            grid.transition().duration(2000).style("opacity", 1);
+            
+            const sun = {word: baseWord, type: 'base-word', targetX: 0, targetY: 0};
+            sun.x = 0; 
+            sun.y = 0;
+            
+            animatedData.push(sun);
+
+            const sunGroup = points.selectAll(".plot-point").data(animatedData, d => d.word)
+                .enter().append("g")
+                .attr("class", d => `plot-point ${d.type}`)
+                .attr("data-y-pos", d => d.targetY >= 0 ? "positive" : "negative")
+                .style("opacity", 1)
+                .attr("transform", `translate(${sun.x}, ${sun.y})`);
+
+            sunGroup.append("text").attr("dy", "0.3em").text(d => d.word);
+
+            sunGroup.transition()
+                .duration(2000)
+                .attr("transform", `translate(${xScale(0)}, ${yScale(0)})`);
+            
+            setTimeout(() => {
+                let i = 0;
+                const wordsPerDot = Math.ceil(data.length / 5);
+
+                function addPlanet() {
+                    if (i < data.length && modal.classList.contains('visible')) {
+                        if (i === 0) {
+                            svg.selectAll('.middle-axis-label')
+                                .transition().duration(1000)
+                                .style('opacity', 0.2);
+                            
+                            sun.fx = xScale(0);
+                            sun.fy = yScale(0);
+                        }
+
+                        if (wordsPerDot > 0 && i % wordsPerDot === 0) {
+                            const dotIndex = Math.floor(i / wordsPerDot);
+                            if (dotIndex < 5) {
+                               dots.select(`circle:nth-child(${dotIndex + 1})`)
+                                    .transition().duration(500)
+                                    .style('fill', '#FFD700')
+                                    .style('opacity', 1)
+                                    .attr('r', 4);
+                            }
+                        }
+
+                        const planet = data[i];
+                        planet.x = xScale(0); 
+                        planet.y = yScale(0);
+                        animatedData.push(planet);
+                        updatePlot();
+                        i++;
+                        setTimeout(addPlanet, 1000); 
+                    } else if (modal.classList.contains('visible')) {
+                        dots.selectAll('circle')
+                            .transition().duration(500)
+                            .style('fill', '#32CD32')
+                            .style('opacity', 1)
+                            .attr('r', 3);
+                    }
+                }
+                addPlanet();
+            }, 2000); 
+        }
+
+        startAnimation();
+    }
+
+    // --- D3 Galaxy Logic ---
+    function resizeAndRender() {
+      svg.selectAll('*').remove();
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      const nodes = [
+          { id: 'joy', group: 'emotion' }, { id: 'happiness', group: 'synonym' },
+          { id: 'sadness', group: 'antonym' }, { id: 'delight', group: 'synonym' },
+          { id: 'grief', group: 'antonym' }, { id: 'bliss', group: 'synonym' },
+          { id: 'emotion', group: 'category' }, { id: '#joyful', group: 'hashtag' },
+          { id: '😊', group: 'emoji' }, { id: 'spark', group: 'before' },
+          { id: 'radiate', group: 'after' }, { id: 'JoyAPI', group: 'service' }
+      ];
+      const links = [
+          { source: 'joy', target: 'happiness' }, { source: 'joy', target: 'sadness' },
+          { source: 'joy', target: 'delight' }, { source: 'joy', target: 'grief' },
+          { source: 'joy', target: 'bliss' }, { source: 'joy', target: 'emotion' },
+          { source: 'joy', target: '#joyful' }, { source: 'joy', 'target': '😊' },
+          { source: 'spark', target: 'joy' }, { source: 'joy', target: 'radiate' },
+          { source: 'joy', target: 'JoyAPI' }
+      ];
+      
+      parseAndInitializeData(rawData);
+
+      const color = group => {
+        const colors = { emotion: '#FFD700', synonym: '#32CD32', antonym: '#FF6347', category: '#00BFFF', hashtag: '#DA70D6', emoji: '#40E0D0', before: '#FF8C00', after: '#8FBC8F', service: '#FF1493' };
+        return colors[group] || '#ccc';
+      };
+
+      const simulation = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(links).id(d => d.id).distance(140))
+        .force('charge', d3.forceManyBody().strength(-420))
+        .force('center', d3.forceCenter(width / 2, height / 2));
+
+      const link = svg.append('g').attr('stroke', '#aaa').attr('stroke-opacity', 0.5)
+        .selectAll('line').data(links).join('line').attr('stroke-width', 2);
+
+      const node = svg.append('g').selectAll('g').data(nodes).join('g')
+        .attr('class', 'node').on('click', (event, d) => showModal(d))
+        .call(d3.drag()
+          .on('start', (event, d) => { if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+          .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
+          .on('end', (event, d) => { if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }));
+
+      node.append('circle').attr('r', 16).attr('fill', d => color(d.group));
+      node.append('text').text(d => d.id).attr('x', 22).attr('y', 5);
+
+      simulation.on('tick', () => {
+        link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+        node.attr('transform', d => `translate(${d.x},${d.y})`);
+      });
+    }
+
+    window.addEventListener('resize', resizeAndRender);
+    resizeAndRender();
+  </script></body>
+</html>
+
