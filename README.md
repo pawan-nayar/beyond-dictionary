@@ -84,7 +84,9 @@ Beyond-Dictionary is not just about definitions. It is about **contrast-first ma
 
 * **Experience Playground** → [Emoji Jumble](https://pawan-nayar.github.io/experience-playground/emoji_jumble_game.html), [Crakk Misspelling](https://pawan-nayar.github.io/experience-playground/crakk_misspelling.html).
 * **Expression & Creativity** → [Money Talks](https://pawan-nayar.github.io/expression-and-creativity/proverb_article_money_talks.html), [Courage in Management](https://pawan-nayar.github.io/expression-and-creativity/deep_concept_for_management_courage_in_decision_making.html).
-* **Software-Content-Demos** → [Service Cloud API Explorer](https://pawan-nayar.github.io/software-content-demos/index.html).
+* **Software-Content-Demos** → [Claude Console Overview](https://pawan-nayar.github.io/software-content-demos/anthropic/claude-console-interactive.html).
+
+Check out the repos to feel the difference.
 
 ---
 
