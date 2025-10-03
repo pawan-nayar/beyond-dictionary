@@ -1,6 +1,6 @@
 # 📘 Beyond Dictionary — Case Study  
 
-![Status](https://img.shields.io/badge/Status-Active-brightgreen) ![License](https://img.shields.io/badge/License-MIT-blue) ![Words](https://img.shields.io/badge/Words-400K%2B-orange) ![Microservices](https://img.shields.io/badge/Microservices-125%2B%20per%20word-purple) ![Quizzes](https://img.shields.io/badge/Quizzes-10M%2B-gold) ![Type](https://img.shields.io/badge/Type-Lifelong%20Learning%20OS-red)  
+![Status](https://img.shields.io/badge/Status-Active-brightgreen) ![Words](https://img.shields.io/badge/Words-400K%2B-orange) ![Microservices](https://img.shields.io/badge/Microservices-125%2B%20per%20word-purple) ![Quizzes](https://img.shields.io/badge/Quizzes-10M%2B-gold) ![Type](https://img.shields.io/badge/Type-Lifelong%20Learning%20OS-red)  
 
 ---
 
@@ -198,7 +198,4 @@ Why it works:
 - 📖 *Comparative Concepts* (interactive deck)  
 - 🎮 *Contrast-First Learning*  
 
----
 
-## License
-This case study is open for **educational and documentation purposes** under the **MIT License**.
