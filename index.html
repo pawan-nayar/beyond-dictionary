@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond-Dictionary | Core Engine & Interactive Demos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind's gray-50 */
+            color: #1e293b; /* Tailwind's slate-800 */
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-link:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Hero Section -->
+    <header class="hero-gradient text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold tracking-tight">
+                📚 Beyond-Dictionary
+            </h1>
+            <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-300">
+                Core engine for the Mother Dictionary, quizzes, applied tools, and reasoning frameworks. A showcase of live HTML prototypes and case studies.
+            </p>
+             <a href="http://www.beyonddictionary.com" target="_blank" rel="noopener noreferrer" class="mt-8 inline-block bg-blue-500 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                Visit www.beyonddictionary.com
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+
+        <!-- Knowledge Systems Section -->
+        <section id="knowledge-systems" class="mb-16">
+            <h2 class="text-3xl font-bold pb-2 mb-8 text-slate-900">🧠 Knowledge Systems</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Advanced Word Cards -->
+                <article>
+                    <a href="https://beyonddictionary.com/dictionary/advance/Standard" target="_blank" rel="noopener noreferrer" class="card-link bg-white rounded-xl shadow-lg overflow-hidden h-full">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg></div>
+                                <h3 class="text-xl font-semibold text-slate-900">Advanced Word Cards</h3>
+                            </div>
+                            <p class="text-slate-600">400k+ English/Hindi entries with 100+ micro-services per word.</p>
+                        </div>
+                        <div class="px-6 pt-2 pb-4 bg-gray-50 border-t"><a href="./beyond-dictionary-case-study.md" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">View Case Study →</a></div>
+                    </a>
+                </article>
+                <!-- Quiz Engine -->
+                <article>
+                    <a href="https://beyonddictionary.com/cbsequiz" target="_blank" rel="noopener noreferrer" class="card-link bg-white rounded-xl shadow-lg overflow-hidden h-full">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.546-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                                <h3 class="text-xl font-semibold text-slate-900">Quiz Engine</h3>
+                            </div>
+                            <p class="text-slate-600">Prototype for a platform scaling to 10M+ interactive questions.</p>
+                        </div>
+                        <div class="px-6 pt-2 pb-4 bg-gray-50 border-t"><a href="./beyond_dictionary_quiz_learn_apply_framework.md" class="text-sm font-medium text-green-600 hover:text-green-800">View Framework →</a></div>
+                    </a>
+                </article>
+                <!-- CBSE English Learning Universe -->
+                <article>
+                    <a href="https://beyonddictionary.com/cbse" target="_blank" rel="noopener noreferrer" class="card-link bg-white rounded-xl shadow-lg overflow-hidden h-full">
+                        <div class="p-6">
+                             <div class="flex items-center space-x-4 mb-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2h8a2 2 0 002-2v-1a2 2 0 012-2h1.945M7.707 4.293l.01.01M16.293 4.293l.01.01M12 21l-1-4-4-1 9-4-1 9-4-1z"></path></svg></div>
+                                <h3 class="text-xl font-semibold text-slate-900">CBSE English Learning Universe</h3>
+                            </div>
+                            <p class="text-slate-600">Large-scale multimodal, bilingual learning application.</p>
+                        </div>
+                        <div class="px-6 pt-2 pb-4 bg-gray-50 border-t"><a href="./cbse_case_study.md" class="text-sm font-medium text-sky-600 hover:text-sky-800">View Case Study →</a></div>
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <!-- Subject Engines Section -->
+        <section id="subject-engines" class="mb-16">
+            <h2 class="text-3xl font-bold pb-2 mb-8 text-slate-900">📘 Subject Engines</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                 <!-- Interactive Commerce Glossary -->
+                <article>
+                    <a href="./commerce-class-12-laws-glossary.html" class="card-link bg-white rounded-xl shadow-lg overflow-hidden h-full">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg></div>
+                                <h3 class="text-xl font-semibold text-slate-900">Interactive Commerce Glossary</h3>
+                            </div>
+                            <p class="text-slate-600">A learning tool for core business and commerce principles.</p>
+                        </div>
+                        <div class="px-6 pt-2 pb-4 bg-gray-50 border-t"><span class="text-sm font-medium text-amber-600">View Demo →</span></div>
+                    </a>
+                </article>
+                 <!-- DeepThink Reasoning Engine -->
+                <article>
+                    <a href="./deepthink-reasoning-engine-business-studies-class11-12.html" class="card-link bg-white rounded-xl shadow-lg overflow-hidden h-full">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-rose-100 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg></div>
+                                <h3 class="text-xl font-semibold text-slate-900">DeepThink Reasoning Engine</h3>
+                            </div>
+                            <p class="text-slate-600">20-scenario reasoning engine for CBSE Business Studies.</p>
+                        </div>
+                        <div class="px-6 pt-2 pb-4 bg-gray-50 border-t"><span class="text-sm font-medium text-rose-600">View Demo →</span></div>
+                    </a>
+                </article>
+                 <!-- Electrochemistry Master Chapter -->
+                <article>
+                    <a href="./electrochemistry_cbse_chemistry_chapter.html" class="card-link bg-white rounded-xl shadow-lg overflow-hidden h-full">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                                <h3 class="text-xl font-semibold text-slate-900">Electrochemistry Master Chapter</h3>
+                            </div>
+                            <p class="text-slate-600">Complete CBSE Class 12 Chemistry interactive learning module.</p>
+                        </div>
+                        <div class="px-6 pt-2 pb-4 bg-gray-50 border-t"><span class="text-sm font-medium text-teal-600">View Demo →</span></div>
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <!-- Interactive Tools Section -->
+        <section id="interactive-tools">
+            <h2 class="text-3xl font-bold pb-2 mb-8 text-slate-900">💻 Interactive Tools</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                 <!-- Algorithm & Pseudocode Explorer -->
+                <article>
+                    <a href="./algorithm-pseudocode-explorer.html" class="card-link bg-white rounded-xl shadow-lg overflow-hidden h-full">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg></div>
+                                <h3 class="text-xl font-semibold text-slate-900">Algorithm & Pseudocode Explorer</h3>
+                            </div>
+                            <p class="text-slate-600">Interactive tool for Computer Science problem-solving concepts.</p>
+                        </div>
+                        <div class="px-6 pt-2 pb-4 bg-gray-50 border-t"><span class="text-sm font-medium text-slate-600">View Tool →</span></div>
+                    </a>
+                </article>
+                <!-- Word Relationship Galaxy -->
+                <article>
+                    <a href="./word_relationship_4d_axis.html" class="card-link bg-white rounded-xl shadow-lg overflow-hidden h-full">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></div>
+                                <h3 class="text-xl font-semibold text-slate-900">Word Relationship Galaxy</h3>
+                            </div>
+                            <p class="text-slate-600">Explore how words radiate into synonyms, antonyms, and emotions.</p>
+                        </div>
+                        <div class="px-6 pt-2 pb-4 bg-gray-50 border-t"><span class="text-sm font-medium text-purple-600">View Tool →</span></div>
+                    </a>
+                </article>
+                <!-- Interactive Syllable Splitter -->
+                <article>
+                    <a href="./syllable_splitter.html" class="card-link bg-white rounded-xl shadow-lg overflow-hidden h-full">
+                        <div class="p-6">
+                            <div class="flex items-center space-x-4 mb-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center"><svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.636 5.636a9 9 0 0112.728 0m-12.728 0a9 9 0 000 12.728m0-12.728l12.728 12.728"></path></svg></div>
+                                <h3 class="text-xl font-semibold text-slate-900">Interactive Syllable Splitter</h3>
+                            </div>
+                            <p class="text-slate-600">Voice-first syllable learning with glossary and sentence practice.</p>
+                        </div>
+                        <div class="px-6 pt-2 pb-4 bg-gray-50 border-t"><span class="text-sm font-medium text-orange-600">View Tool →</span></div>
+                    </a>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-sm">
+            <p class="font-semibold text-white">Copyright Notice / Usage Policy</p>
+            <p class="mt-2 max-w-2xl mx-auto">
+                This repository is for viewing and inspiration purposes only. You are not permitted to fork, copy, duplicate, download, reproduce, or redistribute any part of this repository.
+            </p>
+            <p class="mt-4 text-xs">&copy; All rights are reserved by the author.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+
